@@ -23,4 +23,15 @@ sudo apt-get update
 sudo apt-get install sbt
 ```
 
-. clone the repo: https://github.com/Constellation-Labs/constellation.git
+## Building
+1. clone the repo: https://github.com/Constellation-Labs/constellation.git
+```
+cd ~
+git clone https://github.com/Constellation-Labs/constellation.git
+cd ~/constellation
+```
+
+2. build the binaries
+```
+./build.sh
+```
