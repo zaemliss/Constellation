@@ -35,3 +35,5 @@ cd ~/constellation
 ```
 ./build.sh
 ```
+
+3. answer the prompt for main class [1]
