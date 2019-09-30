@@ -1,11 +1,10 @@
 # BUILD INSTRUCTIONS for the 3-node test:
 
 ## Dependencies
-1. update/upgrade and pssh
+1. update/upgrade
 ```
 sudo apt update
 sudo apt upgrade
-sudo apt install pssh
 ```
 2. symlink pssh
 ```
