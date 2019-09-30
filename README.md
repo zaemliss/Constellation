@@ -1,7 +1,12 @@
 # BUILD INSTRUCTIONS for the 3-node test:
 
 ## Dependencies
-1. update/upgrade
+1. update/upgrade and pssh
+```
+sudo apt update
+sudo apt upgrade
+sudo apt install pssh
+```
 
 2. check for Java, if not found, install latest Java
 ```
