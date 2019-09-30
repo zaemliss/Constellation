@@ -1,4 +1,4 @@
-# BUILD INSTRUCTIONS:
+# BUILD INSTRUCTIONS for the 3-node test:
 
 ## Dependencies
 1. update/upgrade
@@ -37,3 +37,10 @@ cd ~/constellation
 ```
 
 3. answer the prompt for main class [1]
+
+4. break out of the script (ctrl-c) then deploy the 3-node test
+```
+./deploy/compute/terraform/full-deploy.sh 3-node-test 3
+```
+note: change `3-node-test` with anything you want.
+
