@@ -18,20 +18,21 @@ tar xfz gsutil.tar.gz -C $HOME
 export PATH=${PATH}:$HOME/gsutil
 exec -l $SHELL
 ```
+4. Reboot the VPS.
 
-4. check for Java, if not found, install latest Java
+5. check for Java, if not found, install latest Java
 ```
 sudo apt install openjdk-8-jdk
 ```
 
-5. Install Scala
+6. Install Scala
 ```
 sudo apt-get remove scala-library scala
 sudo wget www.scala-lang.org/files/archive/scala-2.11.8.deb
 sudo dpkg -i scala-2.11.8.deb
 ```
 
-6. Install SBT
+7. Install SBT
 ```
 echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
 curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | sudo apt-key add
