@@ -1,4 +1,5 @@
 # BUILD INSTRUCTIONS for the 3-node test:
+### Platform: Ubuntu 16.04 on VULTR 
 
 ## Dependencies
 1. update/upgrade
