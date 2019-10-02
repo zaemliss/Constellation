@@ -7,8 +7,9 @@
 sudo apt update
 sudo apt upgrade
 ```
-2. symlink pssh
+2. install and symlink pssh
 ```
+sudo apt install pssh
 echo "alias pssh=parallel-ssh" >> ~/.bashrc && . ~/.bashrc
 ```
 
