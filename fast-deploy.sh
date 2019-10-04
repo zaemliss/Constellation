@@ -80,7 +80,7 @@ IP_LIST=$(ifconfig | grep "inet " | awk {'print $2'} | grep -vE '127.0.0|192.168
 IPs=(${IP_LIST[@]})
 
 EXTERNAL_HOST_IP=${IPs[0]}
-echo Deploying on $EXTERNAL_HOST_IP ...
+echo -e " ${grn}Deploying on ${blu}$EXTERNAL_HOST_IP ${grn}...${clr}"
 
 bashexec="java -Xmx3G -jar $PWD/constellation/constellation-latest.jar --ip $EXTERNAL_HOST_IP --port 9000"
 
