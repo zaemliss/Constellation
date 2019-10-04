@@ -70,7 +70,7 @@ echo -e "${red} IMPORTANT: ${grn}once in the screen where you see the node outpu
 echo -e "${grn} Do ${red}NOT ${grn}press ${blu}CTRL-C ${grn}unless you are trying to stop the node!"
 echo
 echo -e "${clr}"
-read -e -p "Start the node? [Y/N] : " CHOICE
+read -e -p " Start the node? [Y/N] : " CHOICE
 if [[ ("$CHOICE" == "n" || "$CHOICE" == "N") ]]; then
   echo -e "${yel} Installation complete... ${clr}"
   exit 1;
