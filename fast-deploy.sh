@@ -55,11 +55,7 @@ clr='\033[0m'
 echo
 echo -e "${red} IMPORTANT: ${grn}once in the screen where you see the node output, exit by pressing ${blu}CTRL-A ${grn}then ${blu}CTRL-D"
 echo -e "${grn} Do ${red}NOT ${grn}press ${blu}CTRL-C ${grn}unless you are trying to stop the node!${clr}"
-read -e -p "Press [ENTER] to continue or N to cancel: " CHOICE
-if [[ ("$CHOICE" == "n" || "$CHOICE" == "N") ]]; then
-echo -e "${yel} Aborted... ${clr}"
-exit 1;
-fi
+read -e -p "Press [ENTER] to continue or CTRL-C to cancel: " CHOICE
 screen -x dag
 EOF
 chmod +x /usr/local/bin/dag
