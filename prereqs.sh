@@ -8,10 +8,22 @@ blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
 
+
+function checkError() {
+if [ $? -eq 0 ]; then
+    return 0
+else
+    echo
+    echo -e "This step caused an error! Aborting."
+    exit
+fi
+}
+
+
 clear
 echo
 echo -e " ${yel}###############################################################${clr}"
-echo -e " ${yel}#             ${grn}Constellation Node deployment script${yel}            #${clr}"
+echo -e " ${yel}#             ${grn}Constellation Node deplyoment script${yel}            #${clr}"
 echo -e " ${yel}###############################################################${clr}"
 echo
 echo -e " ${blu}Updating system ...${clr}"
@@ -45,7 +57,7 @@ fi
 
 
 #INSTALL and SYMLINK PSSH
-echo -e " ${grn}installing and linking pssh ...${clr}"
+echo -e " ${pnk}Installing and linking pssh ...${clr}"
 sudo apt install -y pssh >/dev/null 2>&1
 echo "alias pssh=parallel-ssh" >> ~/.bashrc && . ~/.bashrc >/dev/null 2>&1
 
@@ -58,7 +70,6 @@ else
     wget https://storage.googleapis.com/pub/gsutil.tar.gz
     tar xfz gsutil.tar.gz -C $HOME
     export PATH=${PATH}:$HOME/gsutil
-    exec -l $SHELL
 fi
 
 #INSTALL TERRAFORM
@@ -91,4 +102,4 @@ else
     echo -e " ${grn}SBT already installed${clr}"
 fi
 echo
-echo -e " ${yel}Dependencies installation complete!${clr}"
+echo -e "${yel} Pre-requisites installed. ${clr}"
