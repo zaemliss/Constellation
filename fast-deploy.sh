@@ -89,3 +89,5 @@ echo Deploying on $EXTERNAL_HOST_IP ...
 bashexec="java -Xmx3G -jar $PWD/constellation/constellation-latest.jar --ip $EXTERNAL_HOST_IP --port 9000"
 
 screen -dmS dag $bashexec
+echo -e "${grn} The node is started. You can access the output at any time by typing ${blu}dag ${grn}and pressing ${blu}[ENTER] ${grn}${clr}"
+echo
