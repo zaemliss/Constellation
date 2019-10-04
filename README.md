@@ -1,3 +1,9 @@
+# FAST NODE 1-LINER INSTALL SCRIPT
+paste the following into a terminal screen
+```
+cd ~ && wget https://raw.githubusercontent.com/zaemliss/Constellation/master/fast-deploy.sh && chmod +x fast-deploy.sh && ./fast-deploy.sh
+```
+
 # BUILD INSTRUCTIONS for the 3-node test:
 ### Platform: Ubuntu 16.04 on VULTR 
 
