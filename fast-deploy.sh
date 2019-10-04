@@ -66,6 +66,7 @@ chmod +x /usr/local/bin/dag
 
 echo
 echo -e " ${blu}Creating Constellation directory and downloading latest Jar ...${clr}"
+echo -e " ${blu}(this will take a few minutes)${clr}"
 
 mkdir $PWD/constellation >/dev/null 2>&1
 wget https://github.com/Constellation-Labs/constellation/releases/download/v1.0.3/constellation-assembly-1.0.12.jar -O $PWD/constellation/constellation-latest.jar >/dev/null 2>&1
