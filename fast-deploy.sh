@@ -7,17 +7,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-
-function checkError() {
-if [ $? -eq 0 ]; then
-    return 0
-else
-    echo
-    echo -e "This step caused an error! Aborting."
-    exit
-fi
-}
-
+cd ~
 clear
 echo
 echo -e " ${yel}###############################################################${clr}"
@@ -53,8 +43,48 @@ if [[ "$installJava" == "1" ]]; then
     sudo apt install -y openjdk-8-jdk >/dev/null 2>&1
 fi
 
+#Create 'dag' script in the user's bin directory
+cat <<EOF > /usr/local/bin/dag
+# Declare Variables
+red='\033[1;31m'
+grn='\033[1;32m'
+yel='\033[1;33m'
+blu='\033[1;36m'
+pnk='\033[1;35m'
+clr='\033[0m'
+echo
+echo -e "${red} IMPORTANT: ${grn}once in the screen where you see the node output, exit by pressing ${blu}CTRL-A ${grn}then ${blu}CTRL-D"
+echo -e "${grn} Do ${red}NOT ${grn}press ${blu}CTRL-C ${grn}unless you are trying to stop the node!${clr}"
+read -e -p "Press [ENTER] to continue or N to cancel: " CHOICE
+if [[ ("$CHOICE" == "n" || "$CHOICE" == "N") ]]; then
+echo -e "${yel} Aborted... ${clr}"
+exit 1;
+fi
+screen -x dag
+EOF
+chmod +x /usr/local/bin/dag
+
 echo
 echo -e " ${blu}Creating Constellation directory and downloading latest Jar ...${clr}"
 
-mkdir ~/constellation >/dev/null 2>&1
-wget https://github.com/Constellation-Labs/constellation/releases/download/v1.0.3/constellation-assembly-1.0.12.jar -O ~/constellation >/dev/null 2>&1
+mkdir $PWD/constellation >/dev/null 2>&1
+wget https://github.com/Constellation-Labs/constellation/releases/download/v1.0.3/constellation-assembly-1.0.12.jar -O $PWD/constellation/constellation-latest.jar >/dev/null 2>&1
+echo -e "${red} IMPORTANT: ${grn}once in the screen where you see the node output, exit by pressing ${blu}CTRL-A ${grn}then ${blu}CTRL-D"
+echo -e "${grn} Do ${red}NOT ${grn}press ${blu}CTRL-C ${grn}unless you are trying to stop the node!"
+echo
+echo -e "${clr}"
+read -e -p "Start the node? [Y/N] : " CHOICE
+if [[ ("$CHOICE" == "n" || "$CHOICE" == "N") ]]; then
+  echo -e "${yel} Installation complete... ${clr}"
+  exit 1;
+fi
+
+IP_LIST=$(ifconfig | grep "inet " | awk {'print $2'} | grep -vE '127.0.0|192.168|172.16|10.0.0' | tr -d 'inet addr:')
+IPs=(${IP_LIST[@]})
+
+EXTERNAL_HOST_IP=${IPs[0]}
+echo Deploying on $EXTERNAL_HOST_IP ...
+
+bashexec="java -Xmx3G -jar $PWD/constellation/constellation-latest.jar --ip $EXTERNAL_HOST_IP --port 9000"
+
+screen -dmS dag $bashexec
