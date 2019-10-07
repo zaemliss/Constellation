@@ -65,7 +65,7 @@ echo -e " ${blu}Creating Constellation directory and downloading latest Jar ...$
 echo -e " ${blu}(this will take a few minutes)${clr}"
 
 mkdir $PWD/constellation >/dev/null 2>&1
-wget https://github.com/Constellation-Labs/constellation/releases/download/v1.0.3/constellation-assembly-1.0.12.jar -O $PWD/constellation/constellation-latest.jar >/dev/null 2>&1
+wget https://github.com/Constellation-Labs/constellation/releases/download/latest/constellation-assembly-latest.jar -O $PWD/constellation/constellation-latest.jar >/dev/null 2>&1
 echo -e "${red} IMPORTANT: ${grn}once in the screen where you see the node output, exit by pressing ${blu}CTRL-A ${grn}then ${blu}CTRL-D"
 echo -e "${grn} Do ${red}NOT ${grn}press ${blu}CTRL-C ${grn}unless you are trying to stop the node!"
 echo
