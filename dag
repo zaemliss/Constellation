@@ -6,6 +6,19 @@ blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
 
+function showHelp()
+{
+        echo
+        echo -e " ${red}dag command line options${clr}"
+        echo
+        echo -e " ${yel} dag update         ${blu}gets the latest version of the jar and overwrites the file in $HOME/constellation ${clr}"
+        echo -e " ${yel} dag restart        ${blu}restarts the node ${clr}"
+        echo -e " ${yel} dag status         ${blu}shows you the live node output ${clr}"
+        echo -e " ${yel} dag join [ip_addr] ${blu}joins to node specified in ip_addr ${clr}"
+        echo -e " ${yel} dag leave          ${blu}leaves the cluster ${clr}"
+        echo
+}
+
 function enterScreen()
 {
         echo
@@ -27,6 +40,7 @@ function update()
 function restart()
 {
         pgrep java | xargs kill -9
+        rm -rf $HOME/tmp/*
         IP_LIST=$(ifconfig | grep "inet " | awk {'print $2'} | grep -vE '127.0.0|192.168|172.16|10.0.0' | tr -d 'inet addr:')
         IPs=(${IP_LIST[@]})
 
@@ -60,11 +74,39 @@ if [[ $1 == "status" ]]; then
 fi
 
 if [[ $1 == "" ]]; then
+        showHelp
+fi
+
+if [[ $1 == "join" ]]; then
+        if [[ $2 == "" ]]; then
+                echo
+                echo -e "${red} you must specify an IP address!"
+                echo -e "${grn} Ex.: ${yel}dag join 20.145.2.11 ${clr}"
+                echo -e
+                exit 1
+        fi
         echo
-        echo -e " ${red}dag command line options${clr}"
+        IP_LIST=$(ifconfig | grep "inet " | awk {'print $2'} | grep -vE '127.0.0|192.168|172.16|10.0.0' | tr -d 'inet addr:')
+        IPs=(${IP_LIST[@]})
+
+        EXTERNAL_HOST_IP=${IPs[0]}
+
+        echo -e "${grn} Joining $2 ...${clr}"
+        curl -X POST http://$EXTERNAL_HOST_IP:9001/join -H "Content-type: application/json" -d '{ "host": $2, "port": 9001 }' -v
+        if [ $? -ne 0 ]; then
         echo
-        echo -e " ${yel} dag update  ${blu}gets the latest version of the jar and overwrites the file in $HOME/constellation ${clr}"
-        echo -e " ${yel} dag restart ${blu}restarts the node ${clr}"
-        echo -e " ${yel} dag status  ${blu}shows you the live node output ${clr}"
+        echo -e "${red}Joining node ${yel}$2 ${red}failed! ${clr}"
+        exit 1;
+    fi
+fi
+
+if [[ $1 == "leave" ]]; then
         echo
+        IP_LIST=$(ifconfig | grep "inet " | awk {'print $2'} | grep -vE '127.0.0|192.168|172.16|10.0.0' | tr -d 'inet addr:')
+        IPs=(${IP_LIST[@]})
+
+        EXTERNAL_HOST_IP=${IPs[0]}
+
+        echo -e "${grn} Leaving cluster ...${clr}"
+        curl -X POST http://$EXTERNAL_HOST_IP:9001/leave -v
 fi
