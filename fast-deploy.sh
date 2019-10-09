@@ -74,4 +74,5 @@ bashexec="java -Xmx3G -jar $PWD/constellation/constellation-latest.jar --ip $EXT
 screen -dmS dag $bashexec
 echo -e "${grn} The node is started. You can access the output at any time by typing ${blu}dag status${grn}and pressing ${blu}[ENTER] ${grn}${clr}"
 echo -e "${grn} You can also just type ${blu}dag ${grn}and press ${blu}[ENTER] for a list of command options${grn}${clr}"
+echo -e "${grn} Furthermore, you can browse to your node web outpout by entering ${blu}http://$EXTERNAL_HOST_IP:9000 ${grn}in your web browser.${clr}"
 echo
