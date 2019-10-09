@@ -5,6 +5,9 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
+IP_LIST=$(ifconfig | grep "inet " | awk {'print $2'} | grep -vE '127.0.0|192.168|172.16|10.0.0' | tr -d 'inet addr:')
+IPs=(${IP_LIST[@]})
+EXTERNAL_HOST_IP=${IPs[0]}
 
 function showHelp()
 {
@@ -16,6 +19,8 @@ function showHelp()
         echo -e " ${yel} dag status         ${blu}shows you the live node output ${clr}"
         echo -e " ${yel} dag join ip_addr   ${blu}joins to node specified in ip_addr ${clr}"
         echo -e " ${yel} dag leave          ${blu}leaves the cluster ${clr}"
+        echo
+        echo -e " ${grn} you can navigate to your node via web browser by entering ${blu}http://$EXTERNAL_HOST_IP:9000 ${grn}in the address bar.${clr}"
         echo
 }
 
@@ -41,14 +46,9 @@ function restart()
 {
         pgrep java | xargs kill -9
         rm -rf $HOME/tmp/*
-        IP_LIST=$(ifconfig | grep "inet " | awk {'print $2'} | grep -vE '127.0.0|192.168|172.16|10.0.0' | tr -d 'inet addr:')
-        IPs=(${IP_LIST[@]})
 
-        EXTERNAL_HOST_IP=${IPs[0]}
         echo -e "${grn} Deploying on $EXTERNAL_HOST_IP ...${clr}"
-
         bashexec="java -Xmx3G -jar $PWD/constellation/constellation-latest.jar --ip $EXTERNAL_HOST_IP --port 9000"
-
         screen -dmS dag $bashexec
         echo -e "${grn} The node is started. You can access the output at any time by typing ${blu}dag ${grn}and pressing ${blu}[ENTER] ${grn}${clr}"
         echo
@@ -86,11 +86,6 @@ if [[ $1 == "join" ]]; then
                 exit 1
         fi
         echo
-        IP_LIST=$(ifconfig | grep "inet " | awk {'print $2'} | grep -vE '127.0.0|192.168|172.16|10.0.0' | tr -d 'inet addr:')
-        IPs=(${IP_LIST[@]})
-
-        EXTERNAL_HOST_IP=${IPs[0]}
-
         echo -e "${grn} Joining $2 ...${clr}"
         curl -X POST http://$EXTERNAL_HOST_IP:9001/join -H "Content-type: application/json" -d '{ "host": $2, "port": 9001 }' -v
         if [ $? -ne 0 ]; then
@@ -102,11 +97,6 @@ fi
 
 if [[ $1 == "leave" ]]; then
         echo
-        IP_LIST=$(ifconfig | grep "inet " | awk {'print $2'} | grep -vE '127.0.0|192.168|172.16|10.0.0' | tr -d 'inet addr:')
-        IPs=(${IP_LIST[@]})
-
-        EXTERNAL_HOST_IP=${IPs[0]}
-
         echo -e "${grn} Leaving cluster ...${clr}"
         curl -X POST http://$EXTERNAL_HOST_IP:9001/leave -v
 fi
