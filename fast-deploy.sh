@@ -44,20 +44,7 @@ if [[ "$installJava" == "1" ]]; then
 fi
 
 #Create 'dag' script in the user's bin directory
-cat <<EOF > /usr/local/bin/dag
-# Declare Variables
-red='\033[1;31m'
-grn='\033[1;32m'
-yel='\033[1;33m'
-blu='\033[1;36m'
-pnk='\033[1;35m'
-clr='\033[0m'
-echo
-echo -e "${red} IMPORTANT: ${grn}once in the screen where you see the node output, exit by pressing ${blu}CTRL-A ${grn}then ${blu}CTRL-D"
-echo -e "${grn} Do ${red}NOT ${grn}press ${blu}CTRL-C ${grn}unless you are trying to stop the node!${clr}"
-read -e -p "Press [ENTER] to continue or CTRL-C to cancel: " CHOICE
-screen -x dag
-EOF
+wget https://raw.githubusercontent.com/zaemliss/Constellation/master/dag -O /usr/local/bin/dag
 chmod +x /usr/local/bin/dag
 
 echo
@@ -85,5 +72,6 @@ echo -e " ${grn}Deploying on ${blu}$EXTERNAL_HOST_IP ${grn}...${clr}"
 bashexec="java -Xmx3G -jar $PWD/constellation/constellation-latest.jar --ip $EXTERNAL_HOST_IP --port 9000"
 
 screen -dmS dag $bashexec
-echo -e "${grn} The node is started. You can access the output at any time by typing ${blu}dag ${grn}and pressing ${blu}[ENTER] ${grn}${clr}"
+echo -e "${grn} The node is started. You can access the output at any time by typing ${blu}dag status${grn}and pressing ${blu}[ENTER] ${grn}${clr}"
+echo -e "${grn} You can also just type ${blu}dag ${grn}and press ${blu}[ENTER] for a list of command options${grn}${clr}"
 echo
