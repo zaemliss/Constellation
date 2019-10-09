@@ -65,6 +65,7 @@ fi
 if [[ $1 == "restart" ]]; then
         echo
         echo -e "${blu} Restarting node ..."
+        restart
         echo -e "${grn} Node Restarted. Type ${yel}dag status${grn} to see node output.${clr}"
         echo
 fi
