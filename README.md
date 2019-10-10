@@ -1,7 +1,13 @@
 # FAST NODE 1-LINER INSTALL SCRIPT
-paste the following into a terminal screen
+paste the following in a CLI (terminal screen)
 ```
 cd ~ && wget https://raw.githubusercontent.com/zaemliss/Constellation/master/fast-deploy.sh && chmod +x fast-deploy.sh && ./fast-deploy.sh
+```
+
+# dag command line utility
+paste the following in a CLI (terminal screen)
+```
+cd ~ && wget https://raw.githubusercontent.com/zaemliss/Constellation/master/dag -O /usr/local/bin/dag && chmod +x /usr/local/bin/dag
 ```
 
 # BUILD INSTRUCTIONS for the 3-node test:
