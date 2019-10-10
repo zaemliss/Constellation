@@ -16,6 +16,7 @@ function showHelp()
         echo
         echo -e " ${yel} dag update         ${blu}gets the latest version of the jar and overwrites the file in $HOME/constellation ${clr}"
         echo -e " ${yel} dag restart        ${blu}restarts the node ${clr}"
+        echo -e " ${yel} dag reset          ${blu}resets the tmp folder and restarts the node${clr}"
         echo -e " ${yel} dag status         ${blu}shows you the live node output ${clr}"
         echo -e " ${yel} dag join ip_addr   ${blu}joins to node specified in ip_addr ${clr}"
         echo -e " ${yel} dag leave          ${blu}leaves the cluster ${clr}"
@@ -45,14 +46,26 @@ function update()
 function restart()
 {
         pgrep java | xargs kill -9
-        rm -rf $HOME/tmp/*
-
+        
         echo -e "${grn} Deploying on $EXTERNAL_HOST_IP ...${clr}"
         bashexec="java -Xmx3G -jar $PWD/constellation/constellation-latest.jar --ip $EXTERNAL_HOST_IP --port 9000"
         screen -dmS dag $bashexec
-        echo -e "${grn} The node is started. You can access the output at any time by typing ${blu}dag ${grn}and pressing ${blu}[ENTER] ${grn}${clr}"
+        echo -e "${grn} The node is restarted.${clr}"
         echo
 }
+
+function reset()
+{
+        pgrep java | xargs kill -9
+        rm -rf $HOME/tmp/*
+
+        echo -e "${grn} Terminating instance, resetting tmp folder and deploying on $EXTERNAL_HOST_IP ...${clr}"
+        bashexec="java -Xmx3G -jar $PWD/constellation/constellation-latest.jar --ip $EXTERNAL_HOST_IP --port 9000"
+        screen -dmS dag $bashexec
+        echo -e "${grn} The node is reset and started.${clr}"
+        echo
+}
+
 
 if [[ $1 == "update" ]]; then
         echo
@@ -66,7 +79,15 @@ if [[ $1 == "restart" ]]; then
         echo
         echo -e "${blu} Restarting node ..."
         restart
-        echo -e "${grn} Node Restarted. Type ${yel}dag status${grn} to see node output.${clr}"
+        echo -e "${grn} Type ${yel}dag status${grn} to see node output.${clr}"
+        echo
+fi
+
+if [[ $1 == "reset" ]]; then
+        echo
+        echo -e "${blu} Resetting node ..."
+        restart
+        echo -e "${grn} Type ${yel}dag status${grn} to see node output.${clr}"
         echo
 fi
 
