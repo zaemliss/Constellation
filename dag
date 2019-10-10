@@ -111,7 +111,7 @@ if [[ $1 == "join" ]]; then
         fi
         echo
         echo -e "${grn} Joining $2 ...${clr}"
-        curl -X POST http://$EXTERNAL_HOST_IP:9001/join -H "Content-type: application/json" -d '{ "host": $2, "port": 9001 }' -v
+        curl -X POST http://$EXTERNAL_HOST_IP:9001/join -H "Content-type: application/json" -d '{ "host": "$2", "port": 9001 }' -v
         if [ $? -ne 0 ]; then
         echo
         echo -e "${red}Joining node ${yel}$2 ${red}failed! ${clr}"
