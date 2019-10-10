@@ -41,6 +41,7 @@ function enterScreen()
 function update()
 {
         wget https://github.com/Constellation-Labs/constellation/releases/download/latest/constellation-assembly-latest.jar -O $PWD/constellation/constellation-latest.jar >/dev/null 2>&1
+        wget https://raw.githubusercontent.com/zaemliss/Constellation/master/dag -O /usr/local/bin/dag
 }
 
 function restart()
@@ -70,6 +71,7 @@ function reset()
 if [[ $1 == "update" ]]; then
         echo
         echo -e "${blu} Getting latest version and saving to $PWD/constellation ..."
+        echo -e "${brn} (this can take a few minutes) ${clr}"
         update
         echo -e "${grn} latest Jar updated. Please do ${yel}dag restart${grn} for the changes to take effect.${clr}"
         echo
