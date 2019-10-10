@@ -4,7 +4,7 @@ paste the following in a CLI (terminal screen)
 cd ~ && wget https://raw.githubusercontent.com/zaemliss/Constellation/master/fast-deploy.sh -O ./fast-deploy.sh && chmod +x ./fast-deploy.sh && ./fast-deploy.sh
 ```
 
-# dag command line utility
+# `dag` COMMAND LINE UTILITY
 paste the following in a CLI (terminal screen)
 ### Note that this is automatically downloaded and updated with the fast-installer script
 ```
