@@ -10,6 +10,7 @@ paste the following in a CLI (terminal screen)
 ```
 cd ~ && wget https://raw.githubusercontent.com/zaemliss/Constellation/master/dag -O /usr/local/bin/dag && chmod +x /usr/local/bin/dag
 ```
+________
 
 # BUILD INSTRUCTIONS for the 3-node test:
 ### Platform: Ubuntu 16.04 on VULTR 
