@@ -53,13 +53,30 @@ echo -e " ${blu}(this will take a few minutes)${clr}"
 
 mkdir $PWD/constellation >/dev/null 2>&1
 wget https://github.com/Constellation-Labs/constellation/releases/download/latest/constellation-assembly-latest.jar -O $PWD/constellation/constellation-latest.jar >/dev/null 2>&1
-echo -e "${red} IMPORTANT: ${grn}once in the screen where you see the node output, exit by pressing ${blu}CTRL-A ${grn}then ${blu}CTRL-D"
-echo -e "${grn} Do ${red}NOT ${grn}press ${blu}CTRL-C ${grn}unless you are trying to stop the node!"
-echo
-echo -e "${clr}"
+
+read -e -p " Install Firewall? [Y/N] : " CHOICE
+if [[ ("$CHOICE" == "y" || "$CHOICE" == "Y") ]]; then
+  ufw --version >/dev/null 2>&1
+  if [[ $? -ne 0 ]]; then
+    sudo apt install -y ufw
+  fi
+    sudo ufw default allow outgoing > /dev/null 2>&1
+    sudo ufw default deny incoming > /dev/null 2>&1
+    sudo ufw allow ssh/tcp > /dev/null 2>&1
+    sudo ufw limit ssh/tcp > /dev/null 2>&1
+    sudo ufw allow 9000/tcp > /dev/null 2>&1
+    sudo ufw allow 9001/tcp > /dev/null 2>&1
+    sudo ufw logging on > /dev/null 2>&1
+    echo "y" | sudo ufw enable > /dev/null 2>&1
+    echo
+    echo -e " ${blu}Firewall installed and enabled.${clr}"
+    echo
+fi
+
 read -e -p " Start the node? [Y/N] : " CHOICE
 if [[ ("$CHOICE" == "n" || "$CHOICE" == "N") ]]; then
   echo -e "${yel} Installation complete... ${clr}"
+  echo -e "${grn} You can type ${blu}dag ${grn}and press ${blu}[ENTER] for a list of command options.${grn}${clr}"
   exit 1;
 fi
 
@@ -73,6 +90,10 @@ bashexec="java -Xmx3G -jar $PWD/constellation/constellation-latest.jar --ip $EXT
 
 screen -dmS dag $bashexec
 echo -e "${grn} The node is started. You can access the output at any time by typing ${blu}dag status${grn} and pressing ${blu}[ENTER] ${grn}${clr}"
+echo -e "${red} IMPORTANT: ${grn}once in the screen where you see the node output, exit by pressing ${blu}CTRL-A ${grn}then ${blu}CTRL-D"
+echo -e "${grn} Do ${red}NOT ${grn}press ${blu}CTRL-C ${grn}unless you are trying to stop the node!"
+echo
 echo -e "${grn} You can also just type ${blu}dag ${grn}and press ${blu}[ENTER] for a list of command options${grn}${clr}"
 echo -e "${grn} Furthermore, you can browse to your node web outpout by entering ${blu}http://$EXTERNAL_HOST_IP:9000 ${grn}in your web browser.${clr}"
 echo
+echo -e "${clr}"
