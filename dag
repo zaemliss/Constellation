@@ -46,7 +46,7 @@ function update()
 
 function restart()
 {
-        pgrep java | xargs kill -9
+        pgrep java | xargs kill -9 >/dev/null 2>&1
         
         echo -e "${grn} Deploying on $EXTERNAL_HOST_IP ...${clr}"
         bashexec="java -Xmx3G -jar $PWD/constellation/constellation-latest.jar --ip $EXTERNAL_HOST_IP --port 9000"
@@ -57,8 +57,8 @@ function restart()
 
 function reset()
 {
-        pgrep java | xargs kill -9
-        rm -rf $HOME/tmp/*
+        pgrep java | xargs kill -9 >/dev/null 2>&1
+        rm -rf $HOME/tmp/* >/dev/null 2>&1
 
         echo -e "${grn} Terminating instance, resetting tmp folder and deploying on $EXTERNAL_HOST_IP ...${clr}"
         bashexec="java -Xmx3G -jar $PWD/constellation/constellation-latest.jar --ip $EXTERNAL_HOST_IP --port 9000"
