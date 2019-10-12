@@ -33,7 +33,7 @@ function showLogs()
         echo -e "${grn} This will show you the current logs. Once you see the node output, exit by pressing ${blu}CTRL-C"
         echo -e "${grn} This only shows the logs and does not interact with the node.${clr}"
         read -e -p "Press [ENTER] to continue or N to cancel: " CHOICE
-        if [[ ("" == "n" || "" == "N") ]]; then
+        if [[ ("$CHOICE" == "n" || "$CHOICE" == "N") ]]; then
         echo -e "${yel} Aborted... ${clr}"
         exit 1;
         fi
@@ -46,7 +46,7 @@ function enterScreen()
         echo -e "${red} IMPORTANT: ${grn}once in the screen where you see the node output, exit by pressing ${blu}CTRL-A ${grn}then ${blu}CTRL-D"
         echo -e "${grn} Do ${red}NOT ${grn}press ${blu}CTRL-C ${grn}unless you are trying to stop the node!${clr}"
         read -e -p "Press [ENTER] to continue or N to cancel: " CHOICE
-        if [[ ("" == "n" || "" == "N") ]]; then
+        if [[ ("$CHOICE" == "n" || "$CHOICE" == "N") ]]; then
         echo -e "${yel} Aborted... ${clr}"
         exit 1;
         fi
