@@ -1,4 +1,5 @@
 # Declare Variables
+version="1.3"
 red='\033[1;31m'
 grn='\033[1;32m'
 yel='\033[1;33m'
@@ -30,7 +31,7 @@ function showStatus()
 function showHelp()
 {
         echo
-        echo -e " ${red}dag command line options${clr}"
+        echo -e " ${red}dag command line options ${blu}(utility version: $version)${clr}"
         echo
         echo -e " ${yel} dag update         ${blu}gets the latest version of the jar and overwrites the file in $HOME/constellation ${clr}"
         echo -e " ${yel} dag restart        ${blu}restarts the node ${clr}"
