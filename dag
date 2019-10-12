@@ -8,6 +8,7 @@ clr='\033[0m'
 IP_LIST=$(ifconfig | grep "inet " | awk {'print $2'} | grep -vE '127.0.0|192.168|172.16|10.0.0' | tr -d 'inet addr:')
 IPs=(${IP_LIST[@]})
 EXTERNAL_HOST_IP=${IPs[0]}
+DAGDIR=$HOME\constellation
 
 function showHelp()
 {
@@ -40,7 +41,7 @@ function enterScreen()
 
 function update()
 {
-        wget https://github.com/Constellation-Labs/constellation/releases/download/latest/constellation-assembly-latest.jar -O $PWD/constellation/constellation-latest.jar >/dev/null 2>&1
+        wget https://github.com/Constellation-Labs/constellation/releases/download/latest/constellation-assembly-latest.jar -O $DAGDIR/constellation-latest.jar >/dev/null 2>&1
         wget https://raw.githubusercontent.com/zaemliss/Constellation/master/dag -O /usr/local/bin/dag >/dev/null 2>&1
 }
 
@@ -48,8 +49,9 @@ function restart()
 {
         pgrep java | xargs kill -9 >/dev/null 2>&1
         
+        cd $DAGDIR
         echo -e "${grn} Deploying on $EXTERNAL_HOST_IP ...${clr}"
-        bashexec="java -Xmx3G -jar $PWD/constellation/constellation-latest.jar --ip $EXTERNAL_HOST_IP --port 9000"
+        bashexec="java -Xmx3G -jar $DAGDIR/constellation-latest.jar --ip $EXTERNAL_HOST_IP --port 9000"
         screen -dmS dag $bashexec
         echo -e "${grn} The node is restarted.${clr}"
         echo
@@ -58,10 +60,12 @@ function restart()
 function reset()
 {
         pgrep java | xargs kill -9 >/dev/null 2>&1
-        rm -rf $HOME/tmp/* >/dev/null 2>&1
+        rm -rf $DAGDIR/tmp/* >/dev/null 2>&1
+        rm -rf $DAGDIR/.dag >/dev/null 2>&1
 
+        cd $DAGDIR
         echo -e "${grn} Terminating instance, resetting tmp folder and deploying on $EXTERNAL_HOST_IP ...${clr}"
-        bashexec="java -Xmx3G -jar $PWD/constellation/constellation-latest.jar --ip $EXTERNAL_HOST_IP --port 9000"
+        bashexec="java -Xmx3G -jar $DAGDIR/constellation-latest.jar --ip $EXTERNAL_HOST_IP --port 9000"
         screen -dmS dag $bashexec
         echo -e "${grn} The node is reset and started.${clr}"
         echo
@@ -70,7 +74,7 @@ function reset()
 
 if [[ $1 == "update" ]]; then
         echo
-        echo -e "${blu} Getting latest version and saving to $PWD/constellation ..."
+        echo -e "${blu} Getting latest version and saving to $HOME/constellation ..."
         echo -e "${brn} (this can take a few minutes) ${clr}"
         update
         echo -e "${grn} latest Jar updated. Please do ${yel}dag restart${grn} for the changes to take effect.${clr}"
