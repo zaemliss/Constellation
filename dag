@@ -21,6 +21,7 @@ function showHelp()
         echo -e " ${yel} dag status         ${blu}shows you the live node output ${clr}"
         echo -e " ${yel} dag join ip_addr   ${blu}joins to node specified in ip_addr ${clr}"
         echo -e " ${yel} dag leave          ${blu}leaves the cluster ${clr}"
+        echo -e " ${yel} dag logs           ${blu}displays the app logs in real time${clr}"
         echo
         echo -e " ${grn} you can navigate to your node via web browser by entering ${blu}http://$EXTERNAL_HOST_IP:9000 ${grn}in the address bar.${clr}"
         echo
@@ -111,6 +112,10 @@ fi
 
 if [[ $1 == "status" ]]; then
         enterScreen
+fi
+
+if [[ $1 == "logs" ]]; then
+        showLogs
 fi
 
 if [[ $1 == "" ]]; then
