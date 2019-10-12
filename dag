@@ -10,6 +10,23 @@ IPs=(${IP_LIST[@]})
 EXTERNAL_HOST_IP=${IPs[0]}
 DAGDIR=$HOME/constellation
 
+function showStatus()
+{
+        chkWeb=$(curl -s http://89.40.2.86:9000/view/config | grep -c constellation)
+        chkScreen=$(screen -ls | grep dag)
+        echo
+        if [ -z "$chkScreen" ]; then
+                echo -e "${blu} Node Status: ${red}offline${clr}"
+        else
+                echo -e "${blu} Node Status: ${grn}online${clr}"
+        fi
+        if (( chkWeb > 0 )); then
+                echo -e "${blu} Web Status : ${grn}online${clr}"
+        else
+                echo -e "${blu} Web Status : ${red}offline${clr}"
+        fi
+}
+
 function showHelp()
 {
         echo
@@ -17,13 +34,13 @@ function showHelp()
         echo
         echo -e " ${yel} dag update         ${blu}gets the latest version of the jar and overwrites the file in $HOME/constellation ${clr}"
         echo -e " ${yel} dag restart        ${blu}restarts the node ${clr}"
-        echo -e " ${yel} dag reset          ${blu}resets the tmp folder and restarts the node${clr}"
+        echo -e " ${yel} dag reset          ${blu}resets the tmp folder and restarts the node removing it from any cluster it belongs to.${clr}"
         echo -e " ${yel} dag status         ${blu}shows you the live node output ${clr}"
         echo -e " ${yel} dag join ip_addr   ${blu}joins to node specified in ip_addr ${clr}"
         echo -e " ${yel} dag leave          ${blu}leaves the cluster ${clr}"
         echo -e " ${yel} dag logs           ${blu}displays the app logs in real time${clr}"
         echo
-        echo -e " ${grn} you can navigate to your node via web browser by entering ${blu}http://$EXTERNAL_HOST_IP:9000 ${grn}in the address bar.${clr}"
+        echo -e " ${grn}you can navigate to your node via web browser by entering ${blu}http://$EXTERNAL_HOST_IP:9000 ${grn}in the address bar.${clr}"
         echo
 }
 
@@ -32,7 +49,7 @@ function showLogs()
         echo
         echo -e "${grn} This will show you the current logs. Once you see the node output, exit by pressing ${blu}CTRL-C"
         echo -e "${grn} This only shows the logs and does not interact with the node.${clr}"
-        read -e -p "Press [ENTER] to continue or N to cancel: " CHOICE
+        read -e -p " Press [ENTER] to continue or N to cancel: " CHOICE
         if [[ ("$CHOICE" == "n" || "$CHOICE" == "N") ]]; then
         echo -e "${yel} Aborted... ${clr}"
         exit 1;
@@ -55,24 +72,40 @@ function enterScreen()
 
 function update()
 {
+        echo
+        echo -e "${blu} Getting latest version and saving to $HOME/constellation ..."
+        echo -e "${brn} (this can take a few minutes) ${clr}"
         wget https://github.com/Constellation-Labs/constellation/releases/download/latest/constellation-assembly-latest.jar -O $DAGDIR/constellation-latest.jar >/dev/null 2>&1
         wget https://raw.githubusercontent.com/zaemliss/Constellation/master/dag -O /usr/local/bin/dag >/dev/null 2>&1
+        echo -e "${grn} latest Jar updated. Please do ${yel}dag restart${grn} for the changes to take effect.${clr}"
+        echo
 }
 
 function restart()
 {
+        echo
+        echo -e "${blu} Restarting node ..."
         pgrep java | xargs kill -9 >/dev/null 2>&1
-        
+
         cd $DAGDIR
         echo -e "${grn} Deploying on $EXTERNAL_HOST_IP ...${clr}"
         bashexec="java -Xmx3G -jar $DAGDIR/constellation-latest.jar --ip $EXTERNAL_HOST_IP --port 9000"
         screen -dmS dag $bashexec
         echo -e "${grn} The node is restarted.${clr}"
         echo
+        echo -e "${grn} Type ${yel}dag status${grn} to see node output.${clr}"
+        echo
 }
 
 function reset()
 {
+        echo -e " ${red}ARE YOU SURE?{blu} resetting the node will remove it from any cluster!${clr}"
+        read -e -p " Press [ENTER] to continue or N to cancel: " CHOICE
+        if [[ ("$CHOICE" == "n" || "$CHOICE" == "N") ]]; then
+        echo -e "${yel} Aborted... ${clr}"
+        exit 1;
+        fi
+
         pgrep java | xargs kill -9 >/dev/null 2>&1
         rm -rf $DAGDIR/tmp/* >/dev/null 2>&1
         rm -rf $DAGDIR/.dag >/dev/null 2>&1
@@ -86,26 +119,17 @@ function reset()
 }
 
 if [[ $1 == "update" ]]; then
-        echo
-        echo -e "${blu} Getting latest version and saving to $HOME/constellation ..."
-        echo -e "${brn} (this can take a few minutes) ${clr}"
         update
-        echo -e "${grn} latest Jar updated. Please do ${yel}dag restart${grn} for the changes to take effect.${clr}"
-        echo
 fi
 
 if [[ $1 == "restart" ]]; then
-        echo
-        echo -e "${blu} Restarting node ..."
         restart
-        echo -e "${grn} Type ${yel}dag status${grn} to see node output.${clr}"
-        echo
 fi
 
 if [[ $1 == "reset" ]]; then
         echo
         echo -e "${blu} Resetting node ..."
-        restart
+        reset
         echo -e "${grn} Type ${yel}dag status${grn} to see node output.${clr}"
         echo
 fi
@@ -119,6 +143,7 @@ if [[ $1 == "logs" ]]; then
 fi
 
 if [[ $1 == "" ]]; then
+        showStatus
         showHelp
 fi
 
