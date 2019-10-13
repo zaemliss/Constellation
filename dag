@@ -15,6 +15,11 @@ function showStatus()
 {
         # Can I see the webpage?
         chkWeb=$(curl -s http://89.40.2.86:9000/view/config | grep -c constellation)
+        if (( chkWeb > 0 )); then
+                echo -e "${blu} Web Status : ${grn}online${clr}"
+        else
+                echo -e "${blu} Web Status : ${red}offline${clr}"
+        fi
         
         # Is the screen containing the node execution active?
         chkScreen=$(screen -ls | grep dag)
@@ -23,11 +28,6 @@ function showStatus()
                 echo -e "${blu} Node Status: ${red}offline${clr}"
         else
                 echo -e "${blu} Node Status: ${grn}online${clr}"
-        fi
-        if (( chkWeb > 0 )); then
-                echo -e "${blu} Web Status : ${grn}online${clr}"
-        else
-                echo -e "${blu} Web Status : ${red}offline${clr}"
         fi
 }
 
