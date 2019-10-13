@@ -7,7 +7,10 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-cd ~
+DAGDIR=$HOME/constellation
+mkdir $DAGDIR >/dev/null 2>&1
+cd $DAGDIR
+
 clear
 echo
 echo -e " ${yel}###############################################################${clr}"
@@ -43,7 +46,7 @@ if [[ "$installJava" == "1" ]]; then
     sudo apt install -y openjdk-8-jdk >/dev/null 2>&1
 fi
 
-#Create 'dag' script in the user's bin directory
+#Download 'dag' script to the user's bin directory
 wget https://raw.githubusercontent.com/zaemliss/Constellation/master/dag -O /usr/local/bin/dag
 chmod +x /usr/local/bin/dag
 
@@ -51,8 +54,7 @@ echo
 echo -e " ${blu}Creating Constellation directory and downloading latest Jar ...${clr}"
 echo -e " ${blu}(this will take a few minutes)${clr}"
 
-mkdir $PWD/constellation >/dev/null 2>&1
-wget https://github.com/Constellation-Labs/constellation/releases/download/latest/constellation-assembly-latest.jar -O $PWD/constellation/constellation-latest.jar >/dev/null 2>&1
+wget https://github.com/Constellation-Labs/constellation/releases/download/latest/constellation-assembly-latest.jar -O $DAGDIR/constellation-latest.jar >/dev/null 2>&1
 
 read -e -p " Install Firewall? [Y/N] : " CHOICE
 if [[ ("$CHOICE" == "y" || "$CHOICE" == "Y") ]]; then
@@ -86,9 +88,9 @@ IPs=(${IP_LIST[@]})
 EXTERNAL_HOST_IP=${IPs[0]}
 echo -e " ${grn}Deploying on ${blu}$EXTERNAL_HOST_IP ${grn}...${clr}"
 
-bashexec="java -Xmx3G -jar $PWD/constellation/constellation-latest.jar --ip $EXTERNAL_HOST_IP --port 9000"
-
+bashexec="java -Xmx3G -jar $DAGDIR/constellation-latest.jar --ip $EXTERNAL_HOST_IP --port 9000"
 screen -dmS dag $bashexec
+
 echo -e "${grn} The node is started. You can access the output at any time by typing ${blu}dag status${grn} and pressing ${blu}[ENTER] ${grn}${clr}"
 echo -e "${red} IMPORTANT: ${grn}once in the screen where you see the node output, exit by pressing ${blu}CTRL-A ${grn}then ${blu}CTRL-D"
 echo -e "${grn} Do ${red}NOT ${grn}press ${blu}CTRL-C ${grn}unless you are trying to stop the node!"
