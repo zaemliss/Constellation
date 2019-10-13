@@ -7,6 +7,13 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
+
+# Store first IP address
+IP_LIST=$(ifconfig | grep "inet " | awk {'print $2'} | grep -vE '127.0.0|192.168|172.16|10.0.0' | tr -d 'inet addr:')
+IPs=(${IP_LIST[@]})
+EXTERNAL_HOST_IP=${IPs[0]}
+
+# Create the Constellation home directory
 DAGDIR=$HOME/constellation
 mkdir $DAGDIR >/dev/null 2>&1
 cd $DAGDIR
@@ -82,10 +89,6 @@ if [[ ("$CHOICE" == "n" || "$CHOICE" == "N") ]]; then
   exit 1;
 fi
 
-IP_LIST=$(ifconfig | grep "inet " | awk {'print $2'} | grep -vE '127.0.0|192.168|172.16|10.0.0' | tr -d 'inet addr:')
-IPs=(${IP_LIST[@]})
-
-EXTERNAL_HOST_IP=${IPs[0]}
 echo -e " ${grn}Deploying on ${blu}$EXTERNAL_HOST_IP ${grn}...${clr}"
 
 bashexec="java -Xmx3G -jar $DAGDIR/constellation-latest.jar --ip $EXTERNAL_HOST_IP --port 9000"
