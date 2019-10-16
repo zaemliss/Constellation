@@ -1,5 +1,5 @@
 # Declare Variables
-version="1.32"
+version="1.33"
 changes="${yel} - ${blu}Added version change info\n${yel} - ${blu}Improved auto-updating function${clr}\n"
 red='\033[1;31m'
 grn='\033[1;32m'
