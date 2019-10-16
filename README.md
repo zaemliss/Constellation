@@ -1,7 +1,7 @@
 # Fast Node Installation Instructions - Constellation Node
 1. Make sure your machine (or VPS) has the minimum requirements:
 ```
-4CPU
+4 Core CPU
 4gb RAM
 Linux (Ubuntu, Debian, etc...)
 ```
