@@ -15,10 +15,12 @@ DAGDIR=$HOME/constellation
 function checkVersion()
 {
         webVer=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/dag | grep "version=" | head -1 | tr -d '"' | tr '=' ' ' | awk '{print $2}')
-        webChange=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/dag | grep "changes=" | head -1 | tr -d '"' | tr '=' ' ' | awk '{print $2}')
+        webChange=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/dag | grep "changes=" | head -1 | tr -d '"' | cut -c 9-)
         if [[ "$webVer" != "$version" ]]; then
                 echo
                 echo -e "${grn} New version available!${clr}"
+                echo -e $webChange
+                echo
                 read -e -p " Press Y then [ENTER] to update or N to cancel: " CHOICE
                 if [[ ("$CHOICE" == "y" || "$CHOICE" == "Y") ]]; then
                         wget https://raw.githubusercontent.com/zaemliss/Constellation/master/dag -O /usr/local/bin/dag >/dev/null 2>&1
