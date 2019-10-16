@@ -1,17 +1,21 @@
-# Declare Variables
-version="1.34"
-changes="${yel} - ${blu}Added version change info\n${yel} - ${blu}Improved auto-updating function${clr}\n"
+# Declare Variables ###############################
 red='\033[1;31m'
 grn='\033[1;32m'
 yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
+
+version="1.34"
+changes="${yel} - ${blu}Added version change info\n${yel} - ${blu}Improved auto-updating function${clr}\n"
+
 IP_LIST=$(ifconfig | grep "inet " | awk {'print $2'} | grep -vE '127.0.0|192.168|172.16|10.0.0' | tr -d 'inet addr:')
 IPs=(${IP_LIST[@]})
 EXTERNAL_HOST_IP=${IPs[0]}
 DAGDIR=$HOME/constellation
 
+
+# Declare Functions #################################
 function checkVersion()
 {
         webVer=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/dag | grep "version=" | head -1 | tr -d '"' | tr '=' ' ' | awk '{print $2}')
@@ -140,7 +144,7 @@ function reset()
         echo
 }
 
-###############################
+# Begin ###############################
 
 checkVersion
 
