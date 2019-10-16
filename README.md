@@ -27,7 +27,7 @@ ex.:
 dag join 86.23.86.134
 ```
 
-you should see the browser page status change to `Downloading` and eventually `Ready`
+you should see the browser page status change to `DownloadInProgress` and eventually `Ready`
 
 That's the end of the installation! Congratulations, your node is up and operational.
 If you have any issues, please open an issue ticket here: https://github.com/zaemliss/Constellation/issues
