@@ -13,7 +13,7 @@ IP_LIST=$(ifconfig | grep "inet " | awk {'print $2'} | grep -vE '127.0.0|192.168
 IPs=(${IP_LIST[@]})
 EXTERNAL_HOST_IP=${IPs[0]}
 DAGDIR=$HOME/constellation
-
+ 
 
 # Declare Functions #################################
 function checkVersion()
