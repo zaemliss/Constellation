@@ -6,8 +6,8 @@ blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
 
-version="1.34"
-changes=" - Added version change info\n- Improved auto-updating function\n"
+version="1.35"
+changes=" - removed superfluous code\n"
 
 IP_LIST=$(ifconfig | grep "inet " | awk {'print $2'} | grep -vE '127.0.0|192.168|172.16|10.0.0' | tr -d 'inet addr:')
 IPs=(${IP_LIST[@]})
@@ -102,7 +102,6 @@ function update()
         echo -e "${blu} Getting latest version and saving to $HOME/constellation ..."
         echo -e "${brn} (this can take a few minutes) ${clr}"
         wget https://github.com/Constellation-Labs/constellation/releases/download/latest/constellation-assembly-latest.jar -O $DAGDIR/constellation-latest.jar >/dev/null 2>&1
-        wget https://raw.githubusercontent.com/zaemliss/Constellation/master/dag -O /usr/local/bin/dag >/dev/null 2>&1
         echo -e "${grn} latest Jar updated. Please do ${yel}dag restart${grn} for the changes to take effect.${clr}"
         echo
 }
