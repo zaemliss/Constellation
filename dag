@@ -13,8 +13,8 @@ DAGDIR=$HOME/constellation
 
 function checkVersion()
 {
-        webVer=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/dag | grep "version=" | tr -d '"' | tr '=' ' ' | awk '{print $2}')
-        if [[ "$webVer" -ne "$version" ]]; then
+        webVer=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/dag | grep "version=" | head -1 | tr -d '"' | tr '=' ' ' | awk '{print $2}')
+        if [[ "$webVer" != "$version" ]]; then
                 echo
                 echo -e "${grn} New version available!${clr}"
                 read -e -p " Press Y then [ENTER] to update or N to cancel: " CHOICE
