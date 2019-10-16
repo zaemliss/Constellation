@@ -17,7 +17,7 @@ cd ~ && wget https://raw.githubusercontent.com/zaemliss/Constellation/master/fas
  Node Status: online
 ```
 If either of those statuses are offline, wait 30 seconds and try the `dag` command again. Once the status is set to `online`, you can navigate on your computer's browser to the web page address given in the status information:
-[DAG IMAGE 1]
+![DAG1](https://github.com/zaemliss/Constellation/blob/master/images/dag1.jpg)
 
 your Node State should be in `PendingDownload`
 
