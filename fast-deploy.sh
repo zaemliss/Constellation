@@ -13,8 +13,18 @@ IP_LIST=$(ifconfig | grep "inet " | awk {'print $2'} | grep -vE '127.0.0|192.168
 IPs=(${IP_LIST[@]})
 EXTERNAL_HOST_IP=${IPs[0]}
 
-# Create the Constellation home directory
+# Check and Create the Constellation home directory
 DAGDIR=$HOME/constellation
+if [ -d "$DAGDIR" ]; then
+  echo -e "${red} WARNING ${yel}-${blu} the ${grn}$DAGDIR${blu} directory exists. The installation will copy the latest jar file to that directory. Do you want to continue?${yel}"
+  read -e -p " Continue with installation? [Y/N] : " CHOICE
+  if [[ ("$CHOICE" == "n" || "$CHOICE" == "N") ]]; then
+    echo -e "${red} Installation aborted.${clr}"
+    exit 1;
+  fi
+fi
+echo -e "${clr}"
+
 mkdir $DAGDIR >/dev/null 2>&1
 cd $DAGDIR
 
@@ -58,7 +68,7 @@ wget https://raw.githubusercontent.com/zaemliss/Constellation/master/dag -O /usr
 chmod +x /usr/local/bin/dag
 
 echo
-echo -e " ${blu}Creating Constellation directory and downloading latest Jar ...${clr}"
+echo -e " ${blu}Downloading latest Jar ...${clr}"
 echo -e " ${blu}(this will take a few minutes)${clr}"
 
 wget https://github.com/Constellation-Labs/constellation/releases/download/latest/constellation-assembly-latest.jar -O $DAGDIR/constellation-latest.jar >/dev/null 2>&1
