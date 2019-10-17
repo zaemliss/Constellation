@@ -5,5 +5,5 @@
 
 
 ## DONE
-a. add prompt to install and configure firewall
-b. add automation for joining node clusters
+- add prompt to install and configure firewall
+- add automation for joining node clusters
