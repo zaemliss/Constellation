@@ -6,8 +6,8 @@ blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
 
-version="1.35"
-changes=" - removed superfluous code\n"
+version="1.36"
+changes=" - improved formatting on status output\n"
 
 IP_LIST=$(ifconfig | grep "inet " | awk {'print $2'} | grep -vE '127.0.0|192.168|172.16|10.0.0' | tr -d 'inet addr:')
 IPs=(${IP_LIST[@]})
@@ -29,6 +29,7 @@ function checkVersion()
                 if [[ ("$CHOICE" == "y" || "$CHOICE" == "Y") ]]; then
                         wget https://raw.githubusercontent.com/zaemliss/Constellation/master/dag -O /usr/local/bin/dag >/dev/null 2>&1
                         echo -e "${grn} dag ${blu}utility updated${clr}"
+                        echo
                         exit 1;
                 fi
         fi
@@ -38,6 +39,7 @@ function showStatus()
 {
         # Can I see the webpage?
         chkWeb=$(curl -s http://$EXTERNAL_HOST_IP:9000 | grep -c constellation)
+        echo
         if (( chkWeb > 0 )); then
                 echo -e "${blu} Web Status : ${grn}online${clr}"
         else
