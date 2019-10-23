@@ -7,7 +7,7 @@ pnk='\033[1;35m'
 clr='\033[0m'
 
 version="1.42"
-changes=" - Filebeat checking status\n- ref: https://github.com/zaemliss/Constellation/commit/f78e02dc457b9e976529b6cef737906c27481c5b"
+changes=" - Filebeat checking status\n- ref: https://github.com/zaemliss/Constellation/commit/882305a8f62f9613d672d966e91b5b20bb6f9193"
 
 echo -ne "${grn} getting external IP address... ";
 EXTERNAL_HOST_IP=$(curl -s https://api.ipify.org)
