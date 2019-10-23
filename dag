@@ -6,8 +6,8 @@ blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
 
-version="1.41"
-changes=" - added a message letting users know External IP is being retrieved\n- ref: https://github.com/zaemliss/Constellation/commit/f78e02dc457b9e976529b6cef737906c27481c5b"
+version="1.42"
+changes=" - Filebeat checking status\n- ref: https://github.com/zaemliss/Constellation/commit/f78e02dc457b9e976529b6cef737906c27481c5b"
 
 echo -ne "${grn} getting external IP address... ";
 EXTERNAL_HOST_IP=$(curl -s https://api.ipify.org)
@@ -42,17 +42,25 @@ function showStatus()
         chkWeb=$(curl -s http://$EXTERNAL_HOST_IP:9000 | grep -c constellation)
         echo
         if (( chkWeb > 0 )); then
-                echo -e "${blu} Web Status : ${grn}online${clr}"
+                echo -e "${blu} Web Status      : ${grn}online${clr}"
         else
-                echo -e "${blu} Web Status : ${red}offline${clr}"
+                echo -e "${blu} Web Status      : ${red}offline${clr}"
         fi
         
         # Is the screen containing the node execution active?
         chkScreen=$(screen -ls | grep dag)
         if [ -z "$chkScreen" ]; then
-                echo -e "${blu} Node Status: ${red}offline${clr}"
+                echo -e "${blu} Node Status     : ${red}offline${clr}"
         else
-                echo -e "${blu} Node Status: ${grn}online${clr}"
+                echo -e "${blu} Node Status     : ${grn}online${clr}"
+        fi
+        
+        # is FileBeat running>
+        chkFileBeat=$(pgrep filebeat)
+        if [ -z "$chkFileBeat" ]; then
+                echo -e "${blu} FileBeat Status : ${red}stopped${clr}"
+        else
+                echo -e "${blu} FileBeat Status : ${grn}running${clr}"
         fi
 }
 
