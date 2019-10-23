@@ -8,10 +8,8 @@ blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
 
-# Store first IP address
-IP_LIST=$(ifconfig | grep "inet " | awk {'print $2'} | grep -vE '127.0.0|192.168|172.16|10.0.0' | tr -d 'inet addr:')
-IPs=(${IP_LIST[@]})
-EXTERNAL_HOST_IP=${IPs[0]}
+# Store external IP address
+EXTERNAL_HOST_IP=$(curl -s https://api.ipify.org)
 
 # Check and Create the Constellation home directory
 DAGDIR=$HOME/constellation
@@ -64,8 +62,7 @@ if [[ "$installJava" == "1" ]]; then
 fi
 
 #Download 'dag' script to the user's bin directory
-wget https://raw.githubusercontent.com/zaemliss/Constellation/master/dag -O /usr/local/bin/dag
-chmod +x /usr/local/bin/dag
+wget https://raw.githubusercontent.com/zaemliss/Constellation/master/dag -O /usr/local/bin/dag && chmod +x /usr/local/bin/dag
 
 echo
 echo -e " ${blu}Downloading latest Jar ...${clr}"
