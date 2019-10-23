@@ -7,7 +7,7 @@ pnk='\033[1;35m'
 clr='\033[0m'
 
 version="1.39"
-changes=" - added a message letting users know External IP is being retrieved\n- ref: https://github.com/zaemliss/Constellation/commit/fcfcbbfb3c6241cfc7a00ed2d81fb7d1fa8601b5"
+changes=" - added a message letting users know External IP is being retrieved\n- ref: https://github.com/zaemliss/Constellation/commit/f78e02dc457b9e976529b6cef737906c27481c5b"
 
 echo -ne "${grn} getting latest IP address...\r";
 EXTERNAL_HOST_IP=$(curl -s https://api.ipify.org)
