@@ -9,9 +9,9 @@ clr='\033[0m'
 version="1.40"
 changes=" - added a message letting users know External IP is being retrieved\n- ref: https://github.com/zaemliss/Constellation/commit/f78e02dc457b9e976529b6cef737906c27481c5b"
 
-echo -ne "${grn}  getting latest IP address...\r";
+echo -ne "${grn}  getting latest IP address... ";
 EXTERNAL_HOST_IP=$(curl -s https://api.ipify.org)
-echo -e "                                         ${clr}";
+echo -e "${yel}$EXTERNAL_HOST_IP ${clr}";
 
 DAGDIR=$HOME/constellation
  
