@@ -6,12 +6,10 @@ blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
 
-version="1.36"
-changes=" - improved formatting on status output\n- ref: https://github.com/zaemliss/Constellation/commit/7511fae191f7e180628b49917a3d4c48173a97cb"
+version="1.37"
+changes=" changed getting external IP to https://api.ipify.org service\n"
 
-IP_LIST=$(ifconfig | grep "inet " | awk {'print $2'} | grep -vE '127.0.0|192.168|172.16|10.0.0' | tr -d 'inet addr:')
-IPs=(${IP_LIST[@]})
-EXTERNAL_HOST_IP=${IPs[0]}
+EXTERNAL_HOST_IP=$(curl https://api.ipify.org)
 DAGDIR=$HOME/constellation
  
 
