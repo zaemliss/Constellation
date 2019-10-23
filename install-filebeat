@@ -25,9 +25,36 @@ function checkCert()
   fi
   certfile=$(ls *.p12)
   echo -e "${grn} Found cert file ${blu}$certfile${clr}"
+  echo
+}
+
+function installFilebeat()
+{
+  echo -e "${grn} Installing Filebeat ...${clr}"
+  curl -L -O -s https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.4.1-amd64.deb
+  sudo dpkg -i filebeat-7.4.1-amd64.deb
+  systemctl enable filebeat
+  echo
+}
+
+function extractCerts()
+{
+  echo -ne "Please input cert password : "
+  CERTPWD=''
+  while IFS= read -r -s -n1 pass; do
+    if [ -z "$pass" ]; then
+      echo
+      break
+    else
+      printf '*'
+      CERTPWD="$CERTPWD$pass"
+    fi
+  done
 }
 
 
-
 # BEGIN ###############################
+
 checkCert
+installFilebeat
+extractCerts
