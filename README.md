@@ -4,6 +4,7 @@
 4 Core CPU
 4gb RAM
 Linux (Ubuntu, Debian, etc...)
+*** NOTE: if you have an external and internal IP, make sure you have forwarding set to ON when deploying your instance ***
 ```
 
 2. ssh into your linux server and paste the following command:
