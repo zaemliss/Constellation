@@ -7,7 +7,7 @@ pnk='\033[1;35m'
 clr='\033[0m'
 
 version="1.37"
-changes=" changed getting external IP to https://api.ipify.org service\n"
+changes=" - changed getting external IP to https://api.ipify.org service\n- ref: https://github.com/zaemliss/Constellation/commit/fcfcbbfb3c6241cfc7a00ed2d81fb7d1fa8601b5"
 
 EXTERNAL_HOST_IP=$(curl https://api.ipify.org)
 DAGDIR=$HOME/constellation
