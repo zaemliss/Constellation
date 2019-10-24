@@ -6,8 +6,8 @@ blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
 
-version="1.45"
-HASH=$(curl "https://api.github.com/repos/zaemliss/Constellation/commits?sha=master&per_page=1" | grep -i "Update dag" | grep -i "payload" | tr '\' ' ' | awk '{print $5}')
+version="1.46"
+HASH=$(curl -s "https://api.github.com/repos/zaemliss/Constellation/commits?sha=master&per_page=1" | grep -i "Update dag" | grep -i "payload" | tr "\" " " | awk '{print $5}')
 changes=" - added disk checking.\n- ref: https://github.com/zaemliss/Constellation/commit/$HASH"
 
 # Only get external IP if needed
