@@ -120,7 +120,7 @@ function startService()
     exit 1
   else
     echo -e "${yel}Filebeat installation and activation complete!${clr}"
-    echo -e "${grn}You can check the filebeat logs by doing ${blu}sysctrl status filebeat${clr}"
+    echo -e "${grn}You can check the filebeat logs by doing ${blu}systemctl status filebeat${clr}"
     echo
   fi
 }
