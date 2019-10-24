@@ -1,19 +1,20 @@
 # Fast Node Installation Instructions - Constellation Node
-1. Make sure your machine (or VPS) has the minimum requirements:
+###1. Make sure your machine (or VPS) has the minimum requirements:
 ```
 4 Core CPU
 4gb RAM
 Linux (Ubuntu, Debian, etc...)
 ```
-*** NOTE: if you have an external and internal IP, make sure you have forwarding set to ON when deploying your instance ***
+*** NOTE: if you have an external and internal IP, make sure you have forwarding set to ON when deploying your instance
+
 ref: <https://cloud.google.com/vpc/docs/using-routes#canipforward>
 
-2. ssh into your linux server and paste the following command:
+###2. ssh into your linux server and paste the following command:
 ```bash
 cd ~ && wget https://raw.githubusercontent.com/zaemliss/Constellation/master/fast-deploy.sh -O ./fast-deploy.sh && chmod +x ./fast-deploy.sh && ./fast-deploy.sh
 ```
 
-3. once the installation is finished, type `dag` and press enter to see the status of your node. The top of the information page should say:
+###3. once the installation is finished, type `dag` and press enter to see the status of your node. The top of the information page should say:
 ```
  Web Status : online
  Node Status: online
@@ -23,7 +24,7 @@ If either of those statuses are offline, wait 30 seconds and try the `dag` comma
 
 your Node State should be in `PendingDownload`
 
-4. Next, join a cluster by typing `dag join ip_address_of_the_node`
+###4. Next, join a cluster by typing `dag join ip_address_of_the_node`
 ex.:
 ```
 dag join 86.23.86.134
