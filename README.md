@@ -51,5 +51,5 @@ ________________________________
 ## FILEBEAT INSTALLATION SCRIPT
 paste the following in a CLI (terminal screen)
 ```
-https://raw.githubusercontent.com/zaemliss/Constellation/master/install-filebeat -O ./install-filebeat && chmod +x ./install-filebeat && ./install-filebeat
+wget https://raw.githubusercontent.com/zaemliss/Constellation/master/install-filebeat -O ./install-filebeat && chmod +x ./install-filebeat && ./install-filebeat
 ```
