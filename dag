@@ -6,8 +6,8 @@ blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
 
-version="1.44"
-changes=" - Optimized getting External IP\n- Added search parameter to log view\n- Changed IP gathering service to icanhazip.com due to speed.\n- ref: https://github.com/zaemliss/Constellation/commit/0b9d7023a8e75f9686a1d3f7337a4d07bf79a994"
+version="1.45"
+changes=" - added disk checking.\n- ref: https://github.com/zaemliss/Constellation/commit/0b9d7023a8e75f9686a1d3f7337a4d07bf79a994"
 
 # Only get external IP if needed
 if [[ $1 == "" || $1 == "restart" || $1 == "reset" || $1 == "join" || $1 == "leave" ]]; then
@@ -17,7 +17,7 @@ if [[ $1 == "" || $1 == "restart" || $1 == "reset" || $1 == "join" || $1 == "lea
 fi
 
 DAGDIR=$HOME/constellation
-
+DISKFREE=$(df -l --output=source,avail | grep / | awk '{print $2}')
 
 # Declare Functions #################################
 function checkVersion()
@@ -64,6 +64,13 @@ function showStatus()
                 echo -e "${blu} FileBeat Status : ${red}stopped${clr}"
         else
                 echo -e "${blu} FileBeat Status : ${grn}running${clr}"
+        fi
+        
+        if [[ $DISKFREE < 1000000 ]]; then
+                echo -e "${blu} Disk Space      : ${red}$DISKFREE${clr}"
+                echo -e "${blu}                   ${red}Your node will stop if it can't write to disk!${clr}"
+        else
+                echo -e "${blu} Disk Space      : ${grn}$DISKFREE${clr}"
         fi
 }
 
