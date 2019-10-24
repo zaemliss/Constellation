@@ -1,6 +1,6 @@
 # Table of Contents
 1. [Utilities list](https://github.com/zaemliss/Constellation#utilities-list)
-2. [Fast Node Install instructions](https://github.com/zaemliss/Constellation/blob/master/README.md#fast-node-installation-instructions---constellation-node)
+2. [Fast Node Install instructions](https://github.com/zaemliss/Constellation#fast-node-installation-instructions---constellation-node)
 ___
  
   
