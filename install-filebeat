@@ -117,3 +117,4 @@ installFilebeat
 extractCerts
 createConfig
 addHost
+systemctl start filebeat
