@@ -110,6 +110,20 @@ fi
 echo
 }
 
+function startService()
+{
+  systemctl start filebeat
+  if [[ $? -ne 0 ]]; then
+    echo -e "${red}Something went wrong. Please check your system logs for any errors${clr}"
+    echo -e "${red}Installation Aborted.${clr}"
+    echo
+    exit 1
+  else
+    echo -e "${yel}Filebeat installation and activation complete!${clr}"
+    echo -e "${grn}You can check the filebeat logs by doing ${blu}sysctrl status filebeat${clr}"
+    echo
+  fi
+}
 # BEGIN ###############################
 
 checkCert
@@ -117,4 +131,4 @@ installFilebeat
 extractCerts
 createConfig
 addHost
-systemctl start filebeat
+startService
