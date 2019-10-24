@@ -75,25 +75,25 @@ function createConfig()
 ### CREATE CONFIG FILE ###  
 cat <<EOF > /etc/filebeat/filebeat.yml
 filebeat.inputs:
-- type: log
-enabled: true
-paths:
-- $DAGDIR/logs/json_logs/*.log
-json.keys_under_root: true
-json.add_error_key: true
+  - type: log
+  enabled: true
+  paths:
+    - $DAGDIR/logs/json_logs/*.log
+  json.keys_under_root: true
+  json.add_error_key: true
 output.elasticsearch:
-hosts: ["elasticsearch:9200"]
-protocol: https
-ssl.enabled: true
-ssl.certificate_authorities: ["/etc/filebeat/certs/client-ca.cer"]
-ssl.certificate: "/etc/filebeat/certs/client.cer"
-ssl.key: "/etc/filebeat/certs/client.key"
-ssl.verification_mode: none
-processors:
-- add_fields:
-target: node
-fields:
-ip: "$EXTERNAL_HOST_IP"
+  hosts: ["elasticsearch:9200"]
+  protocol: https
+  ssl.enabled: true
+  ssl.certificate_authorities: ["/etc/filebeat/certs/client-ca.cer"]
+  ssl.certificate: "/etc/filebeat/certs/client.cer"
+  ssl.key: "/etc/filebeat/certs/client.key"
+  ssl.verification_mode: none
+  processors:
+  - add_fields:
+    target: node
+    fields:
+       ip: "$EXTERNAL_HOST_IP"
 EOF
 echo
 }
