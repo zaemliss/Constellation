@@ -100,7 +100,7 @@ echo
 
 function addHost()
 {
-checkHost=$(cat /etc/hosts | grep -C "elasticsearch")
+checkHost=$(cat /etc/hosts | grep -c "elasticsearch")
 if [[ "$checkHost" == "0" ]]; then
   echo "3.10.146.3 elasticsearch" >> /etc/hosts
   echo -e "${grn}Adding ${blu}3.10.146.3 elasticsearch ${grn}to hosts file. ${clr}"
