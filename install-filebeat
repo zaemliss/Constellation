@@ -10,7 +10,7 @@ clr='\033[0m'
 DAGDIR=$HOME/constellation
 version="1.38"
 
-echo -e "${grn} Installer version ${blu}$version."
+echo -e "${grn}Installer version ${blu}$version."
 echo -ne "${grn}Getting external IP address... ";
 EXTERNAL_HOST_IP=$(curl -s https://api.ipify.org)
 echo -e "${yel}$EXTERNAL_HOST_IP ${clr}";
