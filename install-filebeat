@@ -50,7 +50,7 @@ function extractCerts()
       CERTPWD="$CERTPWD$pass"
     fi
   done
-  echo -e "${grn} extracting certs ..."
+  echo -e "${grn}Extracting certificates ..."
   openssl pkcs12 -in $certfile -password pass:$CERTPWD -nocerts -nodes > client.key
   openssl pkcs12 -in $certfile -password pass:$CERTPWD -clcerts -nokeys > client.cer
   openssl pkcs12 -in $certfile -password pass:$CERTPWD -cacerts -nokeys -chain > client-ca.cer
@@ -60,11 +60,60 @@ function extractCerts()
     echo
     exit 1
   fi
+  echo
+  echo -e "${grn}Copying the certificates over to ${blu}/etc/filebeat/certs ${grn}...${clr}"
+  mkdir /etc/filebeat/certs >/dev/null 2>&1
+  cp client.* /etc/filebeat/certs/ >/dev/null 2>&1
+  echo -e "${grn}Certificate extracted and installed.${clr}"
 }
 
+function createConfig()
+{
+  echo
+  echo -e "${grn}Creating config file ...${clr}"
+  mv /etc/filebeat/filebeat.yml /etc/filebeat/filebeat.yml.bak
+### CREATE CONFIG FILE ###  
+cat <<EOF > /etc/filebeat/filebeat.yml
+filebeat.inputs:
+- type: log
+enabled: true
+paths:
+- $DAGDIR/logs/json_logs/*.log
+json.keys_under_root: true
+json.add_error_key: true
+output.elasticsearch:
+hosts: ["elasticsearch:9200"]
+protocol: https
+ssl.enabled: true
+ssl.certificate_authorities: ["/etc/filebeat/certs/client-ca.cer"]
+ssl.certificate: "/etc/filebeat/certs/client.cer"
+ssl.key: "/etc/filebeat/certs/client.key"
+ssl.verification_mode: none
+processors:
+- add_fields:
+target: node
+fields:
+ip: "$EXTERNAL_HOST_IP"
+EOF
+echo
+}
+
+function addHost()
+{
+checkHost=$(cat /etc/hosts | grep -C "elasticsearch")
+if [[ "$checkHost" == "0" ]]; then
+  echo "3.10.146.3 elasticsearch" >> /etc/hosts
+  echo -e "${grn}Adding ${blu}3.10.146.3 elasticsearch ${grn}to hosts file. ${clr}"
+else
+  echo -e "${blu}3.10.146.3 elasticsearch ${grn}found in hosts file. Skipping.${clr}"
+fi
+echo
+}
 
 # BEGIN ###############################
 
 checkCert
 installFilebeat
 extractCerts
+createConfig
+addHost
