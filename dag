@@ -7,7 +7,7 @@ pnk='\033[1;35m'
 clr='\033[0m'
 
 version="1.45"
-changes=" - added disk checking.\n- ref: https://github.com/zaemliss/Constellation/commit/0b9d7023a8e75f9686a1d3f7337a4d07bf79a994"
+changes=" - added disk checking.\n- ref: https://github.com/zaemliss/Constellation/commit/502acf1aeaf0d7d0a8ac5538f3bca91b7e52a7b7"
 
 # Only get external IP if needed
 if [[ $1 == "" || $1 == "restart" || $1 == "reset" || $1 == "join" || $1 == "leave" ]]; then
