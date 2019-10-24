@@ -63,7 +63,7 @@ function extractCerts()
   echo
   echo -e "${grn}Copying the certificates over to ${blu}/etc/filebeat/certs ${grn}...${clr}"
   mkdir /etc/filebeat/certs >/dev/null 2>&1
-  cp client.* /etc/filebeat/certs/ >/dev/null 2>&1
+  cp client*.* /etc/filebeat/certs/ >/dev/null 2>&1
   echo -e "${grn}Certificate extracted and installed.${clr}"
 }
 
@@ -97,12 +97,10 @@ filebeat.config.modules:
 setup.template.settings:
   index.number_of_shards: 1
 processors:
-  - add_fields:
+- add_fields:
     target: node
     fields:
        ip: "$EXTERNAL_HOST_IP"
-  - add_host_metadata: ~
-  - add_cloud_metadata: ~
 EOF
 echo
 }
