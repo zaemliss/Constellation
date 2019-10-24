@@ -67,7 +67,7 @@ function showStatus()
                 echo -e "${blu} FileBeat Status : ${grn}running${clr}"
         fi
         
-        if [[ $DISKFREE < 1000000 ]]; then
+        if [[ $DISKFREE -lt 1000000 ]]; then
                 echo -e "${blu} Disk Space      : ${red}$DISKFREE${clr}"
                 echo -e "${blu}                   ${red}Your node will stop if it can't write to disk!${clr}"
         else
