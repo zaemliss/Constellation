@@ -47,5 +47,9 @@ paste the following in a CLI (terminal screen)
 ```
 wget https://raw.githubusercontent.com/zaemliss/Constellation/master/dag -O /usr/local/bin/dag && chmod +x /usr/local/bin/dag
 ```
-________
-
+________________________________
+## FILEBEAT INSTALLATION SCRIPT
+paste the following in a CLI (terminal screen)
+```
+https://raw.githubusercontent.com/zaemliss/Constellation/master/install-filebeat -O ./install-filebeat && chmod +x ./install-filebeat && ./install-filebeat
+```
