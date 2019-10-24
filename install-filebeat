@@ -8,8 +8,10 @@ blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
 DAGDIR=$HOME/constellation
+version="1.38"
 
-echo -ne "${grn} getting external IP address... ";
+echo -e "${grn} Installer version ${blu}$version."
+echo -ne "${grn}Getting external IP address... ";
 EXTERNAL_HOST_IP=$(curl -s https://api.ipify.org)
 echo -e "${yel}$EXTERNAL_HOST_IP ${clr}";
 echo
