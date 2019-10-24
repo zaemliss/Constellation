@@ -1,5 +1,26 @@
-1. (Utilities list)[https://github.com/zaemliss/Constellation#utilities-list]
-2. (Fast Node Install instructions)
+1. [Utilities list](https://github.com/zaemliss/Constellation#utilities-list)
+2. [Fast Node Install instructions](https://github.com/zaemliss/Constellation/blob/master/README.md#fast-node-installation-instructions---constellation-node)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Fast Node Installation Instructions - Constellation Node
 ### 1. Make sure your machine (or VPS) has the minimum requirements:
 ```
