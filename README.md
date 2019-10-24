@@ -34,23 +34,31 @@ you should see the browser page status change to `DownloadInProgress` and eventu
 
 That's the end of the installation! Congratulations, your node is up and operational.
 If you have any issues, please open an issue ticket here: https://github.com/zaemliss/Constellation/issues
+___
 
-________________________________
+___
+# UTILITIES LIST
 
 ## FAST NODE 1-LINER INSTALL SCRIPT
+*The fast installer script instructions are above. Please refer to them before running this command*
+
 paste the following in a CLI (terminal screen)
 ```
 cd ~ && wget https://raw.githubusercontent.com/zaemliss/Constellation/master/fast-deploy.sh -O ./fast-deploy.sh && chmod +x ./fast-deploy.sh && ./fast-deploy.sh
 ```
-________________________________
+___
 ## `dag` COMMAND LINE UTILITY
+*The `dag` utility command helps running the most common tasks for node maintenance. Running the command alone without arguments will give you the node status as well as a help screen with a list of commands*
+
 paste the following in a CLI (terminal screen)
 ### Note that this is automatically downloaded and updated with the fast-installer script
 ```
 wget https://raw.githubusercontent.com/zaemliss/Constellation/master/dag -O /usr/local/bin/dag && chmod +x /usr/local/bin/dag
 ```
-________________________________
+___
 ## FILEBEAT INSTALLATION SCRIPT
+*This utility installs the filebeat service that enables forwarding the logs to a central server. Please make sure you have already downloaded the .p12 file containing the certificates in the current directory before running the command below.*
+
 paste the following in a CLI (terminal screen)
 ```
 wget https://raw.githubusercontent.com/zaemliss/Constellation/master/install-filebeat -O ./install-filebeat && chmod +x ./install-filebeat && ./install-filebeat
