@@ -72,7 +72,7 @@ function createConfig()
   echo
   echo -e "${grn}Creating config file ...${clr}"
   numBak=$(ls /etc/filebeat/filebeat.yml* | grep -c .)
-  numBak=((numBak+1))
+  let "numBak++"
   mv /etc/filebeat/filebeat.yml /etc/filebeat/filebeat.yml.bak$numBak
 ### CREATE CONFIG FILE ###  
 cat <<EOF > /etc/filebeat/filebeat.yml
