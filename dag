@@ -7,7 +7,8 @@ pnk='\033[1;35m'
 clr='\033[0m'
 
 version="1.45"
-changes=" - added disk checking.\n- ref: https://github.com/zaemliss/Constellation/commit/c38a3fb3952da369076db6fb46002ec9040464fe"
+HASH=$(curl "https://api.github.com/repos/zaemliss/Constellation/commits?sha=master&per_page=1" | grep -i "Update dag" | grep -i "payload" | tr '\' ' ' | awk '{print $5}')
+changes=" - added disk checking.\n- ref: https://github.com/zaemliss/Constellation/commit/$HASH"
 
 # Only get external IP if needed
 if [[ $1 == "" || $1 == "restart" || $1 == "reset" || $1 == "join" || $1 == "leave" ]]; then
