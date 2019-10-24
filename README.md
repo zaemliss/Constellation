@@ -40,7 +40,7 @@ ___
 # UTILITIES LIST
 
 ## FAST NODE 1-LINER INSTALL SCRIPT
-*The fast installer script instructions are above. Please refer to them before running this command*
+> *The fast installer script instructions are above. Please refer to them before running this command*
 
 paste the following in a CLI (terminal screen)
 ```
@@ -48,7 +48,7 @@ cd ~ && wget https://raw.githubusercontent.com/zaemliss/Constellation/master/fas
 ```
 ___
 ## `dag` COMMAND LINE UTILITY
-*The `dag` utility command helps running the most common tasks for node maintenance. Running the command alone without arguments will give you the node status as well as a help screen with a list of commands*
+> *The `dag` utility command helps running the most common tasks for node maintenance. Running the command alone without arguments will give you the node status as well as a help screen with a list of commands*
 
 paste the following in a CLI (terminal screen)
 ### Note that this is automatically downloaded and updated with the fast-installer script
@@ -57,7 +57,7 @@ wget https://raw.githubusercontent.com/zaemliss/Constellation/master/dag -O /usr
 ```
 ___
 ## FILEBEAT INSTALLATION SCRIPT
-*This utility installs the filebeat service that enables forwarding the logs to a central server. Please make sure you have already downloaded the .p12 file containing the certificates in the current directory before running the command below.*
+> *This utility installs the filebeat service that enables forwarding the logs to a central server. Please make sure you have already downloaded the .p12 file containing the certificates in the current directory before running the command below.*
 
 paste the following in a CLI (terminal screen)
 ```
