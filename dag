@@ -6,7 +6,7 @@ blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
 
-version="1.47"
+version="1.48"
 HASH=$(curl -s "https://api.github.com/repos/zaemliss/Constellation/commits?sha=master&per_page=1" | grep -i "Update dag" | grep -i "payload" | tr '\\' ' ' | awk '{print $5}')
 changes=" - modified instructions on reset.\n- ref: https://github.com/zaemliss/Constellation/commit/"$HASH
 
@@ -27,9 +27,9 @@ function checkVersion()
         webChange=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/dag | grep "changes=" | head -1 | tr -d '"' | cut -c 9-)
         if [[ "$webVer" != "$version" ]]; then
                 echo
-                echo -e "${grn} New version available!${clr}"
+                echo -e "${grn} New version available!${yel}"
                 echo -e $webChange
-                echo
+                echo -e "${clr}"
                 read -e -p " Press Y then [ENTER] to update or N to cancel: " CHOICE
                 if [[ ("$CHOICE" == "y" || "$CHOICE" == "Y") ]]; then
                         wget https://raw.githubusercontent.com/zaemliss/Constellation/master/dag -O /usr/local/bin/dag >/dev/null 2>&1
