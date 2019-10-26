@@ -6,9 +6,9 @@ blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
 
-version="1.48"
+version="1.49"
 HASH=$(curl -s "https://api.github.com/repos/zaemliss/Constellation/commits?sha=master&per_page=1" | grep -i "Update dag" | grep -i "payload" | tr '\\' ' ' | awk '{print $5}')
-changes=" - modified instructions on reset.\n- ref: https://github.com/zaemliss/Constellation/commit/"$HASH
+changes=" - Added pauses to reset execution.\n- ref: https://github.com/zaemliss/Constellation/commit/"$HASH
 
 # Only get external IP if needed
 if [[ $1 == "" || $1 == "restart" || $1 == "reset" || $1 == "join" || $1 == "leave" ]]; then
@@ -156,13 +156,16 @@ function reset()
         echo -e "${yel} Aborted... ${clr}"
         exit 1;
         fi
-
+        
+        echo -e "${grn} Terminating instance...${clr}"
         pgrep java | xargs kill -9 >/dev/null 2>&1
+        sleep 5
         rm -rf $DAGDIR/tmp/* >/dev/null 2>&1
         rm -rf $DAGDIR/.dag >/dev/null 2>&1
 
         cd $DAGDIR
-        echo -e "${grn} Terminating instance, resetting tmp folder and deploying on $EXTERNAL_HOST_IP ...${clr}"
+        echo -e "${grn} Resetting tmp folder and deploying on $EXTERNAL_HOST_IP ...${clr}"
+        sleep 5
         bashexec="java -Xmx3G -jar $DAGDIR/constellation-latest.jar --ip $EXTERNAL_HOST_IP --port 9000"
         screen -dmS dag $bashexec
         echo -e "${grn} The node is reset and started.${clr}"
