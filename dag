@@ -69,10 +69,10 @@ function showStatus()
         fi
         
         if [[ $DISKFREE -lt 1000000 ]]; then
-                echo -e "${blu} Disk Space      : ${red}$DFFORMATED bytes${clr}"
+                echo -e "${blu} Disk Space      : ${red}$DFFORMATED kb${clr}"
                 echo -e "${blu}                   ${red}Your node will stop if it can't write to disk!${clr}"
         else
-                echo -e "${blu} Disk Space      : ${grn}$DFFORMATED$ bytes${clr}"
+                echo -e "${blu} Disk Space      : ${grn}$DFFORMATED$ kb${clr}"
         fi
 }
 
