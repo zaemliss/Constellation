@@ -28,7 +28,7 @@ function checkVersion()
         webChange=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/dag | grep "changes=" | head -1 | tr -d '"' | cut -c 9-)
         if [[ "$webVer" != "$version" ]]; then
                 echo
-                echo -e "${grn} New version available! (${blu}$webver${grn})${yel}"
+                echo -e "${grn} New version available! (${blu}$webVer${grn})${yel}"
                 echo -e $webChange
                 echo -e "${clr}"
                 read -e -p " Press Y then [ENTER] to update or N to cancel: " CHOICE
