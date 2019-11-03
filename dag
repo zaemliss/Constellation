@@ -6,20 +6,20 @@ blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
 
-version="1.52"
-HASH=$(curl -s "https://api.github.com/repos/zaemliss/Constellation/commits?sha=master&per_page=1" | grep -i "Update dag" | grep -i "payload" | tr '\\' ' ' | awk '{print $5}')
-changes=" - reformatted disk space free output.\n- ref: https://github.com/zaemliss/Constellation/commit/"$HASH
+version="1.53"
+hash=$(curl -s "https://api.github.com/repos/zaemliss/Constellation/commits?sha=master&per_page=1" | grep -i "Update dag" | grep -i "payload" | tr '\\' ' ' | awk '{print $5}')
+changes=" - reformatted all variables to use one convention.\n- ref: https://github.com/zaemliss/Constellation/commit/"$hash
 
 # Only get external IP if needed
 if [[ $1 == "" || $1 == "restart" || $1 == "reset" || $1 == "join" || $1 == "leave" ]]; then
         echo -ne "${grn} getting external IP address... ";
-        EXTERNAL_HOST_IP=$(curl -s https://ipv4.icanhazip.com/)
-        echo -e "${yel}$EXTERNAL_HOST_IP ${clr}";
+        externalHostIp=$(curl -s https://ipv4.icanhazip.com/)
+        echo -e "${yel}$externalHostIp ${clr}";
 fi
 
-DAGDIR=$HOME/constellation
-DISKFREE=$(df -l --output=source,avail / | awk '{print $2}' | awk 'NR==2')
-DFFORMATED=$(echo $DISKFREE | sed ':a;s/\B[0-9]\{3\}\>/,&/;ta')
+dagDir=$HOME/constellation
+diskFree=$(df -l --output=source,avail / | awk '{print $2}' | awk 'NR==2')
+dfFormated=$(echo $diskFree | sed ':a;s/\B[0-9]\{3\}\>/,&/;ta')
 
 # Declare Functions #################################
 function checkVersion()
@@ -44,7 +44,7 @@ function checkVersion()
 function showStatus()
 {
         # Can I see the webpage?
-        chkWeb=$(curl -s http://$EXTERNAL_HOST_IP:9000 | grep -c constellation)
+        chkWeb=$(curl -s http://$externalHostIp:9000 | grep -c constellation)
         echo
         if (( chkWeb > 0 )); then
                 echo -e "${blu} Web Status      : ${grn}online${clr}"
@@ -68,11 +68,11 @@ function showStatus()
                 echo -e "${blu} FileBeat Status : ${grn}running${clr}"
         fi
         
-        if [[ $DISKFREE -lt 1000000 ]]; then
-                echo -e "${blu} Free Disk Space : ${red}$DFFORMATED kb${clr}"
+        if [[ $diskFree -lt 1000000 ]]; then
+                echo -e "${blu} Free Disk Space : ${red}$dfFormated kb${clr}"
                 echo -e "${blu}                   ${red}Your node will stop if it can't write to disk!${clr}"
         else
-                echo -e "${blu} Free Disk Space : ${grn}$DFFORMATED kb${clr}"
+                echo -e "${blu} Free Disk Space : ${grn}$dfFormated kb${clr}"
         fi
 }
 
@@ -89,7 +89,7 @@ function showHelp()
         echo -e " ${yel} dag leave          ${blu}leaves the cluster ${clr}"
         echo -e " ${yel} dag logs [search]  ${blu}displays the app logs in real time OR if a parameter is supplied, returns matching results in ${grn}search${clr}"
         echo
-        echo -e " ${grn}you can navigate to your node via web browser by entering ${blu}http://$EXTERNAL_HOST_IP:9000 ${grn}in the address bar.${clr}"
+        echo -e " ${grn}you can navigate to your node via web browser by entering ${blu}http://$externalHostIp:9000 ${grn}in the address bar.${clr}"
         echo
 }
 
@@ -97,7 +97,7 @@ function showLogs()
 {
         echo
         if [[ $2 != "" ]]; then
-            cat $DAGDIR/logs/app.log | grep -i $2
+            cat $dagDir/logs/app.log | grep -i $2
         else
             echo -e "${grn} This will show you the current logs. Once you see the node output, exit by pressing ${blu}CTRL-C"
             echo -e "${grn} This only shows the logs and does not interact with the node.${clr}"
@@ -106,7 +106,7 @@ function showLogs()
                 echo -e "${yel} Aborted... ${clr}"
                 exit 1;
             fi
-            tail -f $DAGDIR/logs/app.log
+            tail -f $dagDir/logs/app.log
         fi
 }
 
@@ -128,7 +128,7 @@ function update()
         echo
         echo -e "${blu} Getting latest version and saving to $HOME/constellation ..."
         echo -e "${brn} (this can take a few minutes) ${clr}"
-        wget https://github.com/Constellation-Labs/constellation/releases/download/latest/constellation-assembly-latest.jar -O $DAGDIR/constellation-latest.jar >/dev/null 2>&1
+        wget https://github.com/Constellation-Labs/constellation/releases/download/latest/constellation-assembly-latest.jar -O $dagDir/constellation-latest.jar >/dev/null 2>&1
         echo -e "${grn} latest Jar updated. Please do ${yel}dag restart${grn} for the changes to take effect.${clr}"
         echo
 }
@@ -139,9 +139,9 @@ function restart()
         echo -e "${blu} Restarting node ..."
         pgrep java | xargs kill -9 >/dev/null 2>&1
 
-        cd $DAGDIR
-        echo -e "${grn} Deploying on $EXTERNAL_HOST_IP ...${clr}"
-        bashexec="java -Xmx3G -jar $DAGDIR/constellation-latest.jar --ip $EXTERNAL_HOST_IP --port 9000"
+        cd $dagDir
+        echo -e "${grn} Deploying on $externalHostIp ...${clr}"
+        bashexec="java -Xmx3G -jar $dagDir/constellation-latest.jar --ip $externalHostIp --port 9000"
         screen -dmS dag $bashexec
         echo -e "${grn} The node is restarted.${clr}"
         echo
@@ -161,13 +161,13 @@ function reset()
         echo -e "${grn} Terminating instance...${clr}"
         pgrep java | xargs kill -9 >/dev/null 2>&1
         sleep 5
-        rm -rf $DAGDIR/tmp/* >/dev/null 2>&1
-        rm -rf $DAGDIR/.dag >/dev/null 2>&1
+        rm -rf $dagDir/tmp/* >/dev/null 2>&1
+        rm -rf $dagDir/.dag >/dev/null 2>&1
 
-        cd $DAGDIR
-        echo -e "${grn} Resetting tmp folder and deploying on $EXTERNAL_HOST_IP ...${clr}"
+        cd $dagDir
+        echo -e "${grn} Resetting tmp folder and deploying on $externalHostIp ...${clr}"
         sleep 5
-        bashexec="java -Xmx3G -jar $DAGDIR/constellation-latest.jar --ip $EXTERNAL_HOST_IP --port 9000"
+        bashexec="java -Xmx3G -jar $dagDir/constellation-latest.jar --ip $externalHostIp --port 9000"
         screen -dmS dag $bashexec
         echo -e "${grn} The node is reset and started.${clr}"
         echo -e "${grn} Please make sure to wait at least 2-3 minutes before accessing the web page or joining a cluster.${clr}"
@@ -218,7 +218,7 @@ if [[ $1 == "join" ]]; then
         fi
         echo
         echo -e "${grn} Joining $2 ...${clr}"
-        curl -X POST http://$EXTERNAL_HOST_IP:9001/join -H "Content-type: application/json" -d '{ "host": "'$2'", "port": 9001 }' -v
+        curl -X POST http://$externalHostIp:9001/join -H "Content-type: application/json" -d '{ "host": "'$2'", "port": 9001 }' -v
         if [ $? -ne 0 ]; then
         echo
         echo -e "${red}Joining node ${yel}$2 ${red}failed! ${clr}"
@@ -229,5 +229,5 @@ fi
 if [[ $1 == "leave" ]]; then
         echo
         echo -e "${grn} Leaving cluster ...${clr}"
-        curl -X POST http://$EXTERNAL_HOST_IP:9001/leave -v
+        curl -X POST http://$externalHostIp:9001/leave -v
 fi
