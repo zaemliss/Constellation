@@ -6,9 +6,9 @@ blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
 
-version="1.53"
+version="1.54"
 hash=$(curl -s "https://api.github.com/repos/zaemliss/Constellation/commits?sha=master&per_page=1" | grep -i "Update dag" | grep -i "payload" | tr '\\' ' ' | awk '{print $5}')
-changes=" - reformatted all variables to use one convention.\n- ref: https://github.com/zaemliss/Constellation/commit/"$hash
+changes=" - fixed a formatting typo.\n- ref: https://github.com/zaemliss/Constellation/commit/"$hash
 
 # Only get external IP if needed
 if [[ $1 == "" || $1 == "restart" || $1 == "reset" || $1 == "join" || $1 == "leave" ]]; then
@@ -151,7 +151,7 @@ function restart()
 
 function reset()
 {
-        echo -e " ${red}ARE YOU SURE?{blu} resetting the node will remove it from any cluster!${clr}"
+        echo -e " ${red}ARE YOU SURE?${blu} resetting the node will remove it from any cluster!${clr}"
         read -e -p " Press [ENTER] to continue or N to cancel: " CHOICE
         if [[ ("$CHOICE" == "n" || "$CHOICE" == "N") ]]; then
         echo -e "${yel} Aborted... ${clr}"
