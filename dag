@@ -5,7 +5,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.18"
+DAG_VERSION="2.19"
 
 function checkDepends() 
 {
@@ -222,8 +222,7 @@ function restart()
         cd $dagDir
 
         echo -e "${grn} Deploying on $externalHostIp ...${clr}"
-        bashexec="java -Xms1024M -Xmx$MAXMEM -Xss256K -Dlogback.configurationFile=$dagDir/logback.xml -jar $dagDir/cl-node.jar --ip=$externalHostIp --port=9000 -k=$KEYSTORE --alias alias -w $dagDir/whitelisting"
-	screen -dmS dag $bashexec
+	bashexec="java -Xms1024M -Xmx$MAXMEM -Xss256K -Dlogback.configurationFile=$dagDir/logback.xml -jar $dagDir/cl-node.jar --ip=$externalHostIp --port=9000 -k=$KEYSTORE --alias $NODEALIAS -w $dagDir/whitelisting"	screen -dmS dag $bashexec
 	echo -e "${blu} Executing: ${yel} $bashexec"
         echo -e "${grn} The node is restarted.${clr}"
         echo
@@ -252,8 +251,9 @@ function reset()
         cd $dagDir
         echo -e "${grn} Resetting tmp folder and deploying on $externalHostIp ...${clr}"
         sleep 5
-	bashexec="java -Xms1024M -Xmx$MAXMEM -Xss256K -Dlogback.configurationFile=$dagDir/logback.xml -jar $dagDir/cl-node.jar --ip=$externalHostIp --port=9000 -k=$KEYSTORE --alias alias -w $dagDir/whitelisting"
-        screen -dmS dag $bashexec
+	bashexec="java -Xms1024M -Xmx$MAXMEM -Xss256K -Dlogback.configurationFile=$dagDir/logback.xml -jar $dagDir/cl-node.jar --ip=$externalHostIp --port=9000 -k=$KEYSTORE --alias $NODEALIAS -w $dagDir/whitelisting"
+       	echo -e "${blu} Executing: ${yel} $bashexec"
+	screen -dmS dag $bashexec
         echo -e "${grn} The node is reset and started.${clr}"
         echo -e "${grn} Please make sure to wait at least 2-3 minutes before accessing the web page or joining a cluster.${clr}"
         echo -e "${grn} Your node is ready when doing ${blu}dag logs ${grn}are past keypair generation and are scrolling with information.${clr}"
