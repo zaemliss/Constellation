@@ -5,7 +5,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.24"
+DAG_VERSION="2.25"
 
 function checkDepends() 
 {
@@ -235,7 +235,7 @@ function showAddress()
 {
 	getPasswords
         echo -e "${grn}"
-        java -jar $dagDir/cl-wallet.jar show-address --keystore $KEYSTORE --alias $NODEALIAS --storepass $STOREPASS --keypass $KEYPASS
+        java -jar $dagDir/cl-wallet.jar show-address --keystore $KEYSTORE --alias $NODEALIAS --storepass $CL_STOREPASS --keypass $CL_KEYPASS
         echo -e "${clr}"
 }
 
