@@ -1,5 +1,5 @@
 #!/bin/bash
-
+ 
 # Declare Variables
 red='\033[1;31m'
 grn='\033[1;32m'
