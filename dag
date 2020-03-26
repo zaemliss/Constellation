@@ -266,13 +266,9 @@ function doInstall()
         fi
         export MAXMEM=$MAXMEMORY
 
-        echo -e "${blu}2. ${grn}Do you want to save your Wallet password to the config file? "
-        echo -ne "${red}   WARNING this is more convenient but much less secure ${grn}(y/n) ${clr}"
-        read -e -p ": " YN
-        if [[ "$YN" == "y" ]] || [[ "$YN" == "Y" ]];then
-                SAVEWALLETPASS=1
-        fi
-
+        echo -e "${blu}3. ${grn}Please enter a Wallet password. Make sure you write it down and store it in a safe place! "
+        echo -e "${red}   WARNING If you lose this password, you will lose access to your tokens!${clr}"
+        
         goodPass=0
         while [ "$goodPass" -ne "1" ]
         do
@@ -291,13 +287,9 @@ function doInstall()
         done
 
         
-        echo -e "${blu}3. ${grn}Do you want to save your Store password to the config file? "
-        echo -ne "${red}   WARNING this is more convenient but much less secure ${grn}(y/n) ${clr}"
-        read -e -p ": " YN
-        if [[ "$YN" == "y" ]] || [[ "$YN" == "Y" ]];then
-                SAVESTOREPASS=1
-        fi
-
+        echo -e "${blu}3. ${grn}Please enter a Store password. Make sure you write it down and store it in a safe place! "
+        echo -e "${red}   WARNING If you lose this password, you will lose access!${clr}"
+        
         goodPass=0
         while [ "$goodPass" -ne "1" ]
         do
@@ -370,17 +362,16 @@ function doInstall()
                         exit 1;
                 fi
         fi
+
 cat <<EOF > $dagDir/config
 MAXMEM=$MAXMEM
-KEYPASS=$KEYPASS
-STOREPASS=$STOREPASS
 KEYSTORE=$KEYSTORE
 GENESIS=$GENESIS
 NODEALIAS=$NODEALIAS
 
 EOF
 echo
-echo -e "${grn} Installaction complete.${clr}"
+echo -e "${grn} Installation complete.${clr}"
 showStatus
 showHelp
 
