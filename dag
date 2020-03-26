@@ -5,7 +5,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.21"
+DAG_VERSION="2.22"
 
 function checkDepends() 
 {
@@ -226,7 +226,7 @@ function restart()
 	echo -e "${blu} Executing: ${yel} $bashexec"
         echo -e "${grn} The node is restarted.${clr}"
         echo
-        echo -e "${grn} Type ${yel}dag status${grn} to see node output.${clr}"
+        echo -e "${grn} Type ${yel}dag logs${grn} to see node output.${clr}"
         echo
 }
 
@@ -364,7 +364,7 @@ function doInstall()
         export CL_STOREPASS=$STOREPASS
         export CL_KEYPASS=$KEYPASS
         
-        echo "${blu} Starting the node..."
+        echo -e "${blu} Starting the node..."
         reset
         echo
 
