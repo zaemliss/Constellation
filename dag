@@ -5,7 +5,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.22"
+DAG_VERSION="2.23"
 
 function checkDepends() 
 {
@@ -220,7 +220,8 @@ function restart()
         echo -e "${blu} Restarting node ..."
         pgrep java | xargs kill -9 >/dev/null 2>&1
         cd $dagDir
-
+	getPasswords
+	
         echo -e "${grn} Deploying on $externalHostIp ...${clr}"
 	bashexec="java -Xms1024M -Xmx$MAXMEM -Xss256K -Dlogback.configurationFile=$dagDir/logback.xml -jar $dagDir/cl-node.jar --ip=$externalHostIp --port=9000 -k=$KEYSTORE --alias $NODEALIAS -w $dagDir/whitelisting"	screen -dmS dag $bashexec
 	echo -e "${blu} Executing: ${yel} $bashexec"
@@ -247,7 +248,8 @@ function reset()
         sleep 5
         rm -rf $dagDir/tmp/* >/dev/null 2>&1
         rm -rf $dagDir/.dag >/dev/null 2>&1
-
+	getPasswords
+	
         cd $dagDir
         echo -e "${grn} Resetting tmp folder and deploying on $externalHostIp ...${clr}"
         sleep 5
@@ -271,9 +273,6 @@ function checkDir()
 
 function doInstall()
 {
-        SAVEWALLETPASS=0
-        SAVESTOREPASS=0
-
         clear
         checkDepends
         checkDir
@@ -394,6 +393,20 @@ echo
 echo -e "${grn} End of Installation.${clr}"
 
 }
+
+function getPasswords()
+{
+	if [[ ${#CL_KEYPASS} -lt 1 ]] || [[ ${#CL_STOREPASS} -lt 1 ]]; then
+		read -s -p "KeyPassword     :" KEYPASS
+                echo
+                read -s -p "Store Password  :" STOREPASS
+                echo
+                export CL_KEYPASS=$KEYPASS
+		export CL_STOREPASS=$STOREPASS
+	fi
+}
+
+
 # Begin ###############################
 
 checkVersion
