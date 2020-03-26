@@ -6,9 +6,8 @@ blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
 
-version="1.54"
-hash=$(curl -s "https://api.github.com/repos/zaemliss/Constellation/commits?sha=master&per_page=1" | grep -i "Update dag" | grep -i "payload" | tr '\\' ' ' | awk '{print $5}')
-changes=" - fixed a formatting typo.\n- ref: https://github.com/zaemliss/Constellation/commit/"$hash
+DAG_VERSION="2.01"
+JAR_VERSION=$(curl -s "https://api.github.com/repos/Constellation-Labs/constellation/releases?per_page=1" | jq ".[0].tag_name" | tr -d '"v')
 
 # Only get external IP if needed
 if [[ $1 == "" || $1 == "restart" || $1 == "reset" || $1 == "join" || $1 == "leave" ]]; then
@@ -20,13 +19,85 @@ fi
 dagDir=$HOME/constellation
 diskFree=$(df -l --output=source,avail / | awk '{print $2}' | awk 'NR==2')
 dfFormated=$(echo $diskFree | sed ':a;s/\B[0-9]\{3\}\>/,&/;ta')
+INSTALLED_VERSION=$(java -jar $dagDir/cl-node.jar --version | grep "constellation" | awk '{print $NF}')
 
 # Declare Functions #################################
+function checkDepends() ####### <<
+{
+	jq --version > /dev/null 2>&1
+	if [ $? -ne 0 ]; then
+                echo -e "${yel}jq ${grn} not found! Installing...${clr}"
+                apt install jq -qq > /dev/null 2>&1
+                if [ $? -ne 0 ]; then
+                        echo -e "${red}Installation failed! please run manually and check for errors:${clr}"
+                        echo -e "${blue}apt install jq${clr}"
+                        echo
+                        exit 1
+                fi
+	fi
+        
+        if type -p java >/dev/null 2>&1; then
+                _java=java
+        elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]];  then
+                _java="$JAVA_HOME/bin/java"
+        fi
+        if [[ "$_java" ]]; then
+                javaver=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}')
+                if [[ "$javaver" > "1.8" ]]; then
+                        # echo -e " ${grn}Java already at ${blu}$javaver${clr}"
+                        installJava=0
+                else
+                        installJava=1
+                fi
+        else
+                installJava=1
+        fi
+
+        if [[ "$installJava" == "1" ]]; then
+                echo -e " ${pnk}Installing latest Java version...${clr}"
+                sudo apt install -y openjdk-8-jdk
+                if [ $? -ne 0 ]; then
+                        echo -e "${red}Installation failed! please run manually and check for errors:${clr}"
+                        echo -e "${blue}apt install openjdk-8-jdk openjdk-8-jre${clr}"
+                        echo
+                        exit 1
+                fi
+	fi
+
+        havegedinstalled=$(find /usr -name "haveged")
+        if [ ${#havegedinstalled} -lt "5" ]; then
+                echo -e " ${pnk}Installing latest version of Haveged...${clr}"
+                apt install haveged -qq > /dev/null 2>&1
+                if [ $? -ne 0 ]; then
+                        echo -e "${red}Installation failed! please run manually and check for errors:${clr}"
+                        echo -e "${blue}apt install haveged${clr}"
+                        echo
+                        exit 1
+                fi
+        fi
+}
+
+function checkConfig()
+{
+	if [ -f "$dagDir/config" ]; then
+                # read config file and export variables
+                while read -r PARAM; do
+                        export "$PARAM"
+                done < $dagDir/config
+	else
+		echo -e "${red}Config File Doesn't exist${clr}"
+                read -e -p " Proceed to installation? Press Y then [ENTER] to install or N to cancel: " CHOICE
+                if [[ ("$CHOICE" == "y" || "$CHOICE" == "Y") ]]; then
+                        doInstall
+                fi
+	fi
+}
+
 function checkVersion()
 {
         webVer=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/dag | grep "version=" | head -1 | tr -d '"' | tr '=' ' ' | awk '{print $2}')
         webChange=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/dag | grep "changes=" | head -1 | tr -d '"' | cut -c 9-)
-        if [[ "$webVer" != "$version" ]]; then
+        if [[ "$webVer" != "$DAG_VERSION" ]]; then
                 echo
                 echo -e "${grn} New version available! (${blu}$webVer${grn})${yel}"
                 echo -e $webChange
@@ -47,44 +118,43 @@ function showStatus()
         chkWeb=$(curl -s http://$externalHostIp:9000 | grep -c constellation)
         echo
         if (( chkWeb > 0 )); then
-                echo -e "${blu} Web Status      : ${grn}online${clr}"
+                echo -e "${blu} Web Status             : ${grn}online${clr}"
         else
-                echo -e "${blu} Web Status      : ${red}offline${clr}"
+                echo -e "${blu} Web Status             : ${red}offline${clr}"
         fi
 
         # Is the screen containing the node execution active?
         chkScreen=$(screen -ls | grep dag)
         if [ -z "$chkScreen" ]; then
-                echo -e "${blu} Node Status     : ${red}offline${clr}"
+                echo -e "${blu} Node Status            : ${red}offline${clr}"
         else
-                echo -e "${blu} Node Status     : ${grn}online${clr}"
+                echo -e "${blu} Node Status            : ${grn}online${clr}"
         fi
-
-        # is FileBeat running>
-        chkFileBeat=$(pgrep filebeat)
-        if [ -z "$chkFileBeat" ]; then
-                echo -e "${blu} FileBeat Status : ${red}stopped${clr}"
-        else
-                echo -e "${blu} FileBeat Status : ${grn}running${clr}"
-        fi
-        
+      
         if [[ $diskFree -lt 1000000 ]]; then
-                echo -e "${blu} Free Disk Space : ${red}$dfFormated kb${clr}"
-                echo -e "${blu}                   ${red}Your node will stop if it can't write to disk!${clr}"
+                echo -e "${blu} Free Disk Space        : ${red}$dfFormated kb${clr}"
+                echo -e "${blu}                          ${red}Your node will stop if it can't write to disk!${clr}"
         else
-                echo -e "${blu} Free Disk Space : ${grn}$dfFormated kb${clr}"
+                echo -e "${blu} Free Disk Space        : ${grn}$dfFormated kb${clr}"
         fi
+                echo -e "${blu} Official .jar version  : ${grn}$JAR_VERSION ${clr}"
+                echo -ne "${blu} Installed .jar version : "
+                if [[ $INSTALLED_VERSION == $JAR_VERSION ]]; then
+                        echo -ne "${grn}"
+                else 
+                        echo -ne "${red}"
+                fi
+                echo -e "$INSTALLED_VERSION ${clr}"
 }
 
 function showHelp()
 {
         echo
-        echo -e " ${red}dag command line options ${blu}(utility version: $version)${clr}"
+        echo -e " ${red}dag command line options ${blu}(utility version: $DAG_VERSION)${clr}"
         echo
         echo -e " ${yel} dag update         ${blu}gets the latest version of the jar and overwrites the file in $HOME/constellation ${clr}"
         echo -e " ${yel} dag restart        ${blu}restarts the node ${clr}"
         echo -e " ${yel} dag reset          ${blu}resets the tmp folder and restarts the node removing it from any cluster it belongs to.${clr}"
-        echo -e " ${yel} dag status         ${blu}shows you the live node output ${clr}"
         echo -e " ${yel} dag join ip_addr   ${blu}joins to node specified in ip_addr ${clr}"
         echo -e " ${yel} dag leave          ${blu}leaves the cluster ${clr}"
         echo -e " ${yel} dag logs [search]  ${blu}displays the app logs in real time OR if a parameter is supplied, returns matching results in ${grn}search${clr}"
@@ -126,10 +196,15 @@ function enterScreen()
 function update()
 {
         echo
+        echo -e "${grn}Updating from ${blu}$INSTALLED_VERSION ${grn}to ${blu}$JAR_VERSION"
         echo -e "${blu} Getting latest version and saving to $HOME/constellation ..."
         echo -e "${brn} (this can take a few minutes) ${clr}"
-        wget https://github.com/Constellation-Labs/constellation/releases/download/latest/constellation-assembly-latest.jar -O $dagDir/constellation-latest.jar >/dev/null 2>&1
-        echo -e "${grn} latest Jar updated. Please do ${yel}dag restart${grn} for the changes to take effect.${clr}"
+        wget https://github.com/Constellation-Labs/constellation/releases/download/v$JAR_VERSION/cl-keytool.jar -O $dagDir/cl-keytool.jar >/dev/null 2>&1
+        wget https://github.com/Constellation-Labs/constellation/releases/download/v$JAR_VERSION/cl-node.jar -O $dagDir/cl-node.jar >/dev/null 2>&1
+        wget https://github.com/Constellation-Labs/constellation/releases/download/v$JAR_VERSION/cl-wallet.jar -O $dagDir/cl-wallet.jar >/dev/null 2>&1
+        wget https://github.com/Constellation-Labs/constellation/releases/download/v$JAR_VERSION/whitelisting -O $dagDir/whitelisting >/dev/null 2>&1
+        wget https://raw.githubusercontent.com/Constellation-Labs/constellation/dev/src/main/resources/logback-prod.xml -O $dagDir/logback.xml >/dev/null 2>&1
+        echo -e "${grn} latest Jar updated. Please do ${yel}dag restart${grn} or ${yel}dag reset${grn} (as required) for the changes to take effect.${clr}"
         echo
 }
 
@@ -138,11 +213,12 @@ function restart()
         echo
         echo -e "${blu} Restarting node ..."
         pgrep java | xargs kill -9 >/dev/null 2>&1
-
         cd $dagDir
+
         echo -e "${grn} Deploying on $externalHostIp ...${clr}"
-        bashexec="java -Xmx3G -jar $dagDir/constellation-latest.jar --ip $externalHostIp --port 9000"
-        screen -dmS dag $bashexec
+        bashexec="java -Xms1024M -Xmx$MAXMEM -Xss256K -Dlogback.configurationFile=$dagDir/logback.xml -jar $dagDir/cl-node.jar --ip=$externalHostIp --port=9000 -k=$KEYSTORE --alias alias -w $dagDir/whitelisting"
+	screen -dmS dag $bashexec
+	echo -e "${blu} Executing: ${yel} $bashexec"
         echo -e "${grn} The node is restarted.${clr}"
         echo
         echo -e "${grn} Type ${yel}dag status${grn} to see node output.${clr}"
@@ -151,14 +227,6 @@ function restart()
 
 function reset()
 {
-        echo -e " ${red}ARE YOU SURE?${blu} resetting the node will remove it from any cluster!${clr}"
-        read -e -p " Press [ENTER] to continue or N to cancel: " CHOICE
-        if [[ ("$CHOICE" == "n" || "$CHOICE" == "N") ]]; then
-        echo -e "${yel} Aborted... ${clr}"
-        exit 1;
-        fi
-        
-        echo -e "${grn} Terminating instance...${clr}"
         pgrep java | xargs kill -9 >/dev/null 2>&1
         sleep 5
         rm -rf $dagDir/tmp/* >/dev/null 2>&1
@@ -167,17 +235,164 @@ function reset()
         cd $dagDir
         echo -e "${grn} Resetting tmp folder and deploying on $externalHostIp ...${clr}"
         sleep 5
-        bashexec="java -Xmx3G -jar $dagDir/constellation-latest.jar --ip $externalHostIp --port 9000"
+	bashexec="java -Xms1024M -Xmx$MAXMEM -Xss256K -Dlogback.configurationFile=$dagDir/logback.xml -jar $dagDir/cl-node.jar --ip=$externalHostIp --port=9000 -k=$KEYSTORE --alias alias -w $dagDir/whitelisting"
         screen -dmS dag $bashexec
         echo -e "${grn} The node is reset and started.${clr}"
         echo -e "${grn} Please make sure to wait at least 2-3 minutes before accessing the web page or joining a cluster.${clr}"
         echo -e "${grn} Your node is ready when doing ${blu}dag logs ${grn}are past keypair generation and are scrolling with information.${clr}"
         echo
+        echo -e "${grn} Type ${yel}dag logs${grn} to see node output.${clr}"
+        echo
 }
 
+function checkDir()
+{
+        if [[ ! -d $home/constellation ]]; then
+                mkdir $home/constellation
+        fi
+}
+
+function doInstall()
+{
+        SAVEWALLETPASS=0
+        SAVESTOREPASS=0
+
+        clear
+        #checkDepends
+        #checkDir
+        #update
+        echo -ne "${blu}1. ${grn}How much memory (in gigabytes, Minimum 3) would you like to allocate to running the node? e.g.: 4  ${clr}"
+        read -e -p ": " MAXMEMORY
+        if [[ "$MAXMEM" -lt "3" ]];then
+                MAXMEMORY=3
+        fi
+        export MAXMEM=$MAXMEMORY
+
+        echo -e "${blu}2. ${grn}Do you want to save your Wallet password to the config file? "
+        echo -ne "${red}   WARNING this is more convenient but much less secure ${grn}(y/n) ${clr}"
+        read -e -p ": " YN
+        if [[ "$YN" == "y" ]] || [[ "$YN" == "Y" ]];then
+                SAVEWALLETPASS=1
+        fi
+
+        goodPass=0
+        while [ "$goodPass" -ne "1" ]
+        do
+                read -s -p "KeyPassword     :" KEYPASS1
+                echo
+                read -s -p "Retype Password :" KEYPASS2
+                echo
+                if [[ "$KEYPASS1" == "$KEYPASS2" ]];then
+                        export KEYPASS=$KEYPASS1
+                        goodPass=1
+                else
+                        echo -e "${red}Passwords do not match!${clr}"
+                        echo
+                        goodPass=0
+                fi
+        done
+
+        
+        echo -e "${blu}3. ${grn}Do you want to save your Store password to the config file? "
+        echo -ne "${red}   WARNING this is more convenient but much less secure ${grn}(y/n) ${clr}"
+        read -e -p ": " YN
+        if [[ "$YN" == "y" ]] || [[ "$YN" == "Y" ]];then
+                SAVESTOREPASS=1
+        fi
+
+        goodPass=0
+        while [ "$goodPass" -ne "1" ]
+        do
+                read -s -p "StorePassword     :" STOREPASS1
+                echo
+                read -s -p "Retype Password :" STOREPASS2
+                echo
+                if [[ "$STOREPASS1" == "$STOREPASS2" ]];then
+                        export STOREPASS=$STOREPASS1
+                        goodPass=1
+                else
+                        echo -e "${red}Passwords do not match!${clr}"
+                        echo
+                        goodPass=0
+                fi
+        done
+
+        echo -ne "${blu}4. ${grn}Do you already have a p12 file you'd like to use? [y/n] :${clr}"
+        read -e -p ": " YN
+        echo
+        if [[ "$YN" == "y" ]] || [[ "$YN" == "Y" ]];then
+                goodFile=0
+                while [[ "$goodFile" -ne "1" ]]
+                do
+                        read -e -p "please enter the FULL path of the p12 file e.x.:/root/constellation/testfile.p12 :" P12FILE
+                        if [[ ! -f $P12FILE ]];then
+                                echo -e "${red}File does not exist!"
+                                echo
+                                goodFile=0
+                        else
+                                goodFile=1
+                                export KEYSTORE=$P12FILE
+                        fi
+                done
+        else
+                        read -e -p "please enter the FULL path of the p12 file you want to create. e.x.: /root/constellation/testfile.p12 :" P12FILE
+                        export KEYSTORE=$P12FILE
+
+        fi
+        
+        echo -e "${blu}5. ${grn}Please enter an alias for the node (e.x.: myalias) :${clr}"
+        read -e -p "Please enter the Alias for the node :" MYNODEALIAS
+        export NODEALIAS=$MYNODEALIAS
+
+        java -jar $dagDir/cl-keytool.jar --keystore $KEYSTORE --alias $NODEALIAS --storepass $STOREPASS --keypass $KEYPASS
+        if [ $? -ne 0 ]; then
+                echo -e "${red}KeyStore generation failed! please check the information you supplied and try again:${clr}"
+                exit 1
+        else
+                echo -e "${grn}KeyStore generation success! ${clr}"
+        fi
+        export CL_STOREPASS=$STOREPASS
+        export CL_KEYPASS=$KEYPASS
+        
+        echo "${blu} Starting the node..."
+        reset
+        echo
+
+        echo -ne "${blu}5. ${grn}Would you like to join a cluster at this time? (you can always do this later) [y/n] :${clr}"
+        read -e -p ": " YN
+        echo
+        if [[ "$YN" == "y" ]] || [[ "$YN" == "Y" ]];then
+                echo -e "${blu}5. ${grn}Please enter the IP address of the Genesis Node e.x.: 103.55.126.22${clr}"
+                read -e -p "Please enter the IP Address for the node :" GENESIS
+                echo -e "${grn} Joining $GENESIS ...${clr}"
+                curl -X POST http://$externalHostIp:9001/join -H "Content-type: application/json" -d '{ "host": "'$GENESIS'", "port": 9001 }' -v
+                if [ $? -ne 0 ]; then
+                        echo
+                        echo -e "${red}Joining node ${yel}$GENESIS ${red}failed! ${clr}"
+                        exit 1;
+                fi
+        fi
+cat <<EOF > $dagDir/config
+MAXMEM=$MAXMEM
+KEYPASS=$KEYPASS
+STOREPASS=$STOREPASS
+KEYSTORE=$KEYSTORE
+GENESIS=$GENESIS
+NODEALIAS=$NODEALIAS
+
+EOF
+echo
+echo -e "${grn} Installaction complete.${clr}"
+showStatus
+showHelp
+
+}
 # Begin ###############################
 
+checkConfig
+checkDepends
 checkVersion
+
 
 if [[ $1 == "update" ]]; then
         update
@@ -190,9 +405,15 @@ fi
 if [[ $1 == "reset" ]]; then
         echo
         echo -e "${blu} Resetting node ..."
+        echo -e " ${red}ARE YOU SURE?${blu} resetting the node will remove it from any cluster!${clr}"
+        read -e -p " Press [ENTER] to continue or N to cancel: " CHOICE
+        if [[ ("$CHOICE" == "n" || "$CHOICE" == "N") ]]; then
+        echo -e "${yel} Aborted... ${clr}"
+        exit 1;
+        fi
+        echo -e "${grn} Terminating instance...${clr}"
         reset
-        echo -e "${grn} Type ${yel}dag status${grn} to see node output.${clr}"
-        echo
+        
 fi
 
 if [[ $1 == "status" ]]; then
