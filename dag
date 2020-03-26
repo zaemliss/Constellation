@@ -5,7 +5,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.19"
+DAG_VERSION="2.21"
 
 function checkDepends() 
 {
@@ -325,10 +325,15 @@ function doInstall()
                         goodPass=0
                 fi
         done
+	
+	echo -e "${blu}4. ${grn}Please enter an alias for the node (e.x.: myalias) :${clr}"
+        read -e -p "Please enter the Alias for the node :" MYNODEALIAS
+        export NODEALIAS=$MYNODEALIAS
 
-        echo -ne "${blu}4. ${grn}Do you already have a p12 file you'd like to use? [y/n] :${clr}"
+        echo -ne "${blu}5. ${grn}Do you already have a p12 file you'd like to use? [y/n] :${clr}"
         read -e -p ": " YN
         echo
+	OWNFILE=0
         if [[ "$YN" == "y" ]] || [[ "$YN" == "Y" ]];then
                 goodFile=0
                 while [[ "$goodFile" -ne "1" ]]
@@ -341,25 +346,21 @@ function doInstall()
                         else
                                 goodFile=1
                                 export KEYSTORE=$P12FILE
-                        fi
+				java -jar $dagDir/cl-keytool.jar --keystore $KEYSTORE --alias $NODEALIAS --storepass $STOREPASS --keypass $KEYPASS
+        				if [ $? -ne 0 ]; then
+                				echo -e "${red}KeyStore generation failed! please check the information you supplied and try again:${clr}"
+                				exit 1
+        				else
+                				echo -e "${grn}KeyStore generation success! ${clr}"
+        				fi
+			fi
                 done
         else
                         read -e -p "please enter the FULL path of the p12 file you want to create. e.x.: /root/constellation/testfile.p12 :" P12FILE
                         export KEYSTORE=$P12FILE
-
+			OWNFILE=1
         fi
         
-        echo -e "${blu}5. ${grn}Please enter an alias for the node (e.x.: myalias) :${clr}"
-        read -e -p "Please enter the Alias for the node :" MYNODEALIAS
-        export NODEALIAS=$MYNODEALIAS
-
-        java -jar $dagDir/cl-keytool.jar --keystore $KEYSTORE --alias $NODEALIAS --storepass $STOREPASS --keypass $KEYPASS
-        if [ $? -ne 0 ]; then
-                echo -e "${red}KeyStore generation failed! please check the information you supplied and try again:${clr}"
-                exit 1
-        else
-                echo -e "${grn}KeyStore generation success! ${clr}"
-        fi
         export CL_STOREPASS=$STOREPASS
         export CL_KEYPASS=$KEYPASS
         
