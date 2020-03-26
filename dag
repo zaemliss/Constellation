@@ -373,7 +373,8 @@ function doInstall()
                 if [ $? -ne 0 ]; then
                         echo
                         echo -e "${red}Joining node ${yel}$GENESIS ${red}failed! ${clr}"
-                        exit 1;
+                        echo -e "check to be certain you are on the whitelist and the IP address of the genesis node is valid."
+			echo
                 fi
         fi
 
