@@ -6,7 +6,7 @@ blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
 
-DAG_VERSION="2.03"
+DAG_VERSION="2.07"
 JAR_VERSION=$(curl -s "https://api.github.com/repos/Constellation-Labs/constellation/releases?per_page=1" | jq ".[0].tag_name" | tr -d '"v')
 
 # Only get external IP if needed
@@ -19,7 +19,9 @@ fi
 dagDir=$HOME/constellation
 diskFree=$(df -l --output=source,avail / | awk '{print $2}' | awk 'NR==2')
 dfFormated=$(echo $diskFree | sed ':a;s/\B[0-9]\{3\}\>/,&/;ta')
-INSTALLED_VERSION=$(java -jar $dagDir/cl-node.jar --version | grep "constellation" | awk '{print $NF}')
+if [[ -f "$dagDir/cl-node.jar"]]; then
+	INSTALLED_VERSION=$(java -jar $dagDir/cl-node.jar --version | grep "constellation" | awk '{print $NF}')
+fi
 
 # Declare Functions #################################
 function checkDepends() ####### <<
