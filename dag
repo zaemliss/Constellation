@@ -150,6 +150,7 @@ function showHelp()
         echo
         echo -e " ${red}dag command line options ${blu}(utility version: $DAG_VERSION)${clr}"
         echo
+        echo -e " ${yel} dag address        ${blu}restarts the node ${clr}"
         echo -e " ${yel} dag update         ${blu}gets the latest version of the jar and overwrites the file in $HOME/constellation ${clr}"
         echo -e " ${yel} dag restart        ${blu}restarts the node ${clr}"
         echo -e " ${yel} dag reset          ${blu}resets the tmp folder and restarts the node removing it from any cluster it belongs to.${clr}"
@@ -221,6 +222,17 @@ function restart()
         echo
         echo -e "${grn} Type ${yel}dag status${grn} to see node output.${clr}"
         echo
+}
+
+function showAddress()
+{
+	echo
+        read -s -p "Key Password   :" KEYPASS
+        echo
+        read -s -p "Store Password :" STOREPASS
+        echo -e "${grn}"
+        java -jar $dagDir/cl-wallet.jar show-address --keystore $KEYSTORE --alias $NODEALIAS --storepass $STOREPASS --keypass $KEYPASS
+        echo -e "${clr}"
 }
 
 function reset()
@@ -417,7 +429,9 @@ if [[ $1 == "" ]]; then
         showStatus
         showHelp
 fi
-
+if [[ $1 == "address" ]]; then
+        showAddress
+fi
 if [[ $1 == "join" ]]; then
         if [[ $2 == "" ]]; then
                 echo
