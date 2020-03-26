@@ -1,6 +1,11 @@
-# Table of Contents
-1. [Utilities list](https://github.com/zaemliss/Constellation#utilities-list)
-2. [Fast Node Install instructions](https://github.com/zaemliss/Constellation#fast-node-installation-instructions---constellation-node)
+# Instructions:
+## `dag` COMMAND LINE UTILITY
+> *The `dag` utility command helps running the most common tasks for node maintenance as well as installing the node. Running the command alone without arguments will give you the node status as well as a help screen with a list of commands*
+
+paste the following in a CLI (terminal screen)
+```
+wget https://raw.githubusercontent.com/zaemliss/Constellation/master/dag -O /usr/local/bin/dag && chmod +x /usr/local/bin/dag && dag
+```
 ___
  
   
