@@ -95,12 +95,10 @@ function checkConfig()
 
 function checkVersion()
 {
-        webVer=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/dag | grep "version=" | head -1 | tr -d '"' | tr '=' ' ' | awk '{print $2}')
-        webChange=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/dag | grep "changes=" | head -1 | tr -d '"' | cut -c 9-)
+        webVer=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/dag | grep "DAG_VERSION=" | head -1 | tr -d '"' | tr '=' ' ' | awk '{print $2}')
         if [[ "$webVer" != "$DAG_VERSION" ]]; then
                 echo
                 echo -e "${grn} New version available! (${blu}$webVer${grn})${yel}"
-                echo -e $webChange
                 echo -e "${clr}"
                 read -e -p " Press Y then [ENTER] to update or N to cancel: " CHOICE
                 if [[ ("$CHOICE" == "y" || "$CHOICE" == "Y") ]]; then
