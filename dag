@@ -6,7 +6,7 @@ blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
 
-DAG_VERSION="2.10"
+DAG_VERSION="2.11"
 JAR_VERSION=$(curl -s "https://api.github.com/repos/Constellation-Labs/constellation/releases?per_page=1" | jq ".[0].tag_name" | tr -d '"v')
 
 # Only get external IP if needed
