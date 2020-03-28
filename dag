@@ -265,7 +265,7 @@ function reset()
 function checkDir()
 {
         if [[ ! -d $home/constellation ]]; then
-                mkdir $home/constellation
+                mkdir $HOME/constellation
         fi
 }
 
