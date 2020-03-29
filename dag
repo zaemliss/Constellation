@@ -122,10 +122,10 @@ if [[ $1 == "" || $1 == "restart" || $1 == "reset" || $1 == "join" || $1 == "lea
 fi
 
 dagDir=$HOME/constellation
-diskFree=$(df -l --output=source,avail / | awk '{print $2}' | awk 'NR==2')
-dfFormated=$(echo $diskFree | sed ':a;s/\B[0-9]\{3\}\>/,&/;ta')
+diskFree=$(df -l / | awk '{print $2}' | awk 'NR==2')
+dfFormated=$(echo $diskFree | sed -E -e ':a' -e 's/([[:digit:]])([[:digit:]]{3}([^[:digit:]]|$))/\1 \2/;ta')
 if [[ -f "$dagDir/cl-node.jar" ]]; then
-	INSTALLED_VERSION=$(java -jar $dagDir/cl-node.jar --version | grep "constellation" | awk '{print $NF}')
+    INSTALLED_VERSION=$(java -jar $dagDir/cl-node.jar --version | grep "constellation" | awk '{print $NF}')
 fi
 
 
