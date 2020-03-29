@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Declare General Variables ###############################
 red='\033[1;31m'
 grn='\033[1;32m'
@@ -7,20 +9,50 @@ pnk='\033[1;35m'
 clr='\033[0m'
 DAG_VERSION="2.27"
 
+function checkOS() 
+{
+    OS=`uname -s`
+    REV=`uname -r`
+    MACH=`uname -m`
+    if [ "${OS}" = "Linux" ] ; then
+        KERNEL=$(uname -r)
+        if [ -f /etc/redhat-release ] ; then
+            OS_DIST='RedHat'
+        elif [ -f /etc/SuSE-release ] ; then
+            OS_DIST='Suse'
+        elif [ -f /etc/mandrake-release ] ; then
+            OS_DIST='Mandrake'
+        elif [ -f /etc/debian_version ] ; then	
+            OS_DIST="Debian"
+        elif [ -f /etc/arch-release ] ; then
+            OS_DIST="Arch"
+        fi
+        if [ -f /etc/UnitedLinux-release ] ; then
+            OS_DIST="UnitedLinux"
+        fi
+    fi
+}
+
 function checkDepends() 
 {
-	jq --version > /dev/null 2>&1
-	if [ $? -ne 0 ]; then
-                echo -e "${yel}jq ${grn} not found! Installing...${clr}"
-                apt install jq -qq > /dev/null 2>&1
+    if [[ "$OS" == "Linux" && ("$OS_DIST" == "Debian" || "$OS_DIST" == "RedHat") ]] ; then
+        jq --version > /dev/null 2>&1
+        if [ $? -ne 0 ]; then
+                if [[ "$OS_DIST" == "Debian" ]]; then
+                    JQ_INSTALL_CMD="sudo apt install -y jq -qq"
+                elif [[ "$OS_DIST" == "RedHat" ]]; then
+                    JQ_INSTALL_CMD="sudo yum install -y jq"
+                fi
+                echo -e "${yel}jq ${grn}not found! Installing...${clr}"
+                $JQ_INSTALL_CMD > /dev/null 2>&1
                 if [ $? -ne 0 ]; then
                         echo -e "${red}Installation failed! please run manually and check for errors:${clr}"
-                        echo -e "${blue}apt install jq${clr}"
+                        echo -e "${blue}${JQ_INSTALL_CMD}${clr}"
                         echo
                         exit 1
                 fi
-	fi
-        
+        fi
+
         if type -p java >/dev/null 2>&1; then
                 _java=java
         elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]];  then
@@ -39,29 +71,44 @@ function checkDepends()
         fi
 
         if [[ "$installJava" == "1" ]]; then
-                echo -e " ${pnk}Installing latest Java version...${clr}"
-                sudo apt install -y openjdk-8-jdk
-                if [ $? -ne 0 ]; then
-                        echo -e "${red}Installation failed! please run manually and check for errors:${clr}"
-                        echo -e "${blue}apt install openjdk-8-jdk openjdk-8-jre${clr}"
-                        echo
-                        exit 1
+                if [[ "$OS_DIST" == "Debian" ]]; then
+                    JAVA_INSTALL_CMD="sudo apt install -y openjdk-8-jdk"
+                elif [[ "$OS_DIST" == "RedHat" ]]; then
+                    JAVA_INSTALL_CMD="sudo yum install -y java-1.8.0-openjdk"
                 fi
-	fi
-
-        havegedinstalled=$(find /usr -name "haveged")
-        if [ ${#havegedinstalled} -lt "5" ]; then
-                echo -e " ${pnk}Installing latest version of Haveged...${clr}"
-                apt install haveged -qq > /dev/null 2>&1
+                echo -e " ${pnk}Installing latest Java 8...${clr}"
+                $JAVA_INSTALL_CMD > /dev/null 2>&1
                 if [ $? -ne 0 ]; then
                         echo -e "${red}Installation failed! please run manually and check for errors:${clr}"
-                        echo -e "${blue}apt install haveged${clr}"
+                        echo -e "${blue}$JAVA_INSTALL_CMD${clr}"
                         echo
                         exit 1
                 fi
         fi
+
+        havegedinstalled=$(find /usr -name "haveged")
+        if [ ${#havegedinstalled} -lt "5" ]; then
+                if [[ "$OS_DIST" == "Debian" ]]; then
+                    HAVEGED_INSTALL_CMD="sudo apt install -y haveged -qq"
+                elif [[ "$OS_DIST" == "RedHat" ]]; then
+                    HAVEGED_INSTALL_CMD="sudo yum install -y haveged"
+                fi
+                echo -e " ${pnk}Installing latest version of Haveged...${clr}"
+                $HAVEGED_INSTALL_CMD > /dev/null 2>&1
+                if [ $? -ne 0 ]; then
+                        echo -e "${red}Installation failed! please run manually and check for errors:${clr}"
+                        echo -e "${blue}$HAVEGED_INSTALL_CMD${clr}"
+                        echo
+                        exit 1
+                fi
+        fi
+    else
+        echo -e "${yel}${OS_DIST} ${OS} ${red}dependency installation is not supported${clr}"
+        exit 1
+    fi
 }
 
+checkOS
 checkDepends
 
 # Declare System Variables ####################################
