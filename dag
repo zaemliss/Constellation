@@ -346,7 +346,7 @@ function doInstall()
         update
         echo -ne "${blu}1. ${grn}How much memory (in gigabytes, Minimum 3) would you like to allocate to running the node? e.g.: 4  ${clr}"
         read -e -p ": " MAXMEMORY
-        if [[ "$MAXMEM" -lt "3" ]];then
+        if [[ "MAXMEMORY" -lt "3" ]];then
                 MAXMEMORY=3
         fi
         export MAXMEM=${MAXMEMORY}G
