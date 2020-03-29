@@ -138,18 +138,18 @@ fi
 
 function checkConfig()
 {
-	if [ -f "$dagDir/config" ]; then
+    if [ -f "$dagDir/config" ]; then
                 # read config file and export variables
                 while read -r PARAM; do
                         export "$PARAM"
                 done < $dagDir/config
-	else
-		echo -e "${red}Config File Doesn't exist${clr}"
+    else
+        echo -e "${red}Config File Doesn't exist${clr}"
                 read -e -p " Proceed to installation? Press Y then [ENTER] to install or N to cancel: " CHOICE
                 if [[ ("$CHOICE" == "y" || "$CHOICE" == "Y") ]]; then
                         doInstall
                 fi
-	fi
+    fi
 }
 
 function checkVersion()
@@ -216,6 +216,7 @@ function showHelp()
         echo -e " ${yel} dag join ip_addr   ${blu}joins to node specified in ip_addr ${clr}"
         echo -e " ${yel} dag leave          ${blu}leaves the cluster ${clr}"
         echo -e " ${yel} dag logs [search]  ${blu}displays the app logs in real time OR if a parameter is supplied, returns matching results in ${grn}search${clr}"
+        echo -e " ${yel} dag stop           ${blu}stops the node ${clr}"
         echo
         echo -e " ${grn}you can navigate to your node via web browser by entering ${blu}http://$externalHostIp:9000 ${grn}in the address bar.${clr}"
         echo
@@ -270,15 +271,15 @@ function restart()
 {
         echo
         echo -e "${blu} Restarting node ..."
-        pgrep java | xargs kill -9 >/dev/null 2>&1
+        stop
         cd $dagDir
-	getPasswords
-	
+        getPasswords
+
         echo -e "${grn} Deploying on $externalHostIp ...${clr}"
-	bashexec="java -Xms1024M -Xmx$MAXMEM -Xss256K -Dlogback.configurationFile=$dagDir/logback.xml -jar $dagDir/cl-node.jar --ip=$externalHostIp --port=9000 -k=$KEYSTORE --alias $NODEALIAS -w $dagDir/whitelisting"	
-	echo -e "${blu} Executing: ${yel} $bashexec"
+        bashexec="java -Xms1024M -Xmx$MAXMEM -Xss256K -DDAGNODEUUID=$DAGNODEUUID -Dlogback.configurationFile=$dagDir/logback.xml -jar $dagDir/cl-node.jar --ip=$externalHostIp --port=9000 -k=$KEYSTORE --alias $NODEALIAS -w $dagDir/whitelisting"
+        echo -e "${blu} Executing: ${yel} $bashexec"
         screen -dmS dag $bashexec
-	echo -e "${grn} The node is restarted.${clr}"
+        echo -e "${grn} The node is restarted.${clr}"
         echo
         echo -e "${grn} Type ${yel}dag logs${grn} to see node output.${clr}"
         echo
@@ -286,7 +287,7 @@ function restart()
 
 function showAddress()
 {
-	getPasswords
+        getPasswords
         echo -e "${grn}"
         java -jar $dagDir/cl-wallet.jar show-address --keystore $KEYSTORE --alias $NODEALIAS --storepass $CL_STOREPASS --keypass $CL_KEYPASS
         echo -e "${clr}"
@@ -294,18 +295,17 @@ function showAddress()
 
 function reset()
 {
-        pgrep java | xargs kill -9 >/dev/null 2>&1
-        sleep 5
+        stop
         rm -rf $dagDir/tmp/* >/dev/null 2>&1
         rm -rf $dagDir/.dag >/dev/null 2>&1
-	getPasswords
-	
+        getPasswords
+
         cd $dagDir
         echo -e "${grn} Resetting tmp folder and deploying on $externalHostIp ...${clr}"
         sleep 5
-	bashexec="java -Xms1024M -Xmx$MAXMEM -Xss256K -Dlogback.configurationFile=$dagDir/logback.xml -jar $dagDir/cl-node.jar --ip=$externalHostIp --port=9000 -k=$KEYSTORE --alias $NODEALIAS -w $dagDir/whitelisting"
-       	echo -e "${blu} Executing: ${yel} $bashexec"
-	screen -dmS dag $bashexec
+        bashexec="java -Xms1024M -Xmx$MAXMEM -Xss256K -DDAGNODEUUID=$DAGNODEUUID -Dlogback.configurationFile=$dagDir/logback.xml -jar $dagDir/cl-node.jar --ip=$externalHostIp --port=9000 -k=$KEYSTORE --alias $NODEALIAS -w $dagDir/whitelisting"
+        echo -e "${blu} Executing: ${yel} $bashexec"
+        screen -dmS dag $bashexec
         echo -e "${grn} The node is reset and started.${clr}"
         echo -e "${grn} Please make sure to wait at least 2-3 minutes before accessing the web page or joining a cluster.${clr}"
         echo -e "${grn} Your node is ready when doing ${blu}dag logs ${grn}are past keypair generation and are scrolling with information.${clr}"
@@ -314,10 +314,27 @@ function reset()
         echo
 }
 
+function stop(){
+    NODEPID=$(pgrep -f $DAGNODEUUID)
+    kill $NODEPID >/dev/null 2>&1
+    LIMIT=30
+    for ((I=1; I <= LIMIT; I++))
+    do
+      if [ -n "$NODEPID" ]; then
+         echo -e "${grn}Waiting for Node processes ${yel}${NODEPID//$'\n'/, }${grn} to stop ($I/$LIMIT).${clr}"
+         sleep 1
+      fi
+      NODEPID=$(pgrep -f $DAGNODEUUID)
+    done
+    if [ -n "$NODEPID" ]; then
+        kill -9 $NODEPID >/dev/null 2>&1
+    fi
+}
+
 function checkDir()
 {
-        if [[ ! -d $home/constellation ]]; then
-                mkdir $HOME/constellation
+        if [[ ! -d $HOME/constellation ]]; then
+                mkdir -p $HOME/constellation
         fi
 }
 
@@ -413,6 +430,8 @@ function doInstall()
         export CL_STOREPASS=$STOREPASS
         export CL_KEYPASS=$KEYPASS
         
+        DAGNODEUUID=$(uuidgen)
+        
         echo -e "${blu} Starting the node..."
         reset
         echo
@@ -438,6 +457,7 @@ MAXMEM=$MAXMEM
 KEYSTORE=$KEYSTORE
 GENESIS=$GENESIS
 NODEALIAS=$NODEALIAS
+DAGNODEUUID=$DAGNODEUUID
 EOF
 echo
 echo -e "${grn} End of Installation.${clr}"
@@ -446,14 +466,14 @@ echo -e "${grn} End of Installation.${clr}"
 
 function getPasswords()
 {
-	if [[ ${#CL_KEYPASS} -lt 1 ]] || [[ ${#CL_STOREPASS} -lt 1 ]]; then
-		read -s -p "KeyPassword     :" KEYPASS
+    if [[ ${#CL_KEYPASS} -lt 1 ]] || [[ ${#CL_STOREPASS} -lt 1 ]]; then
+        read -s -p "KeyPassword     :" KEYPASS
                 echo
                 read -s -p "Store Password  :" STOREPASS
                 echo
                 export CL_KEYPASS=$KEYPASS
-		export CL_STOREPASS=$STOREPASS
-	fi
+                export CL_STOREPASS=$STOREPASS
+    fi
 }
 
 
@@ -522,4 +542,8 @@ if [[ $1 == "leave" ]]; then
         echo
         echo -e "${grn} Leaving cluster ...${clr}"
         curl -X POST http://$externalHostIp:9001/leave -v
+fi
+
+if [[ $1 == "stop" ]]; then
+        stop
 fi
