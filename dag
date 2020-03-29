@@ -35,13 +35,15 @@ function checkOS()
 
 function checkDepends() 
 {
-    if [[ "$OS" == "Linux" && ("$OS_DIST" == "Debian" || "$OS_DIST" == "RedHat") ]] ; then
+    if [[ ("$OS" == "Linux" && ("$OS_DIST" == "Debian" || "$OS_DIST" == "RedHat")) || ("$OS" == "Darwin" && -f "/usr/local/bin/brew") ]]; then
         jq --version > /dev/null 2>&1
         if [ $? -ne 0 ]; then
                 if [[ "$OS_DIST" == "Debian" ]]; then
                     JQ_INSTALL_CMD="sudo apt install -y jq -qq"
                 elif [[ "$OS_DIST" == "RedHat" ]]; then
                     JQ_INSTALL_CMD="sudo yum install -y jq"
+                elif [[ "$OS" == "Darwin" ]]; then
+                    JQ_INSTALL_CMD="brew install jq"
                 fi
                 echo -e "${yel}jq ${grn}not found! Installing...${clr}"
                 $JQ_INSTALL_CMD > /dev/null 2>&1
@@ -75,6 +77,8 @@ function checkDepends()
                     JAVA_INSTALL_CMD="sudo apt install -y openjdk-8-jdk"
                 elif [[ "$OS_DIST" == "RedHat" ]]; then
                     JAVA_INSTALL_CMD="sudo yum install -y java-1.8.0-openjdk"
+                elif [[ "$OS" == "Darwin" ]]; then
+                    JAVA_INSTALL_CMD="brew cask install homebrew/cask-versions/adoptopenjdk8"
                 fi
                 echo -e " ${pnk}Installing latest Java 8...${clr}"
                 $JAVA_INSTALL_CMD > /dev/null 2>&1
@@ -85,22 +89,23 @@ function checkDepends()
                         exit 1
                 fi
         fi
-
-        havegedinstalled=$(find /usr -name "haveged")
-        if [ ${#havegedinstalled} -lt "5" ]; then
-                if [[ "$OS_DIST" == "Debian" ]]; then
-                    HAVEGED_INSTALL_CMD="sudo apt install -y haveged -qq"
-                elif [[ "$OS_DIST" == "RedHat" ]]; then
-                    HAVEGED_INSTALL_CMD="sudo yum install -y haveged"
-                fi
-                echo -e " ${pnk}Installing latest version of Haveged...${clr}"
-                $HAVEGED_INSTALL_CMD > /dev/null 2>&1
-                if [ $? -ne 0 ]; then
-                        echo -e "${red}Installation failed! please run manually and check for errors:${clr}"
-                        echo -e "${blue}$HAVEGED_INSTALL_CMD${clr}"
-                        echo
-                        exit 1
-                fi
+        if [[ "$OS" == "Linux" ]]; then
+            havegedinstalled=$(find /usr -name "haveged")
+            if [ ${#havegedinstalled} -lt "5" ]; then
+                    if [[ "$OS_DIST" == "Debian" ]]; then
+                        HAVEGED_INSTALL_CMD="sudo apt install -y haveged -qq"
+                    elif [[ "$OS_DIST" == "RedHat" ]]; then
+                        HAVEGED_INSTALL_CMD="sudo yum install -y haveged"
+                    fi
+                    echo -e " ${pnk}Installing latest version of Haveged...${clr}"
+                    $HAVEGED_INSTALL_CMD > /dev/null 2>&1
+                    if [ $? -ne 0 ]; then
+                            echo -e "${red}Installation failed! please run manually and check for errors:${clr}"
+                            echo -e "${blue}$HAVEGED_INSTALL_CMD${clr}"
+                            echo
+                            exit 1
+                    fi
+            fi
         fi
     else
         echo -e "${yel}${OS_DIST} ${OS} ${red}dependency installation is not supported${clr}"
