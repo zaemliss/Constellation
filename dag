@@ -120,15 +120,15 @@ checkDepends
 JAR_VERSION=$(curl -s "https://api.github.com/repos/Constellation-Labs/constellation/releases?per_page=1" | jq ".[0].tag_name" | tr -d '"v')
 
 # Only get external IP if needed
-if [[ $1 == "" || $1 == "restart" || $1 == "reset" || $1 == "join" || $1 == "leave" ]]; then
+if [[ $1 == "" || $1 == "start" || $1 == "restart" || $1 == "reset" || $1 == "join" || $1 == "leave" ]]; then
         echo -ne "${grn} getting external IP address... ";
         externalHostIp=$(curl -s https://ipv4.icanhazip.com/)
         echo -e "${yel}$externalHostIp ${clr}";
 fi
 
 dagDir=$HOME/constellation
-diskFree=$(df -l / | awk '{print $2}' | awk 'NR==2')
-dfFormated=$(echo $diskFree | sed -E -e ':a' -e 's/([[:digit:]])([[:digit:]]{3}([^[:digit:]]|$))/\1 \2/;ta')
+diskFree=$(df -Pk $dagDir | sed 1d | grep -v used | awk '{ print $4 "\t" }')
+dfFormated=$(df -Pkh $dagDir | sed 1d | grep -v used | awk '{ print $4 "\t" }')
 if [[ -f "$dagDir/cl-node.jar" ]]; then
     INSTALLED_VERSION=$(java -jar $dagDir/cl-node.jar --version | grep "constellation" | awk '{print $NF}')
 fi
@@ -181,18 +181,18 @@ function showStatus()
         fi
 
         # Is the screen containing the node execution active?
-        chkScreen=$(screen -ls | grep dag)
-        if [ -z "$chkScreen" ]; then
+        chkDag=$(pgrep -f $DAGNODEUUID)
+        if [ -z "$chkDag" ]; then
                 echo -e "${blu} Node Status            : ${red}offline${clr}"
         else
                 echo -e "${blu} Node Status            : ${grn}online${clr}"
         fi
       
         if [[ $diskFree -lt 1000000 ]]; then
-                echo -e "${blu} Free Disk Space        : ${red}$dfFormated kb${clr}"
+                echo -e "${blu} Free Disk Space        : ${red}$dfFormated${clr}"
                 echo -e "${blu}                          ${red}Your node will stop if it can't write to disk!${clr}"
         else
-                echo -e "${blu} Free Disk Space        : ${grn}$dfFormated kb${clr}"
+                echo -e "${blu} Free Disk Space        : ${grn}$dfFormated${clr}"
         fi
                 echo -e "${blu} Official .jar version  : ${grn}$JAR_VERSION ${clr}"
                 echo -ne "${blu} Installed .jar version : "
@@ -217,6 +217,7 @@ function showHelp()
         echo -e " ${yel} dag leave          ${blu}leaves the cluster ${clr}"
         echo -e " ${yel} dag logs [search]  ${blu}displays the app logs in real time OR if a parameter is supplied, returns matching results in ${grn}search${clr}"
         echo -e " ${yel} dag stop           ${blu}stops the node ${clr}"
+        echo -e " ${yel} dag start          ${blu}starts the node ${clr}"
         echo
         echo -e " ${grn}you can navigate to your node via web browser by entering ${blu}http://$externalHostIp:9000 ${grn}in the address bar.${clr}"
         echo
@@ -237,19 +238,6 @@ function showLogs()
             fi
             tail -f $dagDir/logs/app.log
         fi
-}
-
-function enterScreen()
-{
-        echo
-        echo -e "${red} IMPORTANT: ${grn}once in the screen where you see the node output, exit by pressing ${blu}CTRL-A ${grn}then ${blu}CTRL-D"
-        echo -e "${grn} Do ${red}NOT ${grn}press ${blu}CTRL-C ${grn}unless you are trying to stop the node!${clr}"
-        read -e -p "Press [ENTER] to continue or N to cancel: " CHOICE
-        if [[ ("$CHOICE" == "n" || "$CHOICE" == "N") ]]; then
-        echo -e "${yel} Aborted... ${clr}"
-        exit 1;
-        fi
-        screen -x dag
 }
 
 function update()
@@ -273,16 +261,11 @@ function restart()
         echo -e "${blu} Restarting node ..."
         stop
         cd $dagDir
-        getPasswords
 
         echo -e "${grn} Deploying on $externalHostIp ...${clr}"
-        bashexec="java -Xms1024M -Xmx$MAXMEM -Xss256K -DDAGNODEUUID=$DAGNODEUUID -Dlogback.configurationFile=$dagDir/logback.xml -jar $dagDir/cl-node.jar --ip=$externalHostIp --port=9000 -k=$KEYSTORE --alias $NODEALIAS -w $dagDir/whitelisting"
-        echo -e "${blu} Executing: ${yel} $bashexec"
-        screen -dmS dag $bashexec
-        echo -e "${grn} The node is restarted.${clr}"
-        echo
-        echo -e "${grn} Type ${yel}dag logs${grn} to see node output.${clr}"
-        echo
+        
+        start
+        
 }
 
 function showAddress()
@@ -298,14 +281,13 @@ function reset()
         stop
         rm -rf $dagDir/tmp/* >/dev/null 2>&1
         rm -rf $dagDir/.dag >/dev/null 2>&1
-        getPasswords
+        
 
         cd $dagDir
         echo -e "${grn} Resetting tmp folder and deploying on $externalHostIp ...${clr}"
-        sleep 5
-        bashexec="java -Xms1024M -Xmx$MAXMEM -Xss256K -DDAGNODEUUID=$DAGNODEUUID -Dlogback.configurationFile=$dagDir/logback.xml -jar $dagDir/cl-node.jar --ip=$externalHostIp --port=9000 -k=$KEYSTORE --alias $NODEALIAS -w $dagDir/whitelisting"
-        echo -e "${blu} Executing: ${yel} $bashexec"
-        screen -dmS dag $bashexec
+
+        start
+
         echo -e "${grn} The node is reset and started.${clr}"
         echo -e "${grn} Please make sure to wait at least 2-3 minutes before accessing the web page or joining a cluster.${clr}"
         echo -e "${grn} Your node is ready when doing ${blu}dag logs ${grn}are past keypair generation and are scrolling with information.${clr}"
@@ -314,7 +296,19 @@ function reset()
         echo
 }
 
-function stop(){
+function start()
+{
+    getPasswords
+    bashexec="java -Xms1024M -Xmx$MAXMEM -Xss256K -DDAGNODEUUID=$DAGNODEUUID -Dlogback.configurationFile=$dagDir/logback.xml -jar $dagDir/cl-node.jar --ip=$externalHostIp --port=9000 -k=$KEYSTORE --alias $NODEALIAS -w $dagDir/whitelisting"
+    echo -e "${blu} Executing: ${yel} $bashexec${clr}"
+    $bashexec &
+    echo -e "${grn} The node is started.${clr}"
+    echo
+    echo -e "${grn} Type ${yel}dag logs${grn} to see node output.${clr}"
+}
+
+function stop()
+{
     NODEPID=$(pgrep -f $DAGNODEUUID)
     kill $NODEPID >/dev/null 2>&1
     LIMIT=30
@@ -506,7 +500,7 @@ if [[ $1 == "reset" ]]; then
 fi
 
 if [[ $1 == "status" ]]; then
-        enterScreen
+        showStatus
 fi
 
 if [[ $1 == "logs" ]]; then
@@ -546,4 +540,8 @@ fi
 
 if [[ $1 == "stop" ]]; then
         stop
+fi
+
+if [[ $1 == "start" ]]; then
+        start
 fi
