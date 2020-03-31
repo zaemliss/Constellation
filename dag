@@ -90,8 +90,8 @@ function checkDepends()
                 fi
         fi
         if [[ "$OS" == "Linux" ]]; then
-            havegedinstalled=$(find /usr -name "haveged")
-            if [ ${#havegedinstalled} -lt "5" ]; then
+            havegedinstalled=$(which haveged)
+            if [[ -z "$havegedinstalled" ]]; then
                     if [[ "$OS_DIST" == "Debian" ]]; then
                         HAVEGED_INSTALL_CMD="sudo apt install -y haveged -qq"
                     elif [[ "$OS_DIST" == "RedHat" ]]; then
@@ -127,8 +127,6 @@ if [[ $1 == "" || $1 == "start" || $1 == "restart" || $1 == "reset" || $1 == "jo
 fi
 
 dagDir=$HOME/constellation
-diskFree=$(df -Pk $dagDir | sed 1d | grep -v used | awk '{ print $4 "\t" }')
-dfFormated=$(df -Pkh $dagDir | sed 1d | grep -v used | awk '{ print $4 "\t" }')
 if [[ -f "$dagDir/cl-node.jar" ]]; then
     INSTALLED_VERSION=$(java -jar $dagDir/cl-node.jar --version | grep "constellation" | awk '{print $NF}')
 fi
@@ -187,7 +185,8 @@ function showStatus()
         else
                 echo -e "${blu} Node Status            : ${grn}online${clr}"
         fi
-      
+        diskFree=$(df -Pk $dagDir | sed 1d | grep -v used | awk '{ print $4 "\t" }')
+        dfFormated=$(df -Pkh $dagDir | sed 1d | grep -v used | awk '{ print $4 "\t" }')
         if [[ $diskFree -lt 1000000 ]]; then
                 echo -e "${blu} Free Disk Space        : ${red}$dfFormated${clr}"
                 echo -e "${blu}                          ${red}Your node will stop if it can't write to disk!${clr}"
