@@ -7,7 +7,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.32"
+DAG_VERSION="2.33"
 
 function checkOS() 
 {
@@ -211,7 +211,7 @@ function showHelp()
         echo -e " ${yel} dag address        ${blu}restarts the node ${clr}"
         echo -e " ${yel} dag update         ${blu}gets the latest version of the jar and overwrites the file in $HOME/constellation ${clr}"
         echo -e " ${yel} dag restart        ${blu}restarts the node ${clr}"
-        echo -e " ${yel} dag reset          ${blu}resets the tmp folder and restarts the node removing it from any cluster it belongs to.${clr}"
+        echo -e " ${yel} dag reset          ${blu}resets the tmp folder and reinstalls the node removing it from any cluster it belongs to.${clr}"
         echo -e " ${yel} dag join ip_addr   ${blu}joins to node specified in ip_addr ${clr}"
         echo -e " ${yel} dag leave          ${blu}leaves the cluster ${clr}"
         echo -e " ${yel} dag logs [search]  ${blu}displays the app logs in real time OR if a parameter is supplied, returns matching results in ${grn}search${clr}"
@@ -280,12 +280,12 @@ function reset()
         stop
         rm -rf $dagDir/tmp/* >/dev/null 2>&1
         rm -rf $dagDir/.dag >/dev/null 2>&1
-        
+        rm $dagDir/config >/dev/null 2>&1
 
         cd $dagDir
-        echo -e "${grn} Resetting tmp folder and deploying on $externalHostIp ...${clr}"
+        echo -e "${grn} Resetting tmp folder, config and deploying on $externalHostIp ...${clr}"
 
-        start
+        doInstall
 
         echo -e "${grn} The node is reset and started.${clr}"
         echo -e "${grn} Please make sure to wait at least 2-3 minutes before accessing the web page or joining a cluster.${clr}"
