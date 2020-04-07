@@ -22,5 +22,5 @@ echo
 echo -e "${yel} Pre-requisites installed. ${clr}"
 
 snap install jq
-snap install openjdk-8-jdk
-snap install haveged
+sudo apt install openjdk-8-jdk
+sudo apt install haveged
