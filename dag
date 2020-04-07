@@ -218,7 +218,7 @@ function showHelp()
         echo -e " ${yel} dag stop           ${blu}stops the node ${clr}"
         echo -e " ${yel} dag start          ${blu}starts the node ${clr}"
         echo
-        echo -e " ${grn}you can navigate to your node via web browser by entering ${blu}http://$externalHostIp:9000 ${grn}in the address bar.${clr}"
+        echo -e " ${grn}you can navigate to your node via web browser by entering ${blu}http://$externalHostIp:9002 ${grn}in the address bar.${clr}"
         echo
 }
 
