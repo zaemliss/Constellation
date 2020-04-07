@@ -7,7 +7,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.38"
+DAG_VERSION="2.39"
 
 function checkOS() 
 {
@@ -74,7 +74,7 @@ function checkDepends()
 
         if [[ "$installJava" == "1" ]]; then
                 if [[ "$OS_DIST" == "Debian" ]]; then
-                    JAVA_INSTALL_CMD="sudo apt install -y openjdk-8-jdk"
+                    JAVA_INSTALL_CMD="sudo apt install -y default-jre"
                 elif [[ "$OS_DIST" == "RedHat" ]]; then
                     JAVA_INSTALL_CMD="sudo yum install -y java-1.8.0-openjdk"
                 elif [[ "$OS" == "Darwin" ]]; then
