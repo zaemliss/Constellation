@@ -7,7 +7,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.43"
+DAG_VERSION="2.44"
 
 function checkOS() 
 {
@@ -355,6 +355,7 @@ function doInstall()
         export MAXMEM=${MAXMEMORY}G
 
         echo -e "${blu}3. ${grn}Please enter a Wallet password. Make sure you write it down and store it in a safe place! "
+        echo -e "${grn}   Format: Upper and lower characters and the symbols above the numbers on your keyboard, NO SPACES!${clr}"
         echo -e "${red}   WARNING If you lose this password, you will lose access to your tokens!${clr}"
         
         goodPass=0
@@ -376,6 +377,7 @@ function doInstall()
 
         
         echo -e "${blu}3. ${grn}Please enter a Store password. Make sure you write it down and store it in a safe place! "
+        echo -e "${grn}   Format: Upper and lower characters and the symbols above the numbers on your keyboard, NO SPACES!${clr}"
         echo -e "${red}   WARNING If you lose this password, you will lose access!${clr}"
         
         goodPass=0
@@ -395,7 +397,8 @@ function doInstall()
                 fi
         done
 
-        echo -e "${blu}4. ${grn}Please enter an alias for the node (e.x.: myalias) :${clr}"
+        echo -e "${blu}4. ${grn}Please enter an alias for the node (e.x.: myalias)"
+        echo -e "${grn}   Format: Upper and lower characters, NO SPACES!${clr}"
         read -e -p "Please enter the Alias for the node :" MYNODEALIAS
         export NODEALIAS=$MYNODEALIAS
 
