@@ -7,7 +7,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.42"
+DAG_VERSION="2.43"
 
 function checkOS() 
 {
@@ -279,10 +279,12 @@ function showAddress()
 function showID()
 {
         getPasswords
+        echo -e "Running: ${yel}java -jar $dagDir/cl-wallet.jar show-id --keystore $KEYSTORE --alias $NODEALIAS --storepass <private> --keypass <private>"
         echo -e "${grn}"
         java -jar $dagDir/cl-wallet.jar show-id --keystore $KEYSTORE --alias $NODEALIAS --storepass $CL_STOREPASS --keypass $CL_KEYPASS
         echo -e "${clr}"
 }
+
 function reset()
 {
         stop
