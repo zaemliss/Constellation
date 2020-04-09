@@ -7,7 +7,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.40"
+DAG_VERSION="2.41"
 
 function checkOS() 
 {
@@ -209,6 +209,7 @@ function showHelp()
         echo -e " ${red}dag command line options ${blu}(utility version: $DAG_VERSION)${clr}"
         echo
         echo -e " ${yel} dag address        ${blu}Displays your DAG address ${clr}"
+        echo -e " ${yel} dag id             ${blu}Displays your DAG Node ID ${clr}"
         echo -e " ${yel} dag update         ${blu}gets the latest version of the jar and overwrites the file in $HOME/constellation ${clr}"
         echo -e " ${yel} dag restart        ${blu}restarts the node ${clr}"
         echo -e " ${yel} dag reset          ${blu}resets the tmp folder and reinstalls the node removing it from any cluster it belongs to.${clr}"
@@ -275,6 +276,13 @@ function showAddress()
         echo -e "${clr}"
 }
 
+function showID()
+{
+        getPasswords
+        echo -e "${grn}"
+        java -jar $dagDir/cl-wallet.jar show-id --keystore $KEYSTORE --alias $NODEALIAS --storepass $CL_STOREPASS --keypass $CL_KEYPASS
+        echo -e "${clr}"
+}
 function reset()
 {
         stop
@@ -513,6 +521,10 @@ fi
 if [[ $1 == "address" ]]; then
         showAddress
 fi
+if [[ $1 == "id" ]]; then
+        showID
+fi
+
 if [[ $1 == "join" ]]; then
         if [[ $2 == "" ]]; then
                 echo
