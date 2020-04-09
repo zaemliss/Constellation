@@ -308,7 +308,7 @@ function reset()
 function start()
 {
     getPasswords
-    bashexec="java -Xms1024M -Xmx$MAXMEM -Xss256K -DDAGNODEUUID=$DAGNODEUUID -Dlogback.configurationFile=$dagDir/logback.xml -jar $dagDir/cl-node.jar --ip=$externalHostIp --port=9002 -k=$KEYSTORE --alias $NODEALIAS -w $dagDir/whitelisting"
+    bashexec="java -Xms1024M -Xmx$MAXMEM -Xss256K -DDAGNODEUUID=$DAGNODEUUID -Dlogback.configurationFile=$dagDir/logback.xml -jar $dagDir/cl-node.jar --ip=$externalHostIp --port=9000 -k=$KEYSTORE --alias $NODEALIAS -w $dagDir/whitelisting"
     echo -e "${blu} Executing: ${yel} $bashexec${clr}"
     $bashexec &
     echo -e "${grn} The node is started.${clr}"
