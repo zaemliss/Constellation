@@ -27,7 +27,7 @@ rm -rf tmp
 dag update
 dag join 54.183.220.116
 ```
-10) you're done
+10) **MAKE SURE** you properly back up your p12 file as well as the passwords to a secure location (Encrypted USB sticks). If you lose this, you're done. No more coins.
 
 
 Also, if you have a p12 file you would like to use from a molly wallet, please make sure you copy it to the VPS prior to running the setup script. If you do not have one, the script will generate a p12 file for you.
