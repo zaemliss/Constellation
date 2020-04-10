@@ -8,6 +8,27 @@ You need a VPS with the following minimum requirements:
 - Quad Core
 - Linux Operating system (Debian, Ubuntu, CentOS)
 
+QUICKSTEPS:
+1) make sure you have the VPS set up with min reqs
+2) make sure you are root
+  `sudo bash`
+3) if you are using your own p12 file, make sure you know how to copy it over
+4) when creating the file, make sure there are no spaces in the alias!!! (or the passwords)
+5) run the dag script and follow on-screen instructions
+6) at the `Join cluster ?` question, answer `n`
+7) confirm your node is running by doing dag again and seeing node and web online
+8) get your ID by doing dag id and paste that info along with your ip address in the node operator spreadsheet
+https://docs.google.com/spreadsheets/d/1MGBevI3MbhsN-oueC_q8ZPKRpWdPyaITcJpAhz60lPo/edit#gid=0
+
+BitMonopoly @zaemliss 12:58
+9) wait for the next release to be announced. When it is, you will be on the whitelist so you will be able to do:
+`cd ~/constellation`
+`rm -rf tmp`
+`dag update`
+`dag join 54.183.220.116`
+10) you're done
+
+
 Also, if you have a p12 file you would like to use from a molly wallet, please make sure you copy it to the VPS prior to running the setup script. If you do not have one, the script will generate a p12 file for you.
 
 ***  WARNING *** It is assumed that the user you are running this with has root access and can write to /usr/local/bin as well as change file permissions.
