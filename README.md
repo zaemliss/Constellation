@@ -20,12 +20,13 @@ QUICKSTEPS:
 8) get your ID by doing dag id and paste that info along with your ip address in the node operator spreadsheet
 https://docs.google.com/spreadsheets/d/1MGBevI3MbhsN-oueC_q8ZPKRpWdPyaITcJpAhz60lPo/edit#gid=0
 
-BitMonopoly @zaemliss 12:58
 9) wait for the next release to be announced. When it is, you will be on the whitelist so you will be able to do:
-`cd ~/constellation`
-`rm -rf tmp`
-`dag update`
-`dag join 54.183.220.116`
+```
+cd ~/constellation
+rm -rf tmp
+dag update
+dag join 54.183.220.116
+```
 10) you're done
 
 
