@@ -7,7 +7,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.52"
+DAG_VERSION="2.53"
 
 function checkOS() 
 {
@@ -448,8 +448,8 @@ function doInstall()
                 echo -e "${blu}5. ${grn}Please enter the IP address of the Genesis Node e.x.: 103.55.126.22${clr}"
                 read -e -p "Please enter the IP Address for the node :" GENESIS
                 echo -e "${grn} Joining $GENESIS ...${clr}"
-                curl -X POST http://$externalHostIp:9002/join -H "Content-type: application/json" -d '{ "host": "'$GENESIS'", "port": 9001 }' -v
-                echo -e "Executing: ${blu}                curl -X POST http://$externalHostIp:9002/join -H "Content-type: application/json" -d '{ "host": "'$GENESIS'", "port": 9001 }' -v${clr}"
+                curl -X POST http://127.0.0.1:9002/join -H "Content-type: application/json" -d '{ "host": "'$GENESIS'", "port": 9001 }' -v
+                echo -e "Executing: ${blu}                curl -X POST http://127.0.0.1:9002/join -H "Content-type: application/json" -d '{ "host": "'$GENESIS'", "port": 9001 }' -v${clr}"
                 echo
                 if [ $? -ne 0 ]; then
                         echo
@@ -541,8 +541,8 @@ if [[ $1 == "join" ]]; then
         fi
         echo
         echo -e "${grn} Joining $2 ...${clr}"
-        curl -X POST http://$externalHostIp:9002/join -H "Content-type: application/json" -d '{ "host": "'$2'", "port": 9001 }' -v
-        echo -e "Executing: ${blu}curl -X POST http://$externalHostIp:9002/join -H "Content-type: application/json" -d '{ "host": "'$2'", "port": 9001 }' -v ${clr}"
+        curl -X POST http://127.0.0.1:9002/join -H "Content-type: application/json" -d '{ "host": "'$2'", "port": 9001 }' -v
+        echo -e "Executing: ${blu}curl -X POST http://127.0.0.1:9002/join -H "Content-type: application/json" -d '{ "host": "'$2'", "port": 9001 }' -v ${clr}"
         if [ $? -ne 0 ]; then
         echo
         echo -e "${red}Joining node ${yel}$2 ${red}failed! ${clr}"
@@ -554,7 +554,7 @@ if [[ $1 == "leave" ]]; then
         echo
         echo -e "${grn} Leaving cluster ...${clr}"
         echo -e "Executing: ${blu}curl -X POST http://$externalHostIp:9002/leave -v ${clr}"
-        curl -X POST http://$externalHostIp:9002/leave -v
+        curl -X POST http://127.0.0.1:9002/leave -v
         echo
 fi
 
