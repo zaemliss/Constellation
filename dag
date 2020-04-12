@@ -7,7 +7,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.53"
+DAG_VERSION="2.54"
 
 function checkOS() 
 {
@@ -201,6 +201,14 @@ function showStatus()
                         echo -ne "${red}"
                 fi
                 echo -e "$INSTALLED_VERSION ${clr}"
+}
+
+function getMetrics()
+{
+    metrics=$(curl -s http://127.0.0.1:9002/metrics)
+    echo -ne "${blu}Node State: ${grn}"
+    echo $metrics | jq .metrics.nodeState | tr -d '"'
+    echo -e "${clr}"
 }
 
 function showHelp()
@@ -560,6 +568,10 @@ fi
 
 if [[ $1 == "stop" ]]; then
         stop
+fi
+
+if [[ $1 == "metrics" ]]; then
+        getMetrics
 fi
 
 if [[ $1 == "start" ]]; then
