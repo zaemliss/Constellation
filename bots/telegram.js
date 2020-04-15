@@ -1,7 +1,7 @@
 process.env["NTBA_FIX_319"] = 1; // fix for the deprecation of the promises cancellation error
 
 const TelegramBot = require('node-telegram-bot-api'),
-bot = new TelegramBot("697298398:AAE9n25Ntb4i17fPOIPIi35hAUCNIY4QdEw", { polling: true });
+bot = new TelegramBot(botconfig.token, { polling: true });
 
 console.log("Starting bot...");
 
