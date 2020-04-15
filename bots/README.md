@@ -1,6 +1,17 @@
 ** Twitter bot ** 
 also has discord integration code as an example and some rudimentary searching/triggers 
 
+Also it will require a botconfig.json configured like this:
+```
+
+{
+    "token": "your_token_here",
+    "prefix": "!"
+}
+```
+
+
+===================================================
 ** Telegram bot is an anti-spam bot I made but has all the functions required to search and act on input **
 To use as-is (as an anti-spam bot) it requires a rules.json file formatted as such
 ```JSON
@@ -19,5 +30,13 @@ To use as-is (as an anti-spam bot) it requires a rules.json file formatted as su
     "rule12": { "name": "pump",  "weight": 1 },
     ...
     "rule20": { "name": "dump",  "weight": 1 }
+}
+```
+
+Also a botconfig.json configured like this:
+```
+
+{
+    "token": "your_token_here"
 }
 ```
