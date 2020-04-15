@@ -1,5 +1,7 @@
+const Discord = require('discord.js');
 const botconfig = require('./botconfig.json');
 const tweetConfig = require('./tweetconfig.json');
+const bot = new Discord.Client();
 const tweet = require('twit')
 var request = require('request');
 const T = new tweet(require('./config.js'));
