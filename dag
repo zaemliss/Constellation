@@ -7,7 +7,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.62"
+DAG_VERSION="2.63"
 
 function checkVersion()
 {
@@ -489,6 +489,8 @@ function doInstall()
                         echo -e "check to be certain you are on the whitelist and the IP address of the genesis node is valid."
                         echo
                 fi
+        else
+                GENESIS=""
         fi
 
 cat <<EOF > $dagDir/config
@@ -578,6 +580,13 @@ if [[ $1 == "join" ]]; then
         echo
         echo -e "${red}Joining node ${yel}$2 ${red}failed! ${clr}"
         exit 1;
+cat <<EOF > $dagDir/config
+MAXMEM=$MAXMEM
+KEYSTORE=$KEYSTORE
+GENESIS=$2
+NODEALIAS=$NODEALIAS
+DAGNODEUUID=$DAGNODEUUID
+EOF        
     fi
 fi
 
