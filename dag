@@ -426,7 +426,7 @@ function doInstall()
             echo -ne "${grn}Would you like to use it ? [y/n]: ${clr}"
             read -e -p ": " YN
             if [[ "$YN" == "y" ]] || [[ "$YN" == "Y" ]];then
-                export KEYSTORE=hazp12file
+                export KEYSTORE=$hazp12file
                 skipp12=1
             fi
         fi
