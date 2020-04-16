@@ -7,7 +7,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.63"
+DAG_VERSION="2.64"
 
 function checkVersion()
 {
@@ -577,18 +577,19 @@ if [[ $1 == "join" ]]; then
         curl -X POST http://127.0.0.1:9002/join -H "Content-type: application/json" -d '{ "host": "'$2'", "port": 9001 }' -v
         echo -e "Executing: ${blu}curl -X POST http://127.0.0.1:9002/join -H "Content-type: application/json" -d '{ "host": "'$2'", "port": 9001 }' -v ${clr}"
         if [ $? -ne 0 ]; then
-        echo
-        echo -e "${red}Joining node ${yel}$2 ${red}failed! ${clr}"
-        exit 1;
-cat <<EOF > $dagDir/config
+                echo
+                echo -e "${red}Joining node ${yel}$2 ${red}failed! ${clr}"
+                exit 1;
+        fi
+        cat <<EOF > $dagDir/config
 MAXMEM=$MAXMEM
 KEYSTORE=$KEYSTORE
 GENESIS=$2
 NODEALIAS=$NODEALIAS
 DAGNODEUUID=$DAGNODEUUID
-EOF        
-    fi
+EOF
 fi
+
 
 if [[ $1 == "leave" ]]; then
         echo
