@@ -21,7 +21,7 @@ function checkVersion()
                         wget https://raw.githubusercontent.com/zaemliss/Constellation/master/dag -O /usr/local/bin/dag >/dev/null 2>&1
                         echo -e "${grn} dag ${blu}utility updated${clr}"
                         echo
-                        exec "/usr/local/bin/dag $1";
+                        exec "/usr/local/bin/dag";
                         exit 1
                 fi
         fi
