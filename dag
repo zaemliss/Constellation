@@ -7,7 +7,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.65"
+DAG_VERSION="2.66"
 
 function checkVersion()
 {
@@ -220,7 +220,10 @@ function getMetrics()
     echo -e "${clr}"
     echo -ne "${blu}Current height : ${grn}"
     echo $metrics | jq .metrics.redownload_maxAcceptedSnapshotHeight | tr -d '"'
-    echo -e "${clr}"   
+    echo -e "${clr}"
+    echo -ne "${blu}Version        : ${grn}"
+    echo $metrics | jq .metrics.version | tr -d '"'
+    echo -e "${clr}"
 }
 
 function showHelp()
