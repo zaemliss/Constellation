@@ -7,7 +7,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.66"
+DAG_VERSION="2.67"
 
 function checkVersion()
 {
@@ -203,6 +203,15 @@ function showStatus()
                         echo -ne "${red}"
                 fi
                 echo -e "$INSTALLED_VERSION ${clr}"
+         
+         isWhiteListed=$(cat $dagDir/whitelisting | grep $externalHostIp -c)
+         echo -ne "${blu} Whitelisted            : "
+         if [[ $isWhiteListed -gt 0 ]]; then
+                echo -ne "${grn}true${clr}"
+         else 
+                echo -ne "${red}false${clr}"
+         fi
+                
 }
 
 function getMetrics()
