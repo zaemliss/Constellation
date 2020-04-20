@@ -211,7 +211,7 @@ function showStatus()
          else 
                 echo -ne "${red}false${clr}"
          fi
-                
+         echo       
 }
 
 function getMetrics()
