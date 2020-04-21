@@ -7,7 +7,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.69"
+DAG_VERSION="2.70"
 
 function checkVersion()
 {
@@ -241,7 +241,7 @@ function showHelp()
         echo -e " ${red}dag command line options ${blu}(utility version: $DAG_VERSION)${clr}"
         echo
         echo -e " ${yel} dag metrics        ${blu}Displays your DAG Node Metrics, Address and ID ${clr}"
-        echo -e " ${yel} dag update [vers.] ${blu}gets the latest version of the jar (or supplied version) and overwrites the file in $HOME/constellation ${clr}"
+        echo -e " ${yel} dag update         ${blu}gets the latest version of the jar and overwrites the file in $HOME/constellation ${clr}"
         echo -e " ${yel} dag restart        ${blu}restarts the node ${clr}"
         echo -e " ${yel} dag reset          ${blu}resets the tmp folder and reinstalls the node removing it from any cluster it belongs to.${clr}"
         echo -e " ${yel} dag join ip_addr   ${blu}joins to node specified in ip_addr ${clr}"
@@ -273,9 +273,6 @@ function showLogs()
 
 function update()
 {
-        if [ ! -z "$2" ]; then
-                JAR_VERSION=$2
-        fi
         echo
         echo -e "${grn}Updating from ${blu}$INSTALLED_VERSION ${grn}to ${blu}$JAR_VERSION"
         echo -e "${blu} Getting latest version and saving to $HOME/constellation ..."
