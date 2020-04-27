@@ -7,7 +7,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.72"
+DAG_VERSION="2.73"
 
 function checkVersion()
 {
@@ -218,19 +218,22 @@ function getMetrics()
 {
     echo
     metrics=$(curl -s http://127.0.0.1:9002/metrics)
-    echo -ne "${blu}Address        : ${grn}"
+    echo -ne "${blu}Address         : ${grn}"
     echo $metrics | jq .metrics.address | tr -d '"'
     echo -e "${clr}"
-    echo -ne "${blu}ID             : ${grn}"
+    echo -ne "${blu}ID              : ${grn}"
     echo $metrics | jq .metrics.id | tr -d '"'
     echo -e "${clr}"
-    echo -ne "${blu}Node State     : ${grn}"
+    echo -ne "${blu}Node State      : ${grn}"
     echo $metrics | jq .metrics.nodeState | tr -d '"'
     echo -e "${clr}"
-    echo -ne "${blu}Current height : ${grn}"
-    echo $metrics | jq .metrics.redownload_maxAcceptedSnapshotHeight | tr -d '"'
+    echo -ne "${blu}Snapshot height : ${grn}"
+    echo $metrics | jq .metrics.lastSnapshotHeight | tr -d '"'
     echo -e "${clr}"
-    echo -ne "${blu}Version        : ${grn}"
+    echo -ne "${blu}Majority height : ${grn}"
+    echo $metrics | jq .metrics.redownload_lastMajorityStateHeight | tr -d '"'
+    echo -e "${clr}"
+    echo -ne "${blu}Version         : ${grn}"
     echo $metrics | jq .metrics.version | tr -d '"'
     echo -e "${clr}"
 }
