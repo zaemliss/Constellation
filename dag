@@ -7,7 +7,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.73"
+DAG_VERSION="2.74"
 
 function checkVersion()
 {
@@ -244,6 +244,7 @@ function showHelp()
         echo -e " ${red}dag command line options ${blu}(utility version: $DAG_VERSION)${clr}"
         echo
         echo -e " ${yel} dag metrics        ${blu}Displays your DAG Node Metrics, Address and ID ${clr}"
+        echo -e " ${yel} dag nodes          ${blu}Displays the cluster's node statuses ${clr}"
         echo -e " ${yel} dag update         ${blu}gets the latest version of the jar and overwrites the file in $HOME/constellation ${clr}"
         echo -e " ${yel} dag restart        ${blu}restarts the node ${clr}"
         echo -e " ${yel} dag reset          ${blu}resets the tmp folder and reinstalls the node removing it from any cluster it belongs to.${clr}"
@@ -603,3 +604,13 @@ fi
 if [[ $1 == "start" ]]; then
         start
 fi
+
+if [[ $1 == "nodes" ]]; then
+        echo
+        echo -e "${blu}   IP                \t Status      \t   Reputation"
+        echo -e "${yel}------------------------------------------------------------${grn}"
+        curl -s http://lb.constellationnetwork.io:9000/cluster/info | jq '.[] | {ip: .ip.host, status: .status, reputation: .reputation}' | tr -d '"{}:\n' | sed "s/  ip/\r\n  /g" | sed "s/  status//g" | sed "s/,/    \t/g" | sed "s/reputation//g"
+        echo -e "${clr}"
+        echo
+fi
+
