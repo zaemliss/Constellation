@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# Declare Variables
+red='\033[1;31m'
+grn='\033[1;32m'
+yel='\033[1;33m'
+blu='\033[1;36m'
+pnk='\033[1;35m'
+clr='\033[0m'
+
+# Store external IP address
+EXTERNAL_HOST_IP=$(curl -s https://api.ipify.org)
+
+echo -e "${clr}"
+echo -e " ${yel}###############################################################${clr}"
+echo -e " ${yel}#          ${grn}Constellation Security deployment script ${yel}          #${clr}"
+echo -e " ${yel}###############################################################${clr}"
+echo
+echo -e " ${blu}Updating system ...${clr}"
+echo -e " ${grn}sudo apt get update${clr}"
+sudo apt update >/dev/null 2>&1
+echo
+
+# INSTALL ufwnd Fail2ban
+ufwver=$(command -v ufw > /dev/null 2>&1)
+    if [[ ${#ufwver} > 0 ]]; then
+        echo -e " ${grn}UFW already installed${clr}"
+        installufw=0
+    else
+        installufw=1
+    fi
+
+f2bver=$(command -v fail2ban-client > /dev/null 2>&1)
+    if [[ ${#f2bver} > 0 ]]; then
+        echo -e " ${grn}Fail2ban already installed${clr}"
+        installf2b=0
+    else
+        installf2b=1
+    fi
+
+if [[ "$installufw" == "1" ]]; then
+    echo -e " ${pnk}Installing latest ufw version...${clr}"
+    sudo apt install -y ufw >/dev/null 2>&1
+    sudo ufw default allow outgoing > /dev/null 2>&1
+    sudo ufw default deny incoming > /dev/null 2>&1
+    sudo ufw allow ssh/tcp > /dev/null 2>&1
+    sudo ufw limit ssh/tcp > /dev/null 2>&1
+    sudo ufw allow 9000/tcp > /dev/null 2>&1
+    sudo ufw allow 9001/tcp > /dev/null 2>&1
+    sudo ufw allow 9002/tcp > /dev/null 2>&1
+    sudo ufw logging on > /dev/null 2>&1
+    echo "y" | sudo ufw enable > /dev/null 2>&1
+    echo
+    read -e -p "Do you want to enable port 9002 to a specific IP at this time?" CHOICE
+    if [[ ("$CHOICE" == "y" || "$CHOICE" == "Y") ]]; then
+      read -e -p "IP address of your local/home computer (you can find it at https://api.ipify.org) : " LOCALIP
+      sudo ufw allow from $LOCALIP to any port 22
+    else
+      echo -e "${grn}You can enable this at a later time by using the following syntax at the prompt: ${blu}sudo ufw allow from xx.xx.xx.xx to any port 9002${grn}"
+      echo -e "(where xx.xx.xx.xx is your ip address ex.: 32.195.24.134)${clr}"
+    fi
+    echo
+    echo -e " ${blu}Firewall installed and enabled.${clr}"
+fi
+
+if [[ "$installf2b" == "1" ]]; then
+    echo -e " ${pnk}Installing latest fail2ban version...${clr}"
+    sudo apt install -y fail2ban >/dev/null 2>&1
+fi
+
+  echo -e "${yel} Installation complete... ${clr}"
+  echo -e "${clr}"
