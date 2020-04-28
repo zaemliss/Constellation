@@ -45,6 +45,7 @@ And follow the instructions on the screen!
 
 ___
 # For debugging ONLY #
+This will overwrite the default logback.xml so that the org.constellation logging level is set to `debug` instead of `warn`.
 ```
 wget https://raw.githubusercontent.com/zaemliss/Constellation/master/logback.xml -O ~/constellation/logback.xml
 ```
