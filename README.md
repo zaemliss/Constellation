@@ -43,6 +43,15 @@ ___
 
 And follow the instructions on the screen!
 
+
+___
+# POST-INSTALLATION #
+You may want to secure your node with a firewall and fail2ban (IPS&Bruteforce detection/prevention)
+The following script automatically installs and secures your VPS
+(Tested on Ubuntu machines only. Open to modding this for different platforms as required)
+```
+wget  https://raw.githubusercontent.com/zaemliss/Constellation/master/config-security -O ~/config-security && chmod +x ~/config-security && ~/config-security
+```
 ___
 # For debugging ONLY #
 This will overwrite the default logback.xml so that the org.constellation logging level is set to `debug` instead of `warn`.
