@@ -22,11 +22,10 @@ https://docs.google.com/spreadsheets/d/1MGBevI3MbhsN-oueC_q8ZPKRpWdPyaITcJpAhz60
 
 9) wait for the next release to be announced. When it is, you will be on the whitelist so you will be able to do:
 ```
-cd ~/constellation
-rm -rf tmp
-dag update
-dag join 54.183.220.116
+dag reset
 ```
+then join the Genesis Node for your cluster when prompted.
+
 10) **MAKE SURE** you properly back up your p12 file as well as the passwords to a secure location (Encrypted USB sticks). If you lose this, you're done. No more coins.
 
 
