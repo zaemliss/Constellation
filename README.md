@@ -17,7 +17,7 @@ QUICKSTEPS:
 5) run the dag script and follow on-screen instructions
 6) at the `Join cluster ?` question, answer `n`
 7) confirm your node is running by doing dag again and seeing node and web online
-8) get your ID by doing dag id and paste that info along with your ip address in the node operator spreadsheet
+8) get your ID by doing `dag metrics` and paste that info along with your ip address in the node operator spreadsheet
 https://docs.google.com/spreadsheets/d/1MGBevI3MbhsN-oueC_q8ZPKRpWdPyaITcJpAhz60lPo/edit#gid=0
 
 9) wait for the next release to be announced. When it is, you will be on the whitelist so you will be able to do:
