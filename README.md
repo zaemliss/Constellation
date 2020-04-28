@@ -45,7 +45,7 @@ ___
 And follow the instructions on the screen!
 
 ___
-##For debugging ONLY##
+# For debugging ONLY #
 ```
 wget https://raw.githubusercontent.com/zaemliss/Constellation/master/logback.xml -O ~/constellation/logback.xml
 ```
