@@ -45,7 +45,7 @@ And follow the instructions on the screen!
 
 
 ___
-# POST-INSTALLATION #
+# POST-INSTALLATION SECURITY (Ubuntu/Debian tested only)#
 You may want to secure your node with a firewall and fail2ban (IPS&Bruteforce detection/prevention)
 The following script automatically installs and secures your VPS
 (Tested on Ubuntu machines only. Open to modding this for different platforms as required)
