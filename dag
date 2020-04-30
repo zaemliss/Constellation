@@ -221,8 +221,13 @@ function getMetrics()
 {
     echo
     metrics=$(curl -s http://127.0.0.1:9002/metrics)
+    address=$(echo $metrics | jq .metrics.address | tr -d '"')
+    rewards=$(curl -s http://lb.constellationnetwork.io:9000/address/"${address}" | jq ".rewardsBalance")
     echo -ne "${blu}Address         : ${grn}"
-    echo $metrics | jq .metrics.address | tr -d '"'
+    echo ${address}
+    echo -e "${clr}"
+    echo -ne "${blu}Node Rewards    : ${grn}"
+    expr $rewards / 100000000
     echo -e "${clr}"
     echo -ne "${blu}ID              : ${grn}"
     echo $metrics | jq .metrics.id | tr -d '"'
