@@ -7,7 +7,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.79"
+DAG_VERSION="2.80"
 
 function checkVersion()
 {
@@ -253,14 +253,14 @@ function showHelp()
         echo
         echo -e " ${yel} dag metrics        ${blu}Displays your DAG Node Metrics, Address and ID ${clr}"
         echo -e " ${yel} dag nodes          ${blu}Displays the cluster's node statuses ${clr}"
-        echo -e " ${yel} dag update         ${blu}gets the latest version of the jar and overwrites the file in $HOME/constellation ${clr}"
-        echo -e " ${yel} dag restart        ${blu}restarts the node ${clr}"
-        echo -e " ${yel} dag reset          ${blu}resets the tmp folder and reinstalls the node removing it from any cluster it belongs to.${clr}"
+#        echo -e " ${yel} dag update         ${blu}gets the latest version of the jar and overwrites the file in $HOME/constellation ${clr}"
+#        echo -e " ${yel} dag restart        ${blu}restarts the node ${clr}"
+        echo -e " ${yel} dag reset          ${blu}Updates the jar to the latest version, resets the tmp folder and reinstalls the node removing it from any cluster it belongs to.${clr}"
         echo -e " ${yel} dag join ip_addr   ${blu}joins to node specified in ip_addr ${clr}"
         echo -e " ${yel} dag leave          ${blu}leaves the cluster ${clr}"
         echo -e " ${yel} dag logs [search]  ${blu}displays the app logs in real time OR if a parameter is supplied, returns matching results in ${grn}search${clr}"
-        echo -e " ${yel} dag stop           ${blu}stops the node ${clr}"
-        echo -e " ${yel} dag start          ${blu}starts the node ${clr}"
+#        echo -e " ${yel} dag stop           ${blu}stops the node ${clr}"
+#        echo -e " ${yel} dag start          ${blu}starts the node ${clr}"
         echo
         echo -e " ${grn}you can navigate to your node via web browser by entering ${blu}http://$externalHostIp:9002 ${grn}in the address bar.${clr}"
         echo
@@ -531,13 +531,13 @@ function getPasswords()
 checkConfig
 checkDepends
 
-if [[ $1 == "update" ]]; then
-        update
-fi
+#if [[ $1 == "update" ]]; then
+#        update
+#fi
 
-if [[ $1 == "restart" ]]; then
-        restart
-fi
+#if [[ $1 == "restart" ]]; then
+#        restart
+#fi
 
 if [[ $1 == "reset" ]]; then
         echo
@@ -551,10 +551,6 @@ if [[ $1 == "reset" ]]; then
         echo -e "${grn} Terminating instance...${clr}"
         reset
         
-fi
-
-if [[ $1 == "status" ]]; then
-        showStatus
 fi
 
 if [[ $1 == "logs" ]]; then
@@ -601,17 +597,17 @@ if [[ $1 == "leave" ]]; then
         echo
 fi
 
-if [[ $1 == "stop" ]]; then
-        stop
-fi
+#if [[ $1 == "stop" ]]; then
+#        stop
+#fi
 
 if [[ $1 == "metrics" ]]; then
         getMetrics
 fi
 
-if [[ $1 == "start" ]]; then
-        start
-fi
+#if [[ $1 == "start" ]]; then
+#        start
+#fi
 
 if [[ $1 == "nodes" ]]; then
         echo
