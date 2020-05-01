@@ -7,7 +7,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.80"
+DAG_VERSION="2.81"
 
 function checkVersion()
 {
@@ -372,6 +372,12 @@ function doInstall()
         checkDepends
         checkDir
         update
+        echo -e "${red}   READ CAREFULLY: ${blu}This will reset your node by stopping the node and updating to the latest jar files.${clr}"
+        echo -e "${blu}                   The script will then proceeed to configure the node and will ask you to enter passwords and an alias.${clr}"
+        echo -e "${grn}                   If you already have a p12 file you want to reuse, just enter the same passwords and alias you did originally.${clr}"
+        echo -e "${blu}                   The script will then detect your old p12 file and prompt you to use it.${clr}"
+        echo -e "${red}                   Only enter new passwords or alias if you don't plan on reusing your old p12 file.${clr}"
+        echo                        
         echo -ne "${blu}1. ${grn}How much memory (in gigabytes, Minimum 3) would you like to allocate to running the node? e.g.: 4  ${clr}"
         read -e -p ": " MAXMEMORY
         if [[ "MAXMEMORY" -lt "3" ]];then
