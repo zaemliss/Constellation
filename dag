@@ -7,7 +7,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.83"
+DAG_VERSION="2.84"
 
 function checkVersion()
 {
@@ -243,6 +243,9 @@ function getMetrics()
     echo -e "${clr}"
     echo -ne "${blu}Version         : ${grn}"
     echo $metrics | jq .metrics.version | tr -d '"'
+    echo -e "${clr}"
+    echo -ne "${blu}Date Stamp      : ${yel}"
+    date
     echo -e "${clr}"
 }
 
