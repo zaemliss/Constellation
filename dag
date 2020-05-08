@@ -7,7 +7,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.86"
+DAG_VERSION="2.87"
 
 function checkVersion()
 {
@@ -173,6 +173,21 @@ function checkConfig()
     fi
 }
 
+function makeswap()
+{
+  echo
+  echo -e "${blu}Creating Swap...${clr}"
+  read -e -p " Swap size in Gigs: " CHOICE
+  fallocate -l ${CHOICE}G /swapfile > /dev/null 2>&1
+  chmod 600 /swapfile > /dev/null 2>&1
+  mkswap /swapfile > /dev/null 2>&1
+  swapon /swapfile > /dev/null 2>&1
+  echo
+  echo -e "/swapfile none swap sw 0 0 \n" >> /etc/fstab > /dev/null 2>&1
+  echo -e "${yel}${CHOICE}G swapfile created...${clr}"
+  free
+  echo
+}
 function showStatus()
 {
         # Can I see the webpage?
@@ -607,9 +622,9 @@ if [[ $1 == "leave" ]]; then
         echo
 fi
 
-#if [[ $1 == "stop" ]]; then
-#        stop
-#fi
+if [[ $1 == "makeswap" ]]; then
+        makeswap
+fi
 
 if [[ $1 == "metrics" ]]; then
         getMetrics
