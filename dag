@@ -205,7 +205,7 @@ function swapadd()
         sudo mkswap /swapfile
         echo -e "${grn} Mounting...${clr}"
         sudo swapon /swapfile
-        echo -e "${yel}${CHOICE}G swapfile resized...${clr}"
+        echo -e "${yel} ${CHOICE}G swapfile resized...${clr}"
         free
         echo
   else
