@@ -7,7 +7,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.85"
+DAG_VERSION="2.86"
 
 function checkVersion()
 {
@@ -94,9 +94,9 @@ function checkDepends()
         if [[ "$installJava" == "1" ]]; then
                 if [[ "$OS_DIST" == "Debian" ]]; then
                     sudo apt-get purge openjdk*
-                    #sudo add-apt-repository -y ppa: webupd8team / java  > /dev/null 2>&1
-                    #sudo apt-get update  > /dev/null 2>&1
-                    JAVA_INSTALL_CMD="sudo apt install -y default-jre" #openjdk-8-jdk"
+                    sudo add-apt-repository -y ppa: webupd8team / java  > /dev/null 2>&1
+                    sudo apt-get update  > /dev/null 2>&1
+                    JAVA_INSTALL_CMD="sudo apt install -y openjdk-8-jdk" #default-jre" 
                 elif [[ "$OS_DIST" == "RedHat" ]]; then
                     JAVA_INSTALL_CMD="sudo yum install -y java-1.8.0-openjdk"
                 elif [[ "$OS" == "Darwin" ]]; then
