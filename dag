@@ -7,7 +7,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.88"
+DAG_VERSION="2.89"
 
 function checkVersion()
 {
@@ -197,9 +197,13 @@ function swapadd()
   echo
   read -e -p " How many Gigs do you want to add (CTRL-C to cancel): " CHOICE
   if [[ ! -z $CHOICE ]]; then
+        echo -e "${grn} Shutting down swap to resize...${clr}"
         sudo swapoff /swapfile
+        echo -e "${grn} Resizing...${clr}"
         sudo dd if=/dev/zero of=/swapfile bs=1M count=$(( CHOICE*1024 )) oflag=append conv=notrunc
+        echo -e "${grn} Installing...${clr}"
         sudo mkswap /swapfile
+        echo -e "${grn} Mounting...${clr}"
         sudo swapon /swapfile
         echo -e "${yel}${CHOICE}G swapfile resized...${clr}"
         free
