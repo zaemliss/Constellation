@@ -8,7 +8,7 @@ blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
 DAG_VERSION="2.89"
-
+DELETEME="test comment"
 function checkVersion()
 {
         webVer=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/dag | grep "DAG_VERSION=" | head -1 | tr -d '"' | tr '=' ' ' | awk '{print $2}')
