@@ -1,4 +1,10 @@
 #!/bin/bash
+##############################################
+##                                          ##
+##   DAG Installation and Utility Script    ##
+##   by BitMonopoly/zaemliss (2020)         ##
+##                                          ##
+##############################################
 
 # Declare General Variables ###############################
 red='\033[1;31m'
@@ -7,7 +13,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.90"
+DAG_VERSION="2.91"
 
 function checkVersion()
 {
@@ -355,7 +361,6 @@ function restart()
         echo -e "${grn} Deploying on $externalHostIp ...${clr}"
         
         start
-        
 }
 
 function reset()
@@ -474,14 +479,13 @@ function doInstall()
                 fi
         done
 
-        
         echo -e "${blu}4. ${grn}Please enter an alias for the node (e.x.: myalias)"
         echo -e "${grn}   Format: Upper and lower characters, minimum 5 characters, NO SPACES!${clr}"
         read -e -p "Please enter the Alias for the node :" MYNODEALIAS
         export NODEALIAS=$MYNODEALIAS
 
-       hazp12file=$(locate *.p12 | head -n 1)
-       skipp12=0
+        hazp12file=$(locate *.p12 | head -n 1)
+        skipp12=0
         if [ ${#hazp12file} -ne 0 ]; then 
             echo -e "${blu}5. ${grn}I found this .p12 file: ${yel}$hazp12file [y/n]"
             echo -ne "${grn}Would you like to use it ? [y/n]: ${clr}"
@@ -578,9 +582,7 @@ function getPasswords()
     fi
 }
 
-
 # Begin ###############################
-
 checkConfig
 checkDepends
 
@@ -641,7 +643,6 @@ DAGNODEUUID=$DAGNODEUUID
 EOF
 fi
 
-
 if [[ $1 == "leave" ]]; then
         echo
         echo -e "${grn} Leaving cluster ...${clr}"
@@ -662,10 +663,6 @@ if [[ $1 == "metrics" ]]; then
         getMetrics
 fi
 
-#if [[ $1 == "start" ]]; then
-#        start
-#fi
-
 if [[ $1 == "nodes" ]]; then
         echo
         echo -e "${blu}   IP                \t Status      \t   Reputation"
@@ -674,4 +671,3 @@ if [[ $1 == "nodes" ]]; then
         echo -e "${clr}"
         echo
 fi
-
