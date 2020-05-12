@@ -13,7 +13,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.92"
+DAG_VERSION="2.93"
 
 function checkVersion()
 {
@@ -148,11 +148,11 @@ checkOS
 checkDepends
 
 # Declare System Variables ####################################
-#JAR_VERSION=$(curl -s "https://api.github.com/repos/Constellation-Labs/constellation/releases?per_page=1" | jq ".[0].tag_name" | tr -d '"v')
-JAR_VERSION="2.5.8"
+JAR_VERSION=$(curl -s "https://api.github.com/repos/Constellation-Labs/constellation/releases?per_page=1" | jq ".[0].tag_name" | tr -d '"v')
+#JAR_VERSION="2.5.8"
 
 # Only get external IP if needed
-if [[ $1 == "" || $1 == "start" || $1 == "restart" || $1 == "reset" || $1 == "join" || $1 == "leave" ]]; then
+if [[ $1 == "" || $1 == "start" || $1 == "restart" || $1 == "reset" || $1 == "join" || $1 == "leave" || $1 == "metrics" ]]; then
         echo -ne "${grn} getting external IP address... ";
         externalHostIp=$(curl -s https://ipv4.icanhazip.com/)
         echo -e "${yel}$externalHostIp ${clr}";
@@ -279,6 +279,9 @@ function getMetrics()
     echo -e "${clr}"
     echo -ne "${blu}Node Rewards    : ${grn}"
     expr $rewards / 100000000
+    echo -e "${clr}"
+    echo -ne "${blu}IP              : ${grn}"
+    echo $externalHostIp
     echo -e "${clr}"
     echo -ne "${blu}ID              : ${grn}"
     echo $metrics | jq .metrics.id | tr -d '"'
