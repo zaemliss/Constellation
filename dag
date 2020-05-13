@@ -13,7 +13,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.95"
+DAG_VERSION="2.96"
 
 function checkVersion()
 {
@@ -315,6 +315,7 @@ function showHelp()
         echo -e " ${yel} dag leave            ${blu}leaves the cluster ${clr}"
         echo -e " ${yel} dag logs [search]    ${blu}displays the app logs in real time OR if a parameter is supplied, returns matching results in ${grn}search${clr}"
         echo -e " ${yel} dag explore dag_addr ${blu}displays the transactions for the address specified in ${grn}dag_addr${clr}"
+        echo -e " ${yel} dag hash dag_trasact ${blu}displays the transaction for the tx hash specified in ${grn}dag_transact${clr}"
 #        echo -e " ${yel} dag stop             ${blu}stops the node ${clr}"
 #        echo -e " ${yel} dag start            ${blu}starts the node ${clr}"
         echo
@@ -665,6 +666,16 @@ if [[ $1 == "explore" ]]; then
         echo -e "${clr}"
   else
         echo -e "${red} Address cannot be empty! ${yel}\n Usage: ${blu}dag explore valid_dag_address${clr}"
+  fi
+fi
+
+if [[ $1 == "hash" ]]; then
+  if [[ ! -z $2 ]]; then
+        echo -e "${grn}"
+        curl -s https://xju69fets2.execute-api.us-west-1.amazonaws.com/cl-block-explorer-mainnet/transactions/$2 | jq '. | {hash: .hash, amount: (( .amount / 100000000 )), receiver: .receiver, sender: .sender}' | tr -d '{}",' | grep -A 4 $2
+        echo -e "${clr}"
+  else
+        echo -e "${red} Hash cannot be empty! ${yel}\n Usage: ${blu}dag hash valid_dag_transaction_hash${clr}"
   fi
 fi
 
