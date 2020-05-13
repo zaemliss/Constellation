@@ -660,7 +660,9 @@ fi
 
 if [[ $1 == "explore" ]]; then
   if [[ ! -z $2 ]]; then
+        echo -e "${grn}"
         curl -s https://xju69fets2.execute-api.us-west-1.amazonaws.com/cl-block-explorer-mainnet/transactions?address=$2 | jq '.[] | {hash: .hash, amount: (( .amount / 100000000 )), receiver: .receiver, sender: .sender}' | tr -d '{}",'
+        echo -e "${clr}"
   else
         echo -e "${red} Address cannot be empty! ${yel}\n Usage: ${blu}dag explore valid_dag_address${clr}"
   fi
