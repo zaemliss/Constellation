@@ -13,7 +13,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.93"
+DAG_VERSION="2.94"
 
 function checkVersion()
 {
@@ -308,16 +308,15 @@ function showHelp()
         echo
         echo -e " ${red}dag command line options ${blu}(utility version: $DAG_VERSION)${clr}"
         echo
-        echo -e " ${yel} dag metrics        ${blu}Displays your DAG Node Metrics, Address and ID ${clr}"
-        echo -e " ${yel} dag nodes          ${blu}Displays the cluster's node statuses ${clr}"
-#        echo -e " ${yel} dag update         ${blu}gets the latest version of the jar and overwrites the file in $HOME/constellation ${clr}"
-#        echo -e " ${yel} dag restart        ${blu}restarts the node ${clr}"
-        echo -e " ${yel} dag reset          ${blu}Updates the jar to the latest version, resets the tmp folder and reinstalls the node removing it from any cluster it belongs to.${clr}"
-        echo -e " ${yel} dag join ip_addr   ${blu}joins to node specified in ip_addr ${clr}"
-        echo -e " ${yel} dag leave          ${blu}leaves the cluster ${clr}"
-        echo -e " ${yel} dag logs [search]  ${blu}displays the app logs in real time OR if a parameter is supplied, returns matching results in ${grn}search${clr}"
-#        echo -e " ${yel} dag stop           ${blu}stops the node ${clr}"
-#        echo -e " ${yel} dag start          ${blu}starts the node ${clr}"
+        echo -e " ${yel} dag metrics          ${blu}Displays your DAG Node Metrics, Address and ID ${clr}"
+        echo -e " ${yel} dag nodes            ${blu}Displays the cluster's node statuses ${clr}"
+        echo -e " ${yel} dag reset            ${blu}Updates the jar to the latest version, resets the tmp folder and reinstalls the node removing it from any cluster it belongs to.${clr}"
+        echo -e " ${yel} dag join ip_addr     ${blu}joins to node specified in ip_addr ${clr}"
+        echo -e " ${yel} dag leave            ${blu}leaves the cluster ${clr}"
+        echo -e " ${yel} dag logs [search]    ${blu}displays the app logs in real time OR if a parameter is supplied, returns matching results in ${grn}search${clr}"
+        echo -e " ${yel} dag explore dag_addr ${blu}displays the transactions for the address specified in ${grn}dag_addr${clr}"
+#        echo -e " ${yel} dag stop             ${blu}stops the node ${clr}"
+#        echo -e " ${yel} dag start            ${blu}starts the node ${clr}"
         echo
         echo -e " ${grn}you can navigate to your node via web browser by entering ${blu}http://$externalHostIp:9002 ${grn}in the address bar.${clr}"
         echo
@@ -657,6 +656,14 @@ fi
 
 if [[ $1 == "makeswap" ]]; then
         makeswap
+fi
+
+if [[ $1 == "explore" ]]; then
+  if [[ ! -z $2 ]]; then
+        curl -s https://xju69fets2.execute-api.us-west-1.amazonaws.com/cl-block-explorer-mainnet/transactions?address=$2 | jq '.[] | {hash: .hash, amount: (( .amount / 100000000 )), receiver: .receiver, sender: .sender}' | tr -d '{}",'
+  else
+        echo -e "${red} Address cannot be empty! ${yel}\n Usage: ${blu}dag explore valid_dag_address${clr}"
+  fi
 fi
 
 if [[ $1 == "swapadd" ]]; then
