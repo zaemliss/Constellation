@@ -47,16 +47,15 @@ if [[ "$installufw" == "1" ]]; then
     sudo ufw limit ssh/tcp > /dev/null 2>&1
     sudo ufw allow 9000/tcp > /dev/null 2>&1
     sudo ufw allow 9001/tcp > /dev/null 2>&1
-    sudo ufw allow 9002/tcp > /dev/null 2>&1
     sudo ufw logging on > /dev/null 2>&1
     echo "y" | sudo ufw enable > /dev/null 2>&1
     echo
     read -e -p "Do you want to enable port 9002 to a specific IP at this time?" CHOICE
     if [[ ("$CHOICE" == "y" || "$CHOICE" == "Y") ]]; then
       read -e -p "IP address of your local/home computer (you can find it at https://api.ipify.org) : " LOCALIP
-      sudo ufw allow from $LOCALIP to any port 22
+      sudo ufw allow proto tcp from $LOCALIP to any port 22
     else
-      echo -e "${grn}You can enable this at a later time by using the following syntax at the prompt: ${blu}sudo ufw allow from xx.xx.xx.xx to any port 9002${grn}"
+      echo -e "${grn}You can enable this at a later time by using the following syntax at the prompt: ${blu}sudo ufw allow proto tcp from xx.xx.xx.xx to any port 9002${grn}"
       echo -e "(where xx.xx.xx.xx is your ip address ex.: 32.195.24.134)${clr}"
     fi
     echo
