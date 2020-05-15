@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Declare General Variables ###############################
+red='\033[1;31m'
+yel='\033[1;33m'
+blu='\033[1;36m'
+clr='\033[0m'
+
+nodes=$(curl -s http://lb.constellationnetwork.io:9000/cluster/info | jq '.[] | {ip: .ip.host}' | tr -d 'ip"{}:,\n' | sed "s/   /\n/g")
+
+count=0
+echo
+for item in $nodes
+do
+  count=$((count+1))
+  echo -e "${red}$count ${yel}$item${blu}"
+  nc -z -v -w3 $item 9000
+  nc -z -v -w3 $item 9001
+  nc -z -v -w3 $item 9002
+  nc -z -v -w3 $item 22
+  echo -e "${clr}"
+done
