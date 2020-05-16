@@ -8,8 +8,11 @@ blu='\033[1;36m'
 clr='\033[0m'
 pnk='\033[1;35m'
 
-
-nodes=$(curl -s http://lb.constellationnetwork.io:9000/cluster/info | jq '.[] | {ip: .ip.host}' | tr -d 'ip"{}:,\n' | sed "s/   /\n/g")
+if [[ ! -z $1 ]]; then
+  nodes=$1
+else
+  nodes=$(curl -s http://lb.constellationnetwork.io:9000/cluster/info | jq '.[] | {ip: .ip.host}' | tr -d 'ip"{}:,\n' | sed "s/   /\n/g")
+fi
 
 count=0
 echo
