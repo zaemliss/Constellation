@@ -2,6 +2,7 @@
 
 # Declare General Variables ###############################
 red='\033[1;31m'
+grn='\033[1;32m'
 yel='\033[1;33m'
 blu='\033[1;36m'
 clr='\033[0m'
@@ -14,9 +15,34 @@ for item in $nodes
 do
   count=$((count+1))
   echo -e "${red}$count ${yel}$item${blu}"
-  nc -z -v -w3 $item 9000
-  nc -z -v -w3 $item 9001
-  nc -z -v -w3 $item 9002
-  nc -z -v -w3 $item 22
+  
+  nc -z -v -w3 $item 9000 > /dev/null 2>&1;
+  if [[ $? = 1 ]]; then
+    echo -e "${blu}Port 9000 : ${red}closed!${clr}"
+  else
+    echo -e "${blu}Port 9000 : ${grn}open${clr}"
+  fi
+  
+  nc -z -v -w3 $item 9001 > /dev/null 2>&1;
+  if [[ $? = 1 ]]; then
+    echo -e "${blu}Port 9001 : ${red}closed!${clr}"
+  else
+    echo -e "${blu}Port 9001 : ${grn}open${clr}"
+  fi
+  
+  nc -z -v -w3 $item 9002 > /dev/null 2>&1;
+  if [[ $? = 0 ]]; then
+    echo -e "${blu}Port 9002 : ${red}open!${clr}"
+  else
+    echo -e "${blu}Port 9002 : ${grn}closed${clr}"
+  fi
+  
+  nc -z -v -w3 $item 22 > /dev/null 2>&1;
+  if [[ $? = 1 ]]; then
+    echo -e "${blu}Port 22 : ${grn}closed${clr}"
+  else
+    echo -e "${blu}Port 22 : ${yel}open${clr}"
+  fi
+  
   echo -e "${clr}"
 done
