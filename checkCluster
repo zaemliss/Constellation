@@ -39,9 +39,9 @@ do
   
   nc -z -v -w3 $item 22 > /dev/null 2>&1;
   if [[ $? = 1 ]]; then
-    echo -e "${blu}Port 22 : ${grn}closed${clr}"
+    echo -e "${blu}Port 22   : ${grn}closed${clr}"
   else
-    echo -e "${blu}Port 22 : ${yel}open${clr}"
+    echo -e "${blu}Port 22   : ${yel}open${clr}"
   fi
   
   echo -e "${clr}"
