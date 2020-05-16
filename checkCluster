@@ -6,6 +6,8 @@ grn='\033[1;32m'
 yel='\033[1;33m'
 blu='\033[1;36m'
 clr='\033[0m'
+pnk='\033[1;35m'
+
 
 nodes=$(curl -s http://lb.constellationnetwork.io:9000/cluster/info | jq '.[] | {ip: .ip.host}' | tr -d 'ip"{}:,\n' | sed "s/   /\n/g")
 
@@ -41,7 +43,7 @@ do
   if [[ $? = 1 ]]; then
     echo -e "${blu}Port 22   : ${grn}closed${clr}"
   else
-    echo -e "${blu}Port 22   : ${yel}open${clr}"
+    echo -e "${blu}Port 22   : ${pnk}open${clr}"
   fi
   
   echo -e "${clr}"
