@@ -1,7 +1,7 @@
 # Instructions:
 
 This command utility is an all-in-one script that help you install and manage your node.
-
+# >>>>> IMPORTANT: This is __NOT__ compatible with Docker Images!!! If you've installed your node with a Docker Image, this script can break your installation. <<<<< #
 ### 1. Requirements: ###
 You need a VPS with the following minimum requirements:
 - 4G RAM
@@ -59,6 +59,7 @@ This will overwrite the default logback.xml so that the org.constellation loggin
 wget https://raw.githubusercontent.com/zaemliss/Constellation/master/logback.xml -O ~/constellation/logback.xml
 ```
 # TESTNET INSTRUCTIONS: #
+# >>>>> IMPORTANT: This is __NOT__ compatible with Docker Images!!! If you've installed your node with a Docker Image, this script can break your installation. <<<<< #
 QUICKSTEPS:
 - make sure you have the VPS set up with min reqs
 - make sure you are root
