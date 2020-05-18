@@ -59,6 +59,12 @@ This will overwrite the default logback.xml so that the org.constellation loggin
 wget https://raw.githubusercontent.com/zaemliss/Constellation/master/logback.xml -O ~/constellation/logback.xml
 ```
 # TESTNET INSTRUCTIONS: #
+QUICKSTEPS:
+- make sure you have the VPS set up with min reqs
+- make sure you are root
+  `sudo bash`
+- make sure you read EVERYTHING properly. It's easy to make mistakes when you rush through things.
+
 1. copy and paste this into your terminal window
 ```
 wget https://raw.githubusercontent.com/zaemliss/Constellation/master/dag-testnet -O /usr/local/bin/dag-testnet && chmod +x /usr/local/bin/dag-testnet && dag-testnet
