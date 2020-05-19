@@ -24,3 +24,4 @@ echo -e "${yel} Pre-requisites installed. ${clr}"
 snap install jq
 sudo apt install openjdk-8-jdk
 sudo apt install haveged
+sudo apt install uuid-runtime
