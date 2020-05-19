@@ -13,7 +13,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.98"
+DAG_VERSION="2.99"
 
 function checkVersion()
 {
@@ -67,9 +67,9 @@ function checkDepends()
         jq --version > /dev/null 2>&1
         if [ $? -ne 0 ]; then
                 if [[ "$OS_DIST" == "Debian" ]]; then
-                    JQ_INSTALL_CMD="sudo apt install -y jq -qq"
+                    JQ_INSTALL_CMD="apt install -y jq -qq"
                 elif [[ "$OS_DIST" == "RedHat" ]]; then
-                    JQ_INSTALL_CMD="sudo yum install -y jq"
+                    JQ_INSTALL_CMD="yum install -y jq"
                 elif [[ "$OS" == "Darwin" ]]; then
                     JQ_INSTALL_CMD="brew install jq"
                 fi
@@ -102,12 +102,12 @@ function checkDepends()
 
         if [[ "$installJava" == "1" ]]; then
                 if [[ "$OS_DIST" == "Debian" ]]; then
-                    sudo apt-get purge openjdk*
-                    sudo add-apt-repository -y ppa: webupd8team / java  > /dev/null 2>&1
-                    sudo apt-get update  > /dev/null 2>&1
-                    JAVA_INSTALL_CMD="sudo apt install -y openjdk-8-jdk" #default-jre" 
+                    apt-get purge openjdk*
+                    add-apt-repository -y ppa: webupd8team / java  > /dev/null 2>&1
+                    apt-get update  > /dev/null 2>&1
+                    JAVA_INSTALL_CMD="apt install -y openjdk-8-jdk" #default-jre" 
                 elif [[ "$OS_DIST" == "RedHat" ]]; then
-                    JAVA_INSTALL_CMD="sudo yum install -y java-1.8.0-openjdk"
+                    JAVA_INSTALL_CMD="yum install -y java-1.8.0-openjdk"
                 elif [[ "$OS" == "Darwin" ]]; then
                     JAVA_INSTALL_CMD="brew cask install homebrew/cask-versions/adoptopenjdk8"
                 fi
@@ -124,9 +124,9 @@ function checkDepends()
             havegedinstalled=$(which haveged)
             if [[ -z "$havegedinstalled" ]]; then
                     if [[ "$OS_DIST" == "Debian" ]]; then
-                        HAVEGED_INSTALL_CMD="sudo apt install -y haveged -qq"
+                        HAVEGED_INSTALL_CMD="apt install -y haveged -qq"
                     elif [[ "$OS_DIST" == "RedHat" ]]; then
-                        HAVEGED_INSTALL_CMD="sudo yum install -y haveged"
+                        HAVEGED_INSTALL_CMD="yum install -y haveged"
                     fi
                     echo -e " ${pnk}Installing latest version of Haveged...${clr}"
                     $HAVEGED_INSTALL_CMD > /dev/null 2>&1
@@ -142,9 +142,9 @@ function checkDepends()
             uuidinstalled=$(which uuidgen)
             if [[ -z "$uuidinstalled" ]]; then
                     if [[ "$OS_DIST" == "Debian" ]]; then
-                        INSTALL_CMD="sudo apt install -y uuid-runtime -qq"
+                        INSTALL_CMD="apt install -y uuid-runtime -qq"
                     elif [[ "$OS_DIST" == "RedHat" ]]; then
-                        INSTALL_CMD="sudo yum install -y uuid-runtime"
+                        INSTALL_CMD="yum install -y uuid-runtime"
                     fi
                     echo -e " ${pnk}Installing latest version of uuidgen...${clr}"
                     $INSTALL_CMD > /dev/null 2>&1
@@ -160,9 +160,9 @@ function checkDepends()
             locateinstalled=$(which locate)
             if [[ -z "$locateinstalled" ]]; then
                     if [[ "$OS_DIST" == "Debian" ]]; then
-                        HAVEGED_INSTALL_CMD="sudo apt install -y locate -qq"
+                        HAVEGED_INSTALL_CMD="apt install -y locate -qq"
                     elif [[ "$OS_DIST" == "RedHat" ]]; then
-                        HAVEGED_INSTALL_CMD="sudo yum install -y locate"
+                        HAVEGED_INSTALL_CMD="yum install -y locate"
                     fi
                     echo -e " ${pnk}Installing latest version of Haveged...${clr}"
                     $HAVEGED_INSTALL_CMD > /dev/null 2>&1
@@ -243,13 +243,13 @@ function swapadd()
   read -e -p " How many Gigs do you want to add (CTRL-C to cancel): " CHOICE
   if [[ ! -z $CHOICE ]]; then
         echo -e "${grn} Shutting down swap to resize...${clr}"
-        sudo swapoff /swapfile
+        swapoff /swapfile
         echo -e "${grn} Resizing...${clr}"
-        sudo dd if=/dev/zero of=/swapfile bs=1M count=$(( CHOICE*1024 )) oflag=append conv=notrunc
+        dd if=/dev/zero of=/swapfile bs=1M count=$(( CHOICE*1024 )) oflag=append conv=notrunc
         echo -e "${grn} Installing...${clr}"
-        sudo mkswap /swapfile
+        mkswap /swapfile
         echo -e "${grn} Mounting...${clr}"
-        sudo swapon /swapfile
+        swapon /swapfile
         echo -e "${yel} ${CHOICE}G swapfile resized...${clr}"
         free
         echo
