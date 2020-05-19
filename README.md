@@ -6,7 +6,7 @@ This command utility is an all-in-one script that help you install and manage yo
 You need a VPS with the following minimum requirements:
 - 4G RAM
 - Quad Core
-- Linux Operating system (Debian, Ubuntu, CentOS)
+- Linux Operating system (Ubuntu, CentOS)
 
 QUICKSTEPS:
 1) make sure you have the VPS set up with min reqs
