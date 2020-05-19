@@ -140,6 +140,24 @@ function checkDepends()
             fi
         fi
         if [[ "$OS" == "Linux" ]]; then
+            uuidinstalled=$(which uuidgen)
+            if [[ -z "$uuidinstalled" ]]; then
+                    if [[ "$OS_DIST" == "Debian" ]]; then
+                        INSTALL_CMD="sudo apt install -y uuid-runtime -qq"
+                    elif [[ "$OS_DIST" == "RedHat" ]]; then
+                        INSTALL_CMD="sudo yum install -y uuid-runtime"
+                    fi
+                    echo -e " ${pnk}Installing latest version of uuidgen...${clr}"
+                    $INSTALL_CMD > /dev/null 2>&1
+                    if [ $? -ne 0 ]; then
+                            echo -e "${red}Installation failed! please run manually and check for errors:${clr}"
+                            echo -e "${blue}$INSTALL_CMD${clr}"
+                            echo
+                            exit 1
+                    fi
+            fi
+        fi
+        if [[ "$OS" == "Linux" ]]; then
             locateinstalled=$(which locate)
             if [[ -z "$locateinstalled" ]]; then
                     if [[ "$OS_DIST" == "Debian" ]]; then
