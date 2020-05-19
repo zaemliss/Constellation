@@ -165,7 +165,7 @@ function checkDepends()
                     elif [[ "$OS_DIST" == "RedHat" ]]; then
                         HAVEGED_INSTALL_CMD="yum install -y locate"
                     fi
-                    echo -e " ${pnk}Installing latest version of Haveged...${clr}"
+                    echo -e " ${pnk}Installing latest version of locate...${clr}"
                     $HAVEGED_INSTALL_CMD > /dev/null 2>&1
                     if [ $? -ne 0 ]; then
                             echo -e "${red}Installation failed! please run manually and check for errors:${clr}"
