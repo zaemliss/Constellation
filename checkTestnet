@@ -7,7 +7,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 clr='\033[0m'
 pnk='\033[1;35m'
-VERSION="1.13"
+VERSION="1.14"
 function checkVersion()
 {
         webVer=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/checkTestnet | grep "VERSION=" | head -1 | tr -d '"' | tr '=' ' ' | awk '{print $2}')
@@ -73,15 +73,15 @@ do
     echo -e "${blu}Port 22   : ${pnk}open${clr}"
   fi
   
-  nodeVersion=$(curl -s http://$item:9000/metrics | jq .[].version | tr -d '"')
-  echo -e "${blu}Version     : ${grn}$nodeVersion${clr}"
   
+  nodeVersion=$(curl -s http://$item:9000/metrics | jq .[].version | tr -d '"')
+  echo -e "${blu}Version   : ${grn}$nodeVersion${clr}"
   nodeState=$(curl -s http://$item:9000/metrics | jq .[].nodeState | tr -d '"')
   nStatus=$(echo $nodeState  | grep -c Ready)
-  if [ $nStatus > 0 ]; then
+  if [ $nStatus -gt 0 ]; then
     echo -e "${blu}Status    : ${grn}Node State is Ready${clr}"
   else
-    echo -e "${blu}Status    : ${yel}$nStatus${clr}"
+    echo -e "${blu}Status    : ${yel}$nodeState${clr}"
   fi
     
   echo -e "${clr}"
