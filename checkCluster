@@ -10,6 +10,13 @@ pnk='\033[1;35m'
 
 if [[ ! -z $1 ]]; then
   nodes=$1
+  inCluster=$(curl -s http://lb.constellationnetwork.io:9000/cluster/info | jq .[].ip.host | grep -c $1)
+  echo
+  if [ $inCluster > 0 ]; then
+    echo -e "${blu}Node ${grn}$1 found in cluster!${clr}"
+  else
+    echo -e "${blu}Node ${grn}$1 ${red}Not found in cluster!${clr}"
+  fi
 else
   nodes=$(curl -s http://lb.constellationnetwork.io:9000/cluster/info | jq '.[] | {ip: .ip.host}' | tr -d 'ip"{}:,\n' | sed "s/   /\n/g")
 fi
