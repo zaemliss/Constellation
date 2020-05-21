@@ -73,14 +73,13 @@ do
     echo -e "${blu}Port 22   : ${pnk}open${clr}"
   fi
    
-  nodeState=$(curl -s http://$item:9000/metrics | jq .[].nodeState)
+  nodeState=$(curl -s http://$item:9000/metrics | jq .[].nodeState | tr -d '"')
   nStatus=$(echo $nodeState  | grep -c Ready)
   if [ $nodeState > 0 ]; then
     echo -e "${blu}Status    : ${grn}Node State is Ready${clr}"
   else
-    echo -e "${blu}Status    : ${yel}nStatus${clr}"
+    echo -e "${blu}Status    : ${yel}$nStatus${clr}"
   fi
     
-  echo -e "${clr}"
   echo -e "${clr}"
 done
