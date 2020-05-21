@@ -7,7 +7,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 clr='\033[0m'
 pnk='\033[1;35m'
-VERSION="1.12"
+VERSION="1.13"
 function checkVersion()
 {
         webVer=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/checkTestnet | grep "VERSION=" | head -1 | tr -d '"' | tr '=' ' ' | awk '{print $2}')
@@ -78,7 +78,7 @@ do
   
   nodeState=$(curl -s http://$item:9000/metrics | jq .[].nodeState | tr -d '"')
   nStatus=$(echo $nodeState  | grep -c Ready)
-  if [ $nodeState > "0" ]; then
+  if [ $nStatus > 0 ]; then
     echo -e "${blu}Status    : ${grn}Node State is Ready${clr}"
   else
     echo -e "${blu}Status    : ${yel}$nStatus${clr}"
