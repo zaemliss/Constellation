@@ -7,7 +7,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 clr='\033[0m'
 pnk='\033[1;35m'
-VERSION="1.11"
+VERSION="1.12"
 function checkVersion()
 {
         webVer=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/checkCluster | grep "VERSION=" | head -1 | tr -d '"' | tr '=' ' ' | awk '{print $2}')
@@ -74,6 +74,8 @@ do
   fi
    
   nodeState=$(curl -s http://$item:9000/metrics | jq .[].nodeState | tr -d '"')
+  nodeVersion=$(curl -s http://$item:9000/metrics | jq .[].version | tr -d '"')
+  echo -e "${blu}Version     : ${grn}$nodeVersion${clr}"
   nStatus=$(echo $nodeState  | grep -c Ready)
   if [ $nodeState > 0 ]; then
     echo -e "${blu}Status    : ${grn}Node State is Ready${clr}"
