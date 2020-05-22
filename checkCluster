@@ -36,7 +36,7 @@ if [[ ! -z $1 ]]; then
   fi
 else
   nodes=$(curl -s -m 5 http://lb.constellationnetwork.io:9000/cluster/info | jq '.[] | {ip: .ip.host}' | tr -d 'ip"{}:,\n' | sed "s/   /\n/g")
-  if [ -z "$nodes" ]; then
+  if [[ -z $nodes ]]; then
     echo
     echo -e "${red}Testnet Down!${clr}"
     echo
