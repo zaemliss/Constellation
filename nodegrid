@@ -8,10 +8,10 @@ clr='\033[0m'
 pnk='\033[1;35m'
 
 chars=2
-spacer=" "
-newl=""
+spacer=' '
+newl=''
 
-VERSION="1.03"
+VERSION="1.04"
 function checkVersion()
 {
         webVer=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/nodegrid | grep "VERSION=" | head -1 | tr -d '"' | tr '=' ' ' | awk '{print $2}')
@@ -41,7 +41,7 @@ for ip in $IPS; do
 done
 echo
 
-echo -ne "  "
+echo -ne '  '
 count=1
 for ip in $IPS; do
   printf -v fcount "%02d" $count
