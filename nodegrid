@@ -11,7 +11,7 @@ chars=2
 spacer=' '
 newl=''
 
-VERSION="1.07"
+VERSION="1.08"
 function checkVersion()
 {
         webVer=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/nodegrid | grep "VERSION=" | head -1 | tr -d '"' | tr '=' ' ' | awk '{print $2}')
@@ -56,6 +56,7 @@ for ip in $IPS; do
   statuses=$(curl -s $ip:9000/cluster/info | jq -r 'sort_by(.ip.host)[] | "\(.status)"')
   printf -v fcount "%02d" $count
   echo -ne $fcount
+  scount=1
   for status in $statuses; do
     smallStatus=$(echo $status | cut -c1-${chars})
     case $status in
@@ -71,11 +72,12 @@ for ip in $IPS; do
     esac
     if [ $status = "Offline" ]; then
       echo -ne "$spacer${color}■■${clr}";
-      endResult="${endResult}\n${blu}$ip${clr} sees node #${yel}$count${clr} in status $color$status${clr}"
-      alertResult="${alertResult}\n$ip sees node #$count in status $status !"
+      endResult="${endResult}\n${blu}$ip${clr} sees node #${yel}$scount${clr} in status $color$status${clr}"
+      alertResult="${alertResult}\n$ip sees node #$sount in status $status !"
     else
       echo -ne "$spacer${color}■■${clr}";
     fi
+  ((scount++))
   done
   echo -e $newl
   ((count++))
