@@ -7,7 +7,7 @@ blu='\033[1;36m'
 clr='\033[0m'
 pnk='\033[1;35m'
 
-VERSION="1.01"
+VERSION="1.02"
 function checkVersion()
 {
         webVer=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/nodegrid | grep "VERSION=" | head -1 | tr -d '"' | tr '=' ' ' | awk '{print $2}')
@@ -26,21 +26,35 @@ function checkVersion()
 }
 checkVersion
 
+
+
 LB="http://lb.constellationnetwork.io:9000/cluster/info"
 IPS=$(curl -s $LB | jq -r 'sort_by(.ip.host)[] | .ip.host')
 
+if [ "$1" = "small" ]; then
+        chars=2
+        spacer="  "
+        newl=""
+else
+        chars=6
+        spacer="\t"
+        newl="\n"
+fi
+
 count=1
 for ip in $IPS; do
-  echo -e "${yel}$count\t${blu}$ip${clr}"
+  printf -v fcount "%02d" $count
+  echo -e "${yel}$fcount$spacer${blu}$ip${clr}"
   ((count++))
 done
 echo
 
-echo -ne "\t"
+echo -ne "  "
 count=1
 for ip in $IPS; do
-  echo -ne $count
-  echo -ne "\t"
+  printf -v fcount "%02d" $count
+  echo -ne $spacer
+  echo -ne $fcount
   ((count++))
 done
 
@@ -49,10 +63,10 @@ echo -e "\n"
 count=1
 for ip in $IPS; do
   statuses=$(curl -s $ip:9000/cluster/info | jq -r 'sort_by(.ip.host)[] | "\(.status)"')
-  echo -ne $count
-  echo -ne "\t"
+  printf -v fcount "%02d" $count
+  echo -ne $fcount
   for status in $statuses; do
-    smallStatus=$(echo $status | cut -c1-5)
+    smallStatus=$(echo $status | cut -c1-${chars})
     case $status in
         Ready)
                 color="${grn}"
@@ -65,15 +79,15 @@ for ip in $IPS; do
                 ;;
     esac
     if [ $status = "Ready" ]; then
+      echo -ne $spacer
       echo -ne "$color$smallStatus${clr}";
-      echo -ne "\t"
     else
+      echo -ne $spacer
       echo -ne "$color$smallStatus${clr}";
-      echo -ne "\t"
       endResult="${endResult}\n${blu}$ip${clr} sees node #${yel}$count${clr} in status $color$status${clr}"
     fi
   done
-  echo -e "\n"
+  echo -e $newl
   ((count++))
 done
 
