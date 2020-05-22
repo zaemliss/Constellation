@@ -11,7 +11,7 @@ chars=2
 spacer=' '
 newl=''
 
-VERSION="1.04"
+VERSION="1.05"
 function checkVersion()
 {
         webVer=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/nodegrid | grep "VERSION=" | head -1 | tr -d '"' | tr '=' ' ' | awk '{print $2}')
