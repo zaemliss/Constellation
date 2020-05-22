@@ -7,6 +7,25 @@ blu='\033[1;36m'
 clr='\033[0m'
 pnk='\033[1;35m'
 
+VERSION="1.01"
+function checkVersion()
+{
+        webVer=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/nodegrid | grep "VERSION=" | head -1 | tr -d '"' | tr '=' ' ' | awk '{print $2}')
+        if [[ "$webVer" != "$VERSION" ]]; then
+                echo
+                echo -e "${grn} New version available! (${pnk}$webVer${grn})"
+                echo -e "${clr}"
+                read -e -p " Press Y then [ENTER] to update or N to cancel: " CHOICE
+                if [[ ("$CHOICE" == "y" || "$CHOICE" == "Y") ]]; then
+                        wget https://raw.githubusercontent.com/zaemliss/Constellation/master/nodegrid -O /usr/local/bin/nodegrid >/dev/null 2>&1
+                        echo -e "${grn} nodegrid ${blu}utility updated${clr}"
+                        echo
+                        exit 1
+                fi
+        fi
+}
+checkVersion
+
 LB="http://lb.constellationnetwork.io:9000/cluster/info"
 IPS=$(curl -s $LB | jq -r 'sort_by(.ip.host)[] | .ip.host')
 
