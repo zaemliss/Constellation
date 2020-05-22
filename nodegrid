@@ -1,0 +1,51 @@
+#!/bin/bash
+
+red='\033[1;31m'
+grn='\033[1;32m'
+yel='\033[1;33m'
+blu='\033[1;36m'
+clr='\033[0m'
+pnk='\033[1;35m'
+
+LB="http://lb.constellationnetwork.io:9000/cluster/info"
+IPS=$(curl -s $LB | jq -r 'sort_by(.ip.host)[] | .ip.host')
+
+count=1
+for ip in $IPS; do
+  echo -e "${yel}$count\t${blu}$ip${clr}"
+  ((count++))
+done
+echo
+
+echo -ne "\t"
+count=1
+for ip in $IPS; do
+  echo -ne $count
+  echo -ne "\t"
+  ((count++))
+done
+
+echo -e "\n"
+
+count=1
+for ip in $IPS; do
+  statuses=$(curl -s $ip:9000/cluster/info | jq -r 'sort_by(.ip.host)[] | "\(.status)"')
+  echo -ne $count
+  echo -ne "\t"
+  for status in $statuses; do
+    smallStatus=$(echo $status | cut -c1-5)
+    if [ $status = "Ready" ]; then
+      echo -ne "${grn}$smallStatus${clr}";
+      echo -ne "\t"
+    else
+      echo -ne "${red}$smallStatus${clr}";
+      echo -ne "\t"
+      endResult="${endResult}\n${blu}$ip${clr} sees node #${yel}$count${clr} in status ${red}$status${clr}"
+    fi
+  done
+  echo -e "\n"
+  ((count++))
+done
+
+echo
+echo -e "$endResult"
