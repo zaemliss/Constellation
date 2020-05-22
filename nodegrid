@@ -8,10 +8,10 @@ clr='\033[0m'
 pnk='\033[1;35m'
 
 chars=2
-spacer=' '
+spacer=' '
 newl=''
 
-VERSION="1.05"
+VERSION="1.06"
 function checkVersion()
 {
         webVer=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/nodegrid | grep "VERSION=" | head -1 | tr -d '"' | tr '=' ' ' | awk '{print $2}')
@@ -45,8 +45,7 @@ echo -ne '  '
 count=1
 for ip in $IPS; do
   printf -v fcount "%02d" $count
-  echo -ne $spacer
-  echo -ne $fcount
+  echo -ne "$spacer$fcount"
   ((count++))
 done
 
@@ -71,11 +70,9 @@ for ip in $IPS; do
                 ;;
     esac
     if [ $status = "Ready" ]; then
-      echo -ne $spacer
-      echo -ne "$color■■${clr}";
+      echo -ne "$spacer${color}■■${clr}";
     else
-      echo -ne $spacer
-      echo -ne "$color■■${clr}";
+      echo -ne "$spacer${color}■■${clr}";
       endResult="${endResult}\n${blu}$ip${clr} sees node #${yel}$count${clr} in status $color$status${clr}"
     fi
   done
