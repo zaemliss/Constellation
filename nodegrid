@@ -11,7 +11,7 @@ chars=2
 spacer=' '
 newl=''
 
-VERSION="1.06"
+VERSION="1.07"
 function checkVersion()
 {
         webVer=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/nodegrid | grep "VERSION=" | head -1 | tr -d '"' | tr '=' ' ' | awk '{print $2}')
@@ -69,11 +69,12 @@ for ip in $IPS; do
                 color="${yel}"
                 ;;
     esac
-    if [ $status = "Ready" ]; then
-      echo -ne "$spacer${color}■■${clr}";
-    else
+    if [ $status = "Offline" ]; then
       echo -ne "$spacer${color}■■${clr}";
       endResult="${endResult}\n${blu}$ip${clr} sees node #${yel}$count${clr} in status $color$status${clr}"
+      alertResult="${alertResult}\n$ip sees node #$count in status $status !"
+    else
+      echo -ne "$spacer${color}■■${clr}";
     fi
   done
   echo -e $newl
