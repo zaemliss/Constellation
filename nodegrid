@@ -7,7 +7,11 @@ blu='\033[1;36m'
 clr='\033[0m'
 pnk='\033[1;35m'
 
-VERSION="1.02"
+chars=2
+spacer=" "
+newl=""
+
+VERSION="1.03"
 function checkVersion()
 {
         webVer=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/nodegrid | grep "VERSION=" | head -1 | tr -d '"' | tr '=' ' ' | awk '{print $2}')
@@ -26,20 +30,8 @@ function checkVersion()
 }
 checkVersion
 
-
-
 LB="http://lb.constellationnetwork.io:9000/cluster/info"
 IPS=$(curl -s $LB | jq -r 'sort_by(.ip.host)[] | .ip.host')
-
-if [ "$1" = "small" ]; then
-        chars=2
-        spacer="  "
-        newl=""
-else
-        chars=6
-        spacer="\t"
-        newl="\n"
-fi
 
 count=1
 for ip in $IPS; do
@@ -80,10 +72,10 @@ for ip in $IPS; do
     esac
     if [ $status = "Ready" ]; then
       echo -ne $spacer
-      echo -ne "$color$smallStatus${clr}";
+      echo -ne "$color■■${clr}";
     else
       echo -ne $spacer
-      echo -ne "$color$smallStatus${clr}";
+      echo -ne "$color■■${clr}";
       endResult="${endResult}\n${blu}$ip${clr} sees node #${yel}$count${clr} in status $color$status${clr}"
     fi
   done
