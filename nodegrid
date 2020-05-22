@@ -34,13 +34,24 @@ for ip in $IPS; do
   echo -ne "\t"
   for status in $statuses; do
     smallStatus=$(echo $status | cut -c1-5)
+    case $status in
+        Ready)
+                color="${grn}"
+                ;;
+        Offline)
+                color="${red}"
+                ;;
+        *)
+                color="${yel}"
+                ;;
+    esac
     if [ $status = "Ready" ]; then
-      echo -ne "${grn}$smallStatus${clr}";
+      echo -ne "$color$smallStatus${clr}";
       echo -ne "\t"
     else
-      echo -ne "${red}$smallStatus${clr}";
+      echo -ne "$color$smallStatus${clr}";
       echo -ne "\t"
-      endResult="${endResult}\n${blu}$ip${clr} sees node #${yel}$count${clr} in status ${red}$status${clr}"
+      endResult="${endResult}\n${blu}$ip${clr} sees node #${yel}$count${clr} in status $color$status${clr}"
     fi
   done
   echo -e "\n"
