@@ -52,6 +52,13 @@ The following script automatically installs and secures your VPS
 ```
 wget  https://raw.githubusercontent.com/zaemliss/Constellation/master/config-security -O ~/config-security && chmod +x ~/config-security && ~/config-security
 ```
+
+You will also need to manually set up an ufw firewall rule for port 9002 (in order to view your node in the browser)
+
+```sudo ufw allow proto tcp from XXX.XXX.XX.XXX to any port 9002```
+
+Replace the `XXX.XXX.XX.XXX` with your home internet/wifi IP address.
+
 ___
 # For debugging ONLY #
 This will overwrite the default logback.xml so that the org.constellation logging level is set to `debug` instead of `warn`.
