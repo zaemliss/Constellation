@@ -52,6 +52,7 @@ The following script automatically installs and secures your VPS
 ```
 wget  https://raw.githubusercontent.com/zaemliss/Constellation/master/config-security -O ~/config-security && chmod +x ~/config-security && ~/config-security
 ```
+
 You will also need to manually set up an ufw firewall rule for port 9002 (in order to view your node in the browser)
 
 ```sudo ufw allow proto tcp from XXX.XXX.XX.XXX to any port 9002```
