@@ -11,7 +11,7 @@ chars=2
 spacer=' '
 newl=''
 
-VERSION="1.08"
+VERSION="1.09"
 function checkVersion()
 {
         webVer=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/nodegrid | grep "VERSION=" | head -1 | tr -d '"' | tr '=' ' ' | awk '{print $2}')
@@ -43,47 +43,61 @@ for ip in $IPS; do
 done
 echo
 
+imgout="$imgout\n__"
+
 echo -ne '  '
 count=1
 for ip in $IPS; do
   printf -v fcount "%02d" $count
   echo -ne "$spacer$fcount"
+  imgout="$imgout$spacer$fcount"
   ((count++))
 done
 
 echo -e "\n"
-
+imgout="$imgout\n"
 count=1
 for ip in $IPS; do
   statuses=$(curl -s $ip:9000/cluster/info | jq -r 'sort_by(.ip.host)[] | "\(.status)"')
   printf -v fcount "%02d" $count
   echo -ne $fcount
+  imgout="$imgout$fcount"
   scount=1
   for status in $statuses; do
     smallStatus=$(echo $status | cut -c1-${chars})
     case $status in
         Ready)
                 color="${grn}"
+                imgcol="■■"
                 ;;
         Offline)
                 color="${red}"
+          	imgcol="»«"
                 ;;
         *)
                 color="${yel}"
+ 		imgcol="≡≡"
                 ;;
     esac
     if [ $status = "Offline" ]; then
       echo -ne "$spacer${color}■■${clr}";
+      imgout="$imgout$spacer$imgcol"
       endResult="${endResult}\n${blu}$ip${clr} sees node #${yel}$scount${clr} in status $color$status${clr}"
-      alertResult="${alertResult}\n$ip sees node #$sount in status $status !"
+      alertResult="${alertResult}\n$ip sees node #$scount in status $status !"
     else
       echo -ne "$spacer${color}■■${clr}";
+      imgout="$imgout$spacer$imgcol"
     fi
   ((scount++))
   done
   echo -e $newl
+  imgout="$imgout\n"
   ((count++))
 done
-
 echo
 echo -e "$endResult"
+
+#url='WEBHOOK-URL'
+#echo -e $imgout > $HOME/imageout.txt
+#convert -size 360x480 xc:black -font "FreeMono" -pointsize 12 -fill white -annotate +15+15 "@$HOME/imageout.txt" image.png
+#curl -s -F "file=@image.png" $url
