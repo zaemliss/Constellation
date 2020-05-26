@@ -97,7 +97,10 @@ done
 echo
 echo -e "$endResult"
 
-#url='WEBHOOK-URL'
-#echo -e $imgout > $HOME/imageout.txt
-#convert -size 360x480 xc:black -font "FreeMono" -pointsize 12 -fill white -annotate +15+15 "@$HOME/imageout.txt" image.png
-#curl -s -F "file=@image.png" $url
+if [[ ${#alertResult} -gt 0 ]]; then
+        url='WEBHOOK_URL'
+        echo -e $imgout > $HOME/imageout.txt
+        convert -size 360x480 xc:black -font "FreeMono" -pointsize 12 -fill white -annotate +15+15 "@$HOME/imageout.txt" image.png
+        curl -s -F "file=@image.png" $url
+fi
+
