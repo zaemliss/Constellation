@@ -28,7 +28,7 @@ checkVersion
 
 if [[ ! -z $1 ]]; then
   nodes=$1
-  inCluster=$(curl -s http://cl-lb-alb-testnet-1216020584.us-west-1.elb.amazonaws.com:9000/cluster/info | jq .[].ip.host | grep -c $1)
+  inCluster=$(curl -s -m 5 http://cl-lb-alb-testnet-1216020584.us-west-1.elb.amazonaws.com:9000/cluster/info | jq .[].ip.host | grep -c $1)
   echo
   if [ $inCluster -gt "0" ]; then
     echo -e "${blu}Node ${grn}$1 found in cluster!${clr}"
