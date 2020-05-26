@@ -7,7 +7,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 clr='\033[0m'
 pnk='\033[1;35m'
-VERSION="1.18"
+VERSION="1.19"
 function checkVersion()
 {
         webVer=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/checkTestnet | grep "VERSION=" | head -1 | tr -d '"' | tr '=' ' ' | awk '{print $2}')
@@ -30,7 +30,7 @@ if [[ ! -z $1 ]]; then
   nodes=$1
   inCluster=$(curl -s http://cl-lb-alb-testnet-1216020584.us-west-1.elb.amazonaws.com:9000/cluster/info | jq .[].ip.host | grep -c $1)
   echo
-  if [ $inCluster > 0 ]; then
+  if [ $inCluster -gt "0" ]; then
     echo -e "${blu}Node ${grn}$1 found in cluster!${clr}"
   else
     echo -e "${blu}Node ${grn}$1 ${red}Not found in cluster!${clr}"
