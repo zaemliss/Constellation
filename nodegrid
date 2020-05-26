@@ -35,8 +35,10 @@ IPS=$(curl -s $LB | jq -r 'sort_by(.ip.host)[] | .ip.host')
 
 count=1
 for ip in $IPS; do
+  addr=$(curl -s http://$ip:9000/metrics | jq -r .[].address)
   printf -v fcount "%02d" $count
-  echo -e "${yel}$fcount$spacer${blu}$ip${clr}"
+  echo -e "${yel}$fcount$spacer${blu}$ip   \t$addr${clr}"
+  imgout="$imgout$fcount$spacer$ip   \t$addr\n"
   ((count++))
 done
 echo
