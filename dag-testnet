@@ -16,20 +16,12 @@ pnk='\033[1;35m'
 clr='\033[0m'
 DAG_VERSION="2.01"
 
-function checkVersion()
-{
-        webVer=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/dag-testnet | grep "DAG_VERSION=" | head -1 | tr -d '"' | tr '=' ' ' | awk '{print $2}')
-        if [[ "$webVer" != "$DAG_VERSION" ]]; then
-                echo
-                echo -e "${red} This version of the script is deprecated and has been consolidated in the dag script! (${pnk}$webVer${grn})"
-                echo -e "${clr}"
-                wget https://raw.githubusercontent.com/zaemliss/Constellation/master/dag -O /usr/local/bin/dag >/dev/null 2>&1
-                rm /usr/local/bin/dag-testnet
-                        echo -e "${grn} dag ${blu}utility updated. Please use ${blu}dag [command] [--testnet] from now on.${clr}"
-                        echo -e "${yel} i.e.: ${blu}dag reset --testnet${clr}"
-                        exec "/usr/local/bin/dag";
-                        exit 1
-                fi
-        fi
-}
-checkVersion
+
+echo
+echo -e "${red} This version of the script is deprecated and has been consolidated in the dag script!"
+echo -e "${clr}"
+wget https://raw.githubusercontent.com/zaemliss/Constellation/master/dag -O /usr/local/bin/dag >/dev/null 2>&1
+rm /usr/local/bin/dag-testnet
+echo -e "${grn} dag ${blu}utility updated. Please use ${blu}dag [command] [--testnet] from now on.${clr}"
+echo -e "${yel} i.e.: ${blu}dag reset --testnet${clr}"
+echo
