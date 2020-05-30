@@ -11,7 +11,7 @@ chars=2
 spacer=' '
 newl=''
 
-VERSION="1.12"
+VERSION="1.13"
 
 function checkVersion()
 {
@@ -113,10 +113,11 @@ echo
 
 if [[ ${#alertResult} -gt 0 ]]; then
         #echo -e "$endResult"
-	if [ -f "$HOME/webhook" ]; then
+        if [ -f "$HOME/webhook" ]; then
            url=$(cat $HOME/webhook | tr -d '\n')
            echo -e $imgout > $HOME/imageout.txt
-	   convert -size 360x480 xc:black -font "FreeMono" -pointsize 12 -fill white -annotate +15+15 "@$HOME/imageout.txt" image.png
-	   curl -s -F "file=@image.png" $url
+           convert -size 360x480 xc:black -font "DejaVu-Sans-Mono" -pointsize 12 -fill white -annotate +15+15 "@$HOME/imageout.txt" image.png
+           curl -s -F "file=@image.png" $url
         fi
 fi
+
