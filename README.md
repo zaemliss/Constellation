@@ -79,10 +79,8 @@ QUICKSTEPS:
   `sudo bash`
 - make sure you read EVERYTHING properly. It's easy to make mistakes when you rush through things.
 
-1. copy and paste this into your terminal window
-```
-wget https://raw.githubusercontent.com/zaemliss/Constellation/master/dag-testnet -O /usr/local/bin/dag-testnet && chmod +x /usr/local/bin/dag-testnet && dag-testnet
-```
-2. do `dag-testnet reset` and enter the SAME info you did previously for your alias, passwords and use the same p12 file when prompted
-3. when asked to join, answer `y`es then press [enter] and give this ip in the next prompt: `13.52.246.74`
-4. you can check you are properly joined to testnet by doing `dag-testnet metrics`. Your Node State will say `ready` then you are successfully joined (about 30 seconds)
+1. follow the instructions at the top and once you have the dag utility, just perform the same commands as described but add `--testnet` where required.
+
+```dag reset --testnet```
+or
+```dag join 13.23.145.23 --testnet```
