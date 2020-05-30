@@ -44,7 +44,11 @@ ___
 And follow the instructions on the screen!
 
 ## 3. If you are on testnet ##
-just add `--testnet` after either your `dag reset` or `dag nodes` commands.
+just add `--testnet` after either your `dag reset` or `dag nodes` commands. 
+i.e.:
+```dag reset --testnet```
+or
+```dag join 13.23.145.23 --testnet```
 
 ___
 # POST-INSTALLATION SECURITY (Ubuntu/Debian tested only) #
