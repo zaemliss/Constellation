@@ -14,7 +14,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="2.00"
+DAG_VERSION="2.01"
 
 function checkVersion()
 {
@@ -26,8 +26,7 @@ function checkVersion()
                 wget https://raw.githubusercontent.com/zaemliss/Constellation/master/dag -O /usr/local/bin/dag >/dev/null 2>&1
                 rm /usr/local/bin/dag-testnet
                         echo -e "${grn} dag ${blu}utility updated. Please use ${blu}dag [command] [--testnet] from now on.${clr}"
-                        echo -e "${yel} i.e.: ${blu}dag reset --testnet${clr}
-                        echo
+                        echo -e "${yel} i.e.: ${blu}dag reset --testnet${clr}"
                         exec "/usr/local/bin/dag";
                         exit 1
                 fi
