@@ -595,7 +595,7 @@ function doInstall()
                 echo -e "${blu}Waiting for node to start${clr}"
                 isopen=0
                 count=0
-                until [[ ${isopen} -gt 0 || $count -gt 19 ]]; do
+                until [[ ${isopen} -gt 0 || $count -gt 29 ]]; do
                   echo -ne "${blu}■${clr}"
                   let isopen=$(sudo lsof -i:9002 | grep -c LISTEN)
                   ((count++))
