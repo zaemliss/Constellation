@@ -11,7 +11,7 @@ chars=2
 spacer=' '
 newl=''
 
-VERSION="1.16"
+VERSION="1.17"
 
 function checkVersion()
 {
@@ -71,9 +71,9 @@ imgout="$imgout\n"
 ### RUN THROUGH IPs AND GET NODE'S VIEW OF THE CLUSTER ###
 count=1
 for ip in $IPS; do
-  statuses=($(curl -s $ip:9000/cluster/info | jq -r 'sort_by(.ip.host)[] | "\(.status)"'))
-  seenIPs=($(curl -s $ip:9000/cluster/info | jq -r 'sort_by(.ip.host)[] | "\(.ip.host)"'))
-  nodeVersion=$(curl -s $ip:9000/metrics | jq -r .[].version)
+  statuses=($(curl -s http://$ip:9000/cluster/info | jq -r 'sort_by(.ip.host)[] | "\(.status)"'))
+  seenIPs=($(curl -s http://$ip:9000/cluster/info | jq -r 'sort_by(.ip.host)[] | "\(.ip.host)"'))
+  nodeVersion=$(curl -s http://$ip:9000/metrics | jq -r .[].version)
   printf -v fcount "%02d" $count
   echo -ne $fcount
   imgout="$imgout$fcount"
@@ -112,7 +112,7 @@ for ip in $IPS; do
   ((scount++))
   done
   if [[ $showVersion -gt 0 ]]; then
-  	echo -ne " $nodeVersion"
+  	echo -ne "${spacer}$nodeVersion"
   fi
   echo -e $newl
   imgout="$imgout\n"
