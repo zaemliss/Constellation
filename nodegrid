@@ -11,7 +11,7 @@ chars=2
 spacer=' '
 newl=''
 
-VERSION="1.14"
+VERSION="1.16"
 
 function checkVersion()
 {
@@ -40,6 +40,8 @@ if [[ $1 = "--testnet" ]]; then
 else
         LB="http://lb.constellationnetwork.io:9000/cluster/info"
 fi
+
+showVersion=$(echo $@ | grep -c -- "--version")
 
 ### GET LIST OF IPS FROM LOAD BALANCER AND LIST THEM OUT ###
 IPS=$(curl -s $LB | jq -r 'sort_by(.ip.host)[] | .ip.host')
@@ -71,6 +73,7 @@ count=1
 for ip in $IPS; do
   statuses=($(curl -s $ip:9000/cluster/info | jq -r 'sort_by(.ip.host)[] | "\(.status)"'))
   seenIPs=($(curl -s $ip:9000/cluster/info | jq -r 'sort_by(.ip.host)[] | "\(.ip.host)"'))
+  nodeVersion=$(curl -s $ip:9000/metrics | jq -r .[].version)
   printf -v fcount "%02d" $count
   echo -ne $fcount
   imgout="$imgout$fcount"
@@ -108,6 +111,9 @@ for ip in $IPS; do
     fi
   ((scount++))
   done
+  if [[ $showVersion -gt 0 ]]; then
+  	echo -ne " $nodeVersion"
+  fi
   echo -e $newl
   imgout="$imgout\n"
   ((count++))
