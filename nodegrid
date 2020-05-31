@@ -11,7 +11,7 @@ chars=2
 spacer=' '
 newl=''
 
-VERSION="1.13"
+VERSION="1.14"
 
 function checkVersion()
 {
@@ -19,6 +19,9 @@ function checkVersion()
         if [[ "$webVer" != "$VERSION" ]]; then
                 echo
                 echo -e "${grn} New version available! (${pnk}$webVer${grn})"
+                COMMENT=$(curl -s curl -s https://api.github.com/repos/zaemliss/Constellation/commits?per_page=10 | jq ".[].commit.message" | tr -d '"' | grep "Update nodegrid" | head -n 1)
+                echo -e " ${blu}"
+                echo -e $COMMENT
                 echo -e "${clr}"
                 read -e -p " Press Y then [ENTER] to update or N to cancel: " CHOICE
                 if [[ ("$CHOICE" == "y" || "$CHOICE" == "Y") ]]; then
@@ -32,7 +35,7 @@ function checkVersion()
 checkVersion
 
 ### ASSIGN THE PROPER LOAD BALANCER ###
-if [[ $1 = "testnet" ]]; then
+if [[ $1 = "--testnet" ]]; then
         LB="http://cl-lb-alb-testnet-1216020584.us-west-1.elb.amazonaws.com:9000/cluster/info"
 else
         LB="http://lb.constellationnetwork.io:9000/cluster/info"
