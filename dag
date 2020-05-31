@@ -13,7 +13,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="3.06"
+DAG_VERSION="3.07"
 
 function checkVersion()
 {
@@ -591,6 +591,9 @@ function doInstall()
         read -e -p ": " YN
         echo
         if [[ "$YN" == "y" ]] || [[ "$YN" == "Y" ]];then
+                echo
+                echo -e "${blu}Pausing 10s to allow node to start${clr}"
+                sleep 15
                 firstIP=$(curl -s $LB:9000/cluster/info | jq -r .[].ip.host | head -n 1)
                 if [[ ${#firstIP} -gt 8 ]]; then
                   export GENESIS=$firstIP
