@@ -13,7 +13,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="3.07"
+DAG_VERSION="3.08"
 
 function checkVersion()
 {
@@ -592,8 +592,23 @@ function doInstall()
         echo
         if [[ "$YN" == "y" ]] || [[ "$YN" == "Y" ]];then
                 echo
-                echo -e "${blu}Pausing 10s to allow node to start${clr}"
-                sleep 15
+                echo -e "${blu}Waiting for node to start${clr}"
+                isopen=0
+                count=0
+                until [[ ${isopen} -gt 0 || $count -gt 19 ]]; do
+                  echo -ne "${blu}■${clr}"
+                  let isopen=$(sudo lsof -i:9002 | grep -c LISTEN)
+                  echo ${isopen}
+                  ((count++))
+                  sleep 1
+                done
+                echo
+                if [[ $isopen -lt 1 ]]; then
+                   echo -e "${red}Port 9002 unresponsive!${clr}\nPlease check the error logs and try again."
+                   echo
+                   exit 1
+                fi
+                
                 firstIP=$(curl -s $LB:9000/cluster/info | jq -r .[].ip.host | head -n 1)
                 if [[ ${#firstIP} -gt 8 ]]; then
                   export GENESIS=$firstIP
