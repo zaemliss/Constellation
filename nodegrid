@@ -11,7 +11,7 @@ chars=2
 spacer=' '
 newl=''
 
-VERSION="1.20"
+VERSION="1.21"
 
 function checkVersion()
 {
