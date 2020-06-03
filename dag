@@ -13,7 +13,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="3.14"
+DAG_VERSION="3.15"
 export updver=$2
 
 function checkVersion()
@@ -193,6 +193,9 @@ if [[ $isTestnet = 1 ]]; then
   LB="http://cl-lb-alb-testnet-1216020584.us-west-1.elb.amazonaws.com"
   WHITELIST="https://marcinwadon.keybase.pub/whitelisting"
 else
+  if [[ ! $updver = "--testnet" && ! -z $updver ]]; then
+     JAR_VERSION=$updver
+  fi
   LB="http://lb.constellationnetwork.io"
   WHITELIST="https://github.com/Constellation-Labs/constellation/releases/download/v$JAR_VERSION/whitelisting"
 fi
