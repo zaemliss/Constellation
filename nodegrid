@@ -34,6 +34,14 @@ function checkVersion()
 }
 checkVersion
 
+showVersion=$(echo $@ | grep -c -- "--version")
+if [[ showVersion -gt 0 ]]; then
+    echo
+    echo -e "${blu}Nodegrid version ${yel}$VERSION${clr}"
+    echo
+    exit 1
+fi
+
 downnodes=0
 ### ASSIGN THE PROPER LOAD BALANCER ###
 if [[ $1 = "--testnet" ]]; then
