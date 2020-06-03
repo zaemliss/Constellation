@@ -13,7 +13,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="3.12"
+DAG_VERSION="3.13"
 
 function checkVersion()
 {
@@ -349,17 +349,17 @@ function showHelp()
         echo
         echo -e " ${red}dag command line options ${blu}(utility version: $DAG_VERSION)${clr}"
         echo
-        echo -e " ${yel} dag metrics            ${blu}Displays your DAG Node Metrics, Address and ID ${clr}"
-        echo -e " ${yel} dag update [--testnet] ${blu}Updates the jar files to the latest version ${clr}"
-        echo -e " ${yel} dag nodes [--testnet]  ${blu}Displays the cluster's node statuses ${clr}"
-        echo -e " ${yel} dag reset [--testnet]  ${blu}Resets the tmp folder and reinstalls the node removing it from any cluster it belongs to.${clr}"
-        echo -e " ${yel} dag join ip_addr       ${blu}joins to node specified in ip_addr ${clr}"
-        echo -e " ${yel} dag leave              ${blu}leaves the cluster ${clr}"
-        echo -e " ${yel} dag logs [search]      ${blu}displays the app logs in real time OR if a parameter is supplied, returns matching results in ${grn}search${clr}"
-        echo -e " ${yel} dag explore dag_addr   ${blu}displays the transactions for the address specified in ${grn}dag_addr${clr}"
-        echo -e " ${yel} dag hash dag_trasact   ${blu}displays the transaction for the tx hash specified in ${grn}dag_transact${clr}"
-#        echo -e " ${yel} dag stop               ${blu}stops the node ${clr}"
-#        echo -e " ${yel} dag start              ${blu}starts the node ${clr}"
+        echo -e " ${yel} dag metrics                 ${blu}Displays your DAG Node Metrics, Address and ID ${clr}"
+        echo -e " ${yel} dag update [ver][--testnet] ${blu}Updates the jar files to the latest version or as specified in [ver]${clr}"
+        echo -e " ${yel} dag nodes [--testnet]       ${blu}Displays the cluster's node statuses ${clr}"
+        echo -e " ${yel} dag reset [--testnet]       ${blu}Resets the tmp folder and reinstalls the node removing it from any cluster it belongs to.${clr}"
+        echo -e " ${yel} dag join ip_addr            ${blu}joins to node specified in ip_addr ${clr}"
+        echo -e " ${yel} dag leave                   ${blu}leaves the cluster ${clr}"
+        echo -e " ${yel} dag logs [search]           ${blu}displays the app logs in real time OR if a parameter is supplied, returns matching results in ${grn}search${clr}"
+        echo -e " ${yel} dag explore dag_addr        ${blu}displays the transactions for the address specified in ${grn}dag_addr${clr}"
+        echo -e " ${yel} dag hash dag_trasact        ${blu}displays the transaction for the tx hash specified in ${grn}dag_transact${clr}"
+#        echo -e " ${yel} dag stop                    ${blu}stops the node ${clr}"
+#        echo -e " ${yel} dag start                   ${blu}starts the node ${clr}"
         echo
         echo -e " ${grn}you can navigate to your node via web browser by entering ${blu}http://$externalHostIp:9002 ${grn}in the address bar.${clr}"
         echo
@@ -384,6 +384,9 @@ function showLogs()
 
 function update()
 {
+        if [[ ! $2 = "--testnet" && ! -z $2 ]]; then
+           JAR_VERSION=$2
+        fi
         echo
         echo -e "${grn}Updating from ${blu}$INSTALLED_VERSION ${grn}to ${blu}$JAR_VERSION"
         echo -e "${blu} Getting latest version and saving to $HOME/constellation ..."
@@ -646,14 +649,6 @@ function getPasswords()
 
 checkDepends
 checkConfig
-
-#if [[ $1 == "update" ]]; then
-#        update
-#fi
-
-#if [[ $1 == "restart" ]]; then
-#        restart
-#fi
 
 if [[ $1 == "reset" ]]; then
         echo
