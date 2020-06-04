@@ -11,7 +11,7 @@ chars=2
 spacer=' '
 newl=''
 
-VERSION="1.21"
+VERSION="1.22"
 
 function checkVersion()
 {
@@ -54,13 +54,16 @@ fi
 IPS=$(curl -s $LB | jq -r 'sort_by(.ip.host)[] | .ip.host')
 count=1
 for ip in $IPS; do
+  start=`date +%s%3N`
   metrics=$(curl -s http://$ip:9000/metrics)
+  end=`date +%s%3N`
+  execTime=$(expr $end - $start)
   nodeVersion=$(echo $metrics | jq -r .[].version)
   nodeState=$(echo $metrics | jq -r .[].nodeState | cut -c 1-5)
   lastSnap=$(echo $metrics  | jq -r .[].lastSnapshotHeight)
   #addr=$(curl -s http://$ip:9000/metrics | jq -r .[].address)
   printf -v fcount "%02d" $count
-  echo -e "${yel}$fcount$spacer${blu}$ip   \t$nodeVersion\t$lastSnap\t$nodeState${clr}"
+  echo -e "${yel}$fcount$spacer${blu}$ip   \t$nodeVersion\t$lastSnap\t$nodeState\t$execTime${clr}"
   imgout="$imgout$fcount$spacer$ip$spacer$nodeVersion\n"
   ((count++))
 done
