@@ -11,7 +11,7 @@ chars=2
 spacer=' '
 newl=''
 
-VERSION="1.23"
+VERSION="1.25"
 
 function checkVersion()
 {
@@ -54,9 +54,9 @@ fi
 IPS=$(curl -s $LB | jq -r 'sort_by(.ip.host)[] | .ip.host')
 count=1
 for ip in $IPS; do
-  start=`date +%s%3N`
+  start=$(($(date +%s%N | tr -d 'N')/1000000))
   metrics=$(curl -s http://$ip:9000/metrics)
-  end=`date +%s%3N`
+  end=$(($(date +%s%N | tr -d 'N')/1000000))
   execTime=$(expr $end - $start)
   nodeVersion=$(echo $metrics | jq -r .[].version)
   nodeState=$(echo $metrics | jq -r .[].nodeState | cut -c 1-5)
