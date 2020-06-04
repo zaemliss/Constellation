@@ -11,7 +11,7 @@ chars=2
 spacer=' '
 newl=''
 
-VERSION="1.25"
+VERSION="1.26"
 
 function checkVersion()
 {
@@ -51,6 +51,7 @@ else
 fi
 
 ### GET LIST OF IPS FROM LOAD BALANCER AND LIST THEM OUT ###
+echo -e "${pnk}##${spacer}ip               \tVersion\tSnap\tState\tExecTime${clr}"
 IPS=$(curl -s $LB | jq -r 'sort_by(.ip.host)[] | .ip.host')
 count=1
 for ip in $IPS; do
