@@ -185,18 +185,20 @@ checkOS
 checkDepends
 
 # Declare System Variables ####################################
-JAR_VERSION=$($ curl -s http://lb.constellationnetwork.io:9000/metrics | jq -r '.metrics.version)
+GET_JAR_VERSION="curl -s \$LB:9000/metrics | jq -r '.metrics.version'"
 #JAR_VERSION="2.5.8"
 
 isTestnet=$(echo $@ | grep -c -- "--testnet")
 if [[ $isTestnet = 1 ]]; then
   LB="http://cl-lb-alb-testnet-1216020584.us-west-1.elb.amazonaws.com"
+  eval $GET_JAR_VERSION
   WHITELIST="https://marcinwadon.keybase.pub/whitelisting"
 else
   if [[ ! $updver = "--testnet" && ! -z $updver ]]; then
      JAR_VERSION=$updver
   fi
   LB="http://lb.constellationnetwork.io"
+  eval $GET_JAR_VERSION
   WHITELIST="https://github.com/Constellation-Labs/constellation/releases/download/v$JAR_VERSION/whitelisting"
 fi
 
