@@ -11,7 +11,7 @@ chars=2
 spacer=' '
 newl=''
 
-VERSION="1.22"
+VERSION="1.23"
 
 function checkVersion()
 {
@@ -132,7 +132,7 @@ done
 echo
 
 nodestates=$(cat $HOME/nodestates) > /dev/null 2>&1
-if [[ ${#alertResult} -gt 0 && $downnodes -ne $nodestates ]]; then
+if [[ $downnodes -ne $nodestates ]]; then
         echo $downnodes > $HOME/nodestates
         #echo -e "$endResult"
         if [ -f "$HOME/webhook" ]; then
