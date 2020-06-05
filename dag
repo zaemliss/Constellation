@@ -759,7 +759,7 @@ if [[ $1 == "nodes" ]]; then
         echo -e "${yel}------------------------------------------------------------${grn}"
         nodes=$(curl -s $LB:9000/cluster/info | jq '.[] | {ip: .ip.host, status: .status, reputation: .reputation}' | tr -d '"{}:\n' | sed "s/  ip/\r\n  /g" | sed "s/  status//g" | sed "s/,/    \t/g" | sed "s/reputation//g")
         if [[ $(echo $nodes | grep -c "parse error") -lt 1 ]]; then
-          echo -e $nodes
+          curl -s $LB:9000/cluster/info | jq '.[] | {ip: .ip.host, status: .status, reputation: .reputation}' | tr -d '"{}:\n' | sed "s/  ip/\r\n  /g" | sed "s/  status//g" | sed "s/,/    \t/g" | sed "s/reputation//g"
         else
           echo -e "${red}Load Balancer timed out. please run command again."
         fi
