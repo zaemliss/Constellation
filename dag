@@ -13,7 +13,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="3.22"
+DAG_VERSION="3.23"
 export updver=$2
 
 function checkVersion()
@@ -757,12 +757,7 @@ if [[ $1 == "nodes" ]]; then
         echo
         echo -e "${blu}   IP                \t Status      \t   Reputation"
         echo -e "${yel}------------------------------------------------------------${grn}"
-        nodes=$(curl -s $LB:9000/cluster/info | jq '.[] | {ip: .ip.host, status: .status, reputation: .reputation}' | tr -d '"{}:\n' | sed "s/  ip/\r\n  /g" | sed "s/  status//g" | sed "s/,/    \t/g" | sed "s/reputation//g")
-        if [[ $(echo $nodes | grep -c "parse error") -lt 1 ]]; then
-          curl -s $LB:9000/cluster/info | jq '.[] | {ip: .ip.host, status: .status, reputation: .reputation}' | tr -d '"{}:\n' | sed "s/  ip/\r\n  /g" | sed "s/  status//g" | sed "s/,/    \t/g" | sed "s/reputation//g"
-        else
-          echo -e "${red}Load Balancer timed out. please run command again."
-        fi
+        curl -s $LB:9000/cluster/info | jq '.[] | {ip: .ip.host, status: .status, reputation: .reputation}' | tr -d '"{}:\n' | sed "s/  ip/\r\n  /g" | sed "s/  status//g" | sed "s/,/    \t/g" | sed "s/reputation//g"
         echo -e "${clr}"
         echo
 fi
