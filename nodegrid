@@ -6,12 +6,20 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 clr='\033[0m'
 pnk='\033[1;35m'
+VERSION="1.27"
 
 chars=2
 spacer=' '
 newl=''
 
-VERSION="1.26"
+OS=`uname -s`
+if [[ "$OS" == "Darwin" ]]; then
+   dcmd="gdate"
+else
+   dcmd="date"
+fi
+
+
 
 function checkVersion()
 {
@@ -55,9 +63,9 @@ echo -e "${pnk}##${spacer}ip               \tVersion\tSnap\tState\tExecTime${clr
 IPS=$(curl -s $LB | jq -r 'sort_by(.ip.host)[] | .ip.host')
 count=1
 for ip in $IPS; do
-  start=$(($(date +%s%N | tr -d 'N')/1000000))
+  start=$(($($dcmd +%s%N | tr -d 'N')/1000000))
   metrics=$(curl -s http://$ip:9000/metrics)
-  end=$(($(date +%s%N | tr -d 'N')/1000000))
+  end=$(($($dcmd +%s%N | tr -d 'N')/1000000))
   execTime=$(expr $end - $start)
   nodeVersion=$(echo $metrics | jq -r .[].version)
   nodeState=$(echo $metrics | jq -r .[].nodeState | cut -c 1-5)
