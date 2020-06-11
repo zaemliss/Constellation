@@ -22,7 +22,7 @@ process.on('uncaughtException', function (err) {
 });
 
 bot.on('ready', () => {
-      console.log(formatted + ' >Bot Ready....');
+      console.log(' >Bot Ready....');
 });
 
 bot.on('message',function(message) {
