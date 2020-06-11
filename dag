@@ -5,7 +5,7 @@
 ##   -- 2020                                ##
 ##                                          ##
 ##############################################
- 
+
 # Declare General Variables ###############################
 red='\033[1;31m'
 grn='\033[1;32m'
@@ -13,7 +13,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="3.26"
+DAG_VERSION="3.27"
 export updver=$2
 
 function checkVersion()
@@ -38,7 +38,7 @@ function checkVersion()
 }
 checkVersion
 
-function checkOS() 
+function checkOS()
 {
     OS=`uname -s`
     REV=`uname -r`
@@ -51,7 +51,7 @@ function checkOS()
             OS_DIST='Suse'
         elif [ -f /etc/mandrake-release ] ; then
             OS_DIST='Mandrake'
-        elif [ -f /etc/debian_version ] ; then	
+        elif [ -f /etc/debian_version ] ; then
             OS_DIST="Debian"
         elif [ -f /etc/arch-release ] ; then
             OS_DIST="Arch"
@@ -62,7 +62,7 @@ function checkOS()
     fi
 }
 
-function checkDepends() 
+function checkDepends()
 {
     if [[ ("$OS" == "Linux" && ("$OS_DIST" == "Debian" || "$OS_DIST" == "RedHat")) || ("$OS" == "Darwin" && -f "/usr/local/bin/brew") ]]; then
         jq --version > /dev/null 2>&1
@@ -106,7 +106,7 @@ function checkDepends()
                     apt-get purge openjdk*
                     add-apt-repository -y ppa: webupd8team / java  > /dev/null 2>&1
                     apt-get update  > /dev/null 2>&1
-                    JAVA_INSTALL_CMD="apt install -y openjdk-8-jdk" #default-jre" 
+                    JAVA_INSTALL_CMD="apt install -y openjdk-8-jdk" #default-jre"
                 elif [[ "$OS_DIST" == "RedHat" ]]; then
                     JAVA_INSTALL_CMD="yum install -y java-1.8.0-openjdk"
                 elif [[ "$OS" == "Darwin" ]]; then
@@ -188,15 +188,19 @@ checkDepends
 
 isTestnet=$(echo $@ | grep -c -- "--testnet")
 if [[ $isTestnet = 1 ]]; then
-  JAR_VERSION=$(curl -s 'https://api.github.com/repos/Constellation-Labs/constellation/releases' | jq -r '.[].tag_name' | grep -e '-rc' | sort -Vr | head -n1)
   LB="http://cl-lb-alb-testnet-1216020584.us-west-1.elb.amazonaws.com"
+  JAR_VERSION=$(curl -s $LB:9000/metrics | jq -r '.metrics.version' | awk {'print "v"$NF'})
   WHITELIST="https://marcinwadon.keybase.pub/whitelisting"
 else
-  JAR_VERSION=$(curl -s 'https://api.github.com/repos/Constellation-Labs/constellation/releases' | jq -r '.[].tag_name' | grep -ve '-rc' | sort -Vr | head -n1)
   LB="http://lb.constellationnetwork.io"
-  WHITELIST="https://github.com/Constellation-Labs/constellation/releases/download/v$JAR_VERSION/whitelisting"
+  JAR_VERSION=$(curl -s $LB:9000/metrics | jq -r '.metrics.version' | awk {'print "v"$NF'})
+  WHITELIST="https://github.com/Constellation-Labs/constellation/releases/download/$JAR_VERSION/whitelisting"
 fi
-
+if [[ ! $? -eq 0 ]]; then
+        echo -e "\n${red} Error querrying the Load Balancer. Please try again.${clr}\n"
+        echo $?
+        exit
+fi
 
 # Only get external IP if needed
 if [[ $1 == "" || $1 == "start" || $1 == "restart" || $1 == "reset" || $1 == "join" || $1 == "leave" || $1 == "metrics" || $1 == "--testnet" ]]; then
@@ -207,7 +211,7 @@ fi
 
 dagDir=$HOME/constellation
 if [[ -f "$dagDir/cl-node.jar" ]]; then
-    INSTALLED_VERSION=$(java -jar $dagDir/cl-node.jar --version | grep "constellation" | awk '{print $NF}')
+    INSTALLED_VERSION=$(java -jar $dagDir/cl-node.jar --version | grep "constellation" | awk '{print "v"$NF}')
 fi
 
 
@@ -296,19 +300,19 @@ function showStatus()
                 echo -ne "${blu} Installed .jar version : "
                 if [[ $INSTALLED_VERSION == $JAR_VERSION ]]; then
                         echo -ne "${grn}"
-                else 
+                else
                         echo -ne "${red}"
                 fi
                 echo -e "$INSTALLED_VERSION ${clr}"
-         
+
          isWhiteListed=$(cat $dagDir/whitelisting | grep $externalHostIp -c)
          echo -ne "${blu} Whitelisted            : "
          if [[ $isWhiteListed -gt 0 ]]; then
                 echo -ne "${grn}true${clr}"
-         else 
+         else
                 echo -ne "${red}false${clr}"
          fi
-         echo       
+         echo
 }
 
 function getMetrics()
@@ -386,12 +390,16 @@ function showLogs()
 
 function update()
 {
-#        if [[ ! $updver = "--testnet" || ( ! -z $updver && $updver = "--testnet" ) ]]; then
-#           JAR_VERSION=$updver
-#        fi
-	echo
-	echo "Jar version: $JAR_VERSION"
-	echo "updver: $updver"
+        if [[ $isTestnet = 1 && ! -z $updver && ! $updver = "--testnet" ]]; then
+          JAR_VERSION=$updver
+          WHITELIST="https://marcinwadon.keybase.pub/whitelisting"
+        elif [[ $isTestnet = 1 && $updver = "--testnet" ]]; then
+          WHITELIST="https://marcinwadon.keybase.pub/whitelisting"
+        elif [[ ! $updver = "--testnet" && ! -z $updver ]]; then
+          JAR_VERSION=$updver
+          WHITELIST="https://github.com/Constellation-Labs/constellation/releases/download/$JAR_VERSION/whitelisting"
+        fi
+
         echo
         echo -e "${grn}Updating from ${blu}$INSTALLED_VERSION ${grn}to ${blu}$JAR_VERSION"
         echo -e "${blu} Getting latest version and saving to $HOME/constellation ..."
@@ -413,7 +421,7 @@ function restart()
         cd $dagDir
 
         echo -e "${grn} Deploying on $externalHostIp ...${clr}"
-        
+
         start
 }
 
@@ -450,7 +458,7 @@ function start()
 
 function stop()
 {
-    if [[ ! -z $DAGNODEUUID ]]; then  
+    if [[ ! -z $DAGNODEUUID ]]; then
       NODEPID=$(pgrep -f $DAGNODEUUID)
       kill $NODEPID >/dev/null 2>&1
     else
@@ -469,13 +477,13 @@ function doInstall()
 {
         checkDepends
         checkDir
-        
+
         echo -e "${red}   READ CAREFULLY: ${blu}This will reset your node by stopping the node and updating to the latest jar files.${clr}"
         echo -e "${blu}                   The script will then proceeed to configure the node and will ask you to enter passwords and an alias.${clr}"
         echo -e "${grn}                   If you already have a p12 file you want to reuse, just enter the same passwords and alias you did originally.${clr}"
         echo -e "${blu}                   The script will then detect your old p12 file and prompt you to use it.${clr}"
         echo -e "${red}                   Only enter new passwords or alias if you don't plan on reusing your old p12 file.${clr}"
-        echo                        
+        echo
         echo -e "${blu}1. ${grn}How much memory (in gigabytes, Minimum 3) would you like to allocate to running the node? e.g.: 4  ${clr}"
         read -e -p "> : " MAXMEMORY
         if [[ "MAXMEMORY" -lt "3" ]];then
@@ -486,7 +494,7 @@ function doInstall()
                 echo -e "${blu}3. ${grn}Please enter a Store password. Make sure you write it down and store it in a safe place! "
         echo -e "${grn}   Format: Upper and lower characters and the symbols above the numbers on your keyboard, minimum 8 characters, NO SPACES!${clr}"
         echo -e "${red}   WARNING If you lose this password, you will lose access!${clr}"
-        
+
         goodPass=0
         while [ "$goodPass" -ne "1" ]
         do
@@ -503,11 +511,11 @@ function doInstall()
                         goodPass=0
                 fi
         done
-        
+
         echo -e "${blu}3. ${grn}Please enter a Wallet password. Make sure you write it down and store it in a safe place! "
         echo -e "${grn}   Format: Upper and lower characters and the symbols above the numbers on your keyboard, minimum 8 characters, NO SPACES!${clr}"
         echo -e "${red}   WARNING If you lose this password, you will lose access to your tokens!${clr}"
-        
+
         goodPass=0
         while [ "$goodPass" -ne "1" ]
         do
@@ -532,7 +540,7 @@ function doInstall()
 
         hazp12file=$(locate *.p12 | head -n 1)
         skipp12=0
-        if [ ${#hazp12file} -ne 0 ]; then 
+        if [ ${#hazp12file} -ne 0 ]; then
             echo -e "${blu}5. ${grn}I found this .p12 file: ${yel}$hazp12file [y/n]"
             echo -ne "${grn}Would you like to use it ? [y/n]: ${clr}"
             read -e -p ": " YN
@@ -574,12 +582,12 @@ function doInstall()
                 OWNFILE=1
             fi
         fi
-        
+
         export CL_STOREPASS=$STOREPASS
         export CL_KEYPASS=$KEYPASS
-        
+
         DAGNODEUUID=$(uuidgen)
-        
+
         echo -e "${blu} Starting the node..."
         start
         echo
@@ -604,7 +612,7 @@ function doInstall()
                    echo
                    exit 1
                 fi
-                
+
                 firstIP=$(curl -s $LB:9000/cluster/info | jq -r .[].ip.host | head -n 1)
                 if [[ ${#firstIP} -gt 8 ]]; then
                   export GENESIS=$firstIP
@@ -666,7 +674,7 @@ if [[ $1 == "reset" ]]; then
         fi
         echo -e "${grn} Terminating instance...${clr}"
         reset
-        
+
 fi
 
 if [[ $1 == "logs" ]]; then
