@@ -6,7 +6,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 clr='\033[0m'
 pnk='\033[1;35m'
-VERSION="1.28"
+VERSION="1.29"
 
 chars=2
 spacer=' '
@@ -58,7 +58,18 @@ fi
 
 ### GET LIST OF IPS FROM LOAD BALANCER AND LIST THEM OUT ###
 echo -e "${pnk}##${spacer}ip               \tVersion\tSnap\tState\tExecTime${clr}"
-IPS=$(curl -s $LB | jq -r 'sort_by(.ip.host)[] | .ip.host')
+
+curl -s $LB > xfile.log
+curated=$(cat xfile.log)
+terminator=${curated: -1}
+
+if [ $terminator = "]" ]; then
+	IPS=$(curl -s $LB | jq -r 'sort_by(.ip.host)[] | .ip.host')
+else
+        echo -e "${red}Load balancer returned malformed JSON${clr}"
+	exit 1
+fi
+
 count=1
 for ip in $IPS; do
   start=$(($($dcmd +%s%N | tr -d 'N')/1000000))
