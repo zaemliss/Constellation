@@ -13,7 +13,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="3.28"
+DAG_VERSION="3.29"
 export updver=$2
 
 function checkVersion()
@@ -664,6 +664,22 @@ function getPasswords()
 
 checkDepends
 checkConfig
+
+if [[ $* =- "--debug" ]]; then
+        wget https://raw.githubusercontent.com/zaemliss/Constellation/master/logback.xml -O $dagDir/logback.xml
+        echo
+        echo -e "${blu} Overwriting logging with ${yel}debug level ${blu}logging ...${clr}"
+        echo -e " ${red}IIMPORTANT!${blu} You will need to reset your node for the changes to take effect.${clr}"
+        echo
+fi
+
+if [[ $* =- "--info" ]]; then
+        wget https://raw.githubusercontent.com/Constellation-Labs/constellation/dev/src/main/resources/logback.xml -O $dagDir/logback.xml
+        echo
+        echo -e "${blu} Overwriting logging with ${yel}info level ${blu}logging ...${clr}"
+        echo -e " ${red}IIMPORTANT!${blu} You will need to reset your node for the changes to take effect.${clr}"
+        echo
+fi
 
 if [[ $1 == "reset" ]]; then
         echo
