@@ -6,7 +6,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 clr='\033[0m'
 pnk='\033[1;35m'
-VERSION="1.30"
+VERSION="1.31"
 
 chars=2
 spacer=' '
@@ -63,7 +63,7 @@ curl -s $LB > xfile.log
 curated=$(cat xfile.log)
 terminator=${curated: -1}
 
-if [ $terminator = "]" ]; then
+if [[ $terminator = "]" ]]; then
 	IPS=$(curl -s $LB | jq -r 'sort_by(.ip.host)[] | .ip.host')
 else
         echo -e "${red}Load balancer returned malformed JSON${clr}"
