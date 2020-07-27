@@ -13,7 +13,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="3.32"
+DAG_VERSION="3.33"
 export updver=$2
 
 function checkVersion()
@@ -448,7 +448,7 @@ function reset()
 function start()
 {
     getPasswords
-    bashexec="java -Xms1024M -Xmx$MAXMEM -Xss256K -DDAGNODEUUID=$DAGNODEUUID -Dlogback.configurationFile=$dagDir/logback.xml -jar $dagDir/cl-node.jar --ip=$externalHostIp --port=9000 -k=$KEYSTORE --alias $NODEALIAS -w $dagDir/whitelisting"
+    bashexec="java -Xms1024M -Xmx$MAXMEM -DDAGNODEUUID=$DAGNODEUUID -Dlogback.configurationFile=$dagDir/logback.xml -jar $dagDir/cl-node.jar --ip=$externalHostIp --port=9000 -k=$KEYSTORE --alias $NODEALIAS -w $dagDir/whitelisting"
     echo -e "${blu} Executing: ${yel} $bashexec${clr}"
     $bashexec &
     echo -e "${grn} The node is started.${clr}"
