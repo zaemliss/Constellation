@@ -789,7 +789,6 @@ if [[ $1 == "nodes" ]]; then
         echo
         echo -e "${blu}   IP                \t Alias       \t Status      \t   Reputation"
         echo -e "${yel}------------------------------------------------------------${grn}"
-        curl -s $LB | jq -r 'sort_by(.ip.host)[] | {ip: .ip.host[0:15], status: .status[0:13], alias: .alias[0:20]}' |  tr -d '":,{}\n' | sed "s/ ip/\r\n /g" | sed "s/ alias/ /g" | sed "s/ status/   \t/g" | tail -n +2 | nl -bt
+        curl -s $LB:9000/cluster/info | jq -r 'sort_by(.ip.host)[] | {ip: .ip.host[0:15], status: .status[0:13], alias: .alias[0:20]}' |  tr -d '":,{}\n' | sed "s/ ip/\r\n /g" | sed "s/ alias/ /g" | sed "s/ status/   \t/g" | tail -n +2 | nl -bt        echo -e "${clr}"
         echo -e "${clr}"
-        echo
 fi
