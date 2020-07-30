@@ -13,7 +13,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="3.38"
+DAG_VERSION="3.39"
 export updver=$2
 
 function checkVersion()
@@ -787,8 +787,9 @@ fi
 
 if [[ $1 == "nodes" ]]; then
         echo
-        echo -e "${blu}   IP                \t Alias       \t Status      \t   Reputation"
+        echo -e "${blu}   \t  IP          \t\t Status\t Alias"
         echo -e "${yel}------------------------------------------------------------${grn}"
-        curl -s $LB:9000/cluster/info | jq -r 'sort_by(.ip.host)[] | {ip: .ip.host[0:15], status: .status[0:13], alias: .alias[0:20]}' |  tr -d '":,{}\n' | sed "s/ ip/\r\n /g" | sed "s/ alias/ /g" | sed "s/ status/   \t/g" | tail -n +2 | nl -bt        echo -e "${clr}"
+        curl -s $LB:9000/cluster/info | jq -r 'sort_by(.ip.host)[] | {ip: .ip.host[0:15], status: .status[0:7], alias: .alias[0:20]}' |  tr -d '":,{}\n' | sed "s/ ip/\r\n /g" | sed "s/ alias//g" | sed "s/ status/   \t/g" | tail -n $
         echo -e "${clr}"
+        echo
 fi
