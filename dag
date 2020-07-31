@@ -13,7 +13,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="3.42"
+DAG_VERSION="3.43"
 export updver=$2
 
 function checkVersion()
@@ -401,7 +401,7 @@ function update()
           WHITELIST="https://marcinwadon.keybase.pub/whitelisting"
         elif [[ ! $updver = "--testnet" && ! -z $updver ]]; then
           JAR_VERSION=$updver
-          WHITELIST="https://github.com/Constellation-Labs/constellation/releases/download/$JAR_VERSION/whitelisting"
+          WHITELIST="https://github.com/Constellation-Labs/constellation/releases/download/$JAR_VERSION/mainnet-whitelisting"
         fi
 
         echo
