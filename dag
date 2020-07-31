@@ -13,7 +13,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="3.43"
+DAG_VERSION="3.44"
 export updver=$2
 
 function checkVersion()
@@ -194,7 +194,7 @@ if [[ $isTestnet = 1 ]]; then
 else
   LB="http://lb.constellationnetwork.io"
   JAR_VERSION=$(curl -s $LB:9000/metrics | jq -r '.metrics.version' | awk {'print "v"$NF'})
-  WHITELIST="https://github.com/Constellation-Labs/constellation/releases/download/$JAR_VERSION/whitelisting"
+  WHITELIST="https://github.com/Constellation-Labs/constellation/releases/download/$JAR_VERSION/mainnet-whitelisting"
 fi
 if [[ ! $? -eq 0 ]]; then
         echo -e "\n${red} Error querrying the Load Balancer. Please try again.${clr}\n"
