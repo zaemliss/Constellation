@@ -13,7 +13,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="3.44"
+DAG_VERSION="3.45"
 export updver=$2
 
 function checkVersion()
@@ -319,8 +319,8 @@ function getMetrics()
 {
     echo
     metrics=$(curl -s http://127.0.0.1:9002/metrics)
-    address=$(echo $metrics | jq .metrics.address | tr -d '"')
-    alias==$(echo $metrics | jq .metrics.alias | tr -d '"')
+    address=$(echo $metrics | jq -r .metrics.address)
+    alias=$(echo $metrics | jq -r .metrics.alias)
     rewards=$(curl -s $LB:9000/address/"${address}" | jq ".rewardsBalance")
     echo -ne "${blu}Address         : ${grn}"
     echo ${address}
@@ -338,16 +338,22 @@ function getMetrics()
     echo $metrics | jq .metrics.id | tr -d '"'
     echo -e "${clr}"
     echo -ne "${blu}Node State      : ${grn}"
-    echo $metrics | jq .metrics.nodeState | tr -d '"'
+    echo $metrics | jq -r .metrics.nodeState
+    echo -e "${clr}"
+    echo -ne "${blu}TPS last 10s    : ${grn}"
+    echo $metrics | jq -r .metrics.TPS_last_10_seconds
+    echo -e "${clr}"
+    echo -ne "${blu}TPS All         : ${grn}"
+    echo $metrics | jq -r .metrics.TPS_all
     echo -e "${clr}"
     echo -ne "${blu}Snapshot height : ${grn}"
-    echo $metrics | jq .metrics.lastSnapshotHeight | tr -d '"'
+    echo $metrics | jq -r .metrics.lastSnapshotHeight
     echo -e "${clr}"
     echo -ne "${blu}Majority height : ${grn}"
-    echo $metrics | jq .metrics.redownload_lastMajorityStateHeight | tr -d '"'
+    echo $metrics | jq -r .metrics.redownload_lastMajorityStateHeight
     echo -e "${clr}"
     echo -ne "${blu}Version         : ${grn}"
-    echo $metrics | jq .metrics.version | tr -d '"'
+    echo $metrics | jq -r .metrics.version
     echo -e "${clr}"
     echo -ne "${blu}Date Stamp      : ${yel}"
     date
