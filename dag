@@ -546,7 +546,7 @@ function doInstall()
                 fi
         done
 
-        echo -e "${blu}4. ${grn}Please enter an alias for the node (e.x.: myalias)"
+        echo -e "${blu}4. ${grn}Please enter an alias for the wallet (e.x.: myalias)"
         echo -e "${grn}   Format: Upper and lower characters, minimum 5 characters, NO SPACES!${clr}"
         echo -e "${red}           IT IS IMPORTANT TO UNDERSTAND THAT THE WORD \"ALIAS\" MEANS THE WALLET ALIAS - NOT YOUR NODE NICKNAME!!! ${clr}"
         read -e -p "Please enter the Alias for the node :" MYNODEALIAS
