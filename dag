@@ -13,7 +13,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="3.49"
+DAG_VERSION="3.50"
 export updver=$2
 
 function checkVersion()
@@ -313,6 +313,12 @@ function showStatus()
                 echo -ne "${red}false${clr}"
          fi
          echo
+         myInfo=$(curl -s https://ipvigilante.com/ $externalHostIp)
+         myCity=$(echo $myInfo | jq -r .data.city_name)
+         myState=$(echo $myInfo | jq -r .data.subdivision_1_name)
+         myCountry=$(echo $myInfo | jq -r .data.country_name)
+         
+         echo -e "${blu} Geolocation            : ${grn}$myCity, $myState, $myCountry${clr}"
 }
 
 function getMetrics()
@@ -497,10 +503,10 @@ function doInstall()
         echo -e "${blu}                   The script will then detect your old p12 file and prompt you to use it.${clr}"
         echo -e "${red}                   Only enter new passwords or alias if you don't plan on reusing your old p12 file.${clr}"
         echo
-        echo -e "${blu}1. ${grn}How much memory (in gigabytes, Minimum 3) would you like to allocate to running the node? e.g.: 4  ${clr}"
+        echo -e "${blu}1. ${grn}How much memory (in gigabytes, Minimum 4) would you like to allocate to running the node? e.g.: 8  ${clr}"
         read -e -p "> : " MAXMEMORY
-        if [[ "MAXMEMORY" -lt "3" ]];then
-                MAXMEMORY=3
+        if [[ "MAXMEMORY" -lt "4" ]];then
+                MAXMEMORY=4
         fi
         export MAXMEM=${MAXMEMORY}G
 
