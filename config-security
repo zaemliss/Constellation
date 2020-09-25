@@ -47,6 +47,7 @@ if [[ "$installufw" == "1" ]]; then
     sudo ufw limit ssh/tcp > /dev/null 2>&1
     sudo ufw allow 9000/tcp > /dev/null 2>&1
     sudo ufw allow 9001/tcp > /dev/null 2>&1
+    sudo ufw allow 9003/tcp > /dev/null 2>&1
     sudo ufw logging on > /dev/null 2>&1
     echo "y" | sudo ufw enable > /dev/null 2>&1
     echo
