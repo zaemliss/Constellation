@@ -7,7 +7,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 clr='\033[0m'
 pnk='\033[1;35m'
-VERSION="1.21"
+VERSION="1.22"
 function checkVersion()
 {
         webVer=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/checkCluster | grep "VERSION=" | head -1 | tr -d '"' | tr '=' ' ' | awk '{print $2}')
@@ -25,9 +25,17 @@ function checkVersion()
         fi
 }
 checkVersion
-if [[ ! -z $1 ]]; then
+
+isTestnet=$(echo $@ | grep -c -- "--testnet")
+if [[ $isTestnet = 1 ]]; then
+  LB="http://cl-lb-alb-testnet-1216020584.us-west-1.elb.amazonaws.com"
+else
+  LB="http://lb.constellationnetwork.io"
+fi
+
+if [[ ! -z $1 ]] && [[ $1 -ne "--testnet" ]]; then
   nodes=$1
-  inCluster=$(curl -s -m 3 http://lb.constellationnetwork.io:9000/cluster/info | jq .[].ip.host | grep -c $1)
+  inCluster=$(curl -s -m 3 $LB:9000/cluster/info | jq .[].ip.host | grep -c $1)
   echo
   if [ $inCluster -gt "0" ]; then
     echo -e "${blu}Node ${grn}$1 found in cluster!${clr}"
@@ -35,7 +43,7 @@ if [[ ! -z $1 ]]; then
     echo -e "${blu}Node ${grn}$1 ${red}Not found in cluster!${clr}"
   fi
 else
-  nodes=$(curl -s -m 5 http://lb.constellationnetwork.io:9000/cluster/info | jq '.[] | {ip: .ip.host}' | tr -d 'ip"{}:,\n' | sed "s/   /\n/g")
+  nodes=$(curl -s -m 5 $LB:9000/cluster/info | jq '.[] | {ip: .ip.host}' | tr -d 'ip"{}:,\n' | sed "s/   /\n/g")
   if [[ -z $nodes ]]; then
     echo
     echo -e "${red}Nothing returned from load balancer. Mainnet Down?${clr}"
