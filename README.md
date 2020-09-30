@@ -84,3 +84,10 @@ QUICKSTEPS:
 ```dag reset --testnet```
 or
 ```dag join 13.23.145.23 --testnet```
+
+# UTILITIES #
+checkCluster
+```
+wget https://raw.githubusercontent.com/zaemliss/Constellation/master/checkCluster -O /usr/local/bin/checkCluster && chmod +x /usr/local/bin/checkCluster
+```
+usage: checkCluster [ip_address]
