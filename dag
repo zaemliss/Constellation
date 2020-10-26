@@ -13,7 +13,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="3.54"
+DAG_VERSION="3.55"
 export updver=$2
 
 function checkVersion()
@@ -397,6 +397,8 @@ function showHelp()
         echo -e " ${yel} dag logs [search]           ${blu}Displays the app logs in real time OR if a parameter is supplied, returns matching results in ${grn}search${clr}"
         echo -e " ${yel} dag explore dag_addr        ${blu}Displays the transactions for the address specified in ${grn}dag_addr${clr}"
         echo -e " ${yel} dag hash dag_trasact        ${blu}Displays the transaction for the tx hash specified in ${grn}dag_transact${clr}"
+        echo -e " ${yel} dag tx dag_address          ${blu}Displays chronological list of dag SENT transactions for the given address ${clr}"
+        echo -e " ${yel} dag rx dag_address          ${blu}Displays chronological list of dag RECEIVED transactions for the given address ${clr}"
 #        echo -e " ${yel} dag stop                    ${blu}Stops the node ${clr}"
 #        echo -e " ${yel} dag start                   ${blu}Starts the node ${clr}"
         echo
@@ -813,6 +815,28 @@ fi
 
 if [[ $1 == "metrics" ]]; then
         getMetrics
+fi
+
+if [[ $1 == "tx" ]]; then
+  if [[ -z $2 ]]; then
+        echo
+        echo -e "${red} ERROR - Missing address. ${yel} format: ${blu} dag tx DAGaddress ${clr}"
+        echo
+        exit 1
+  fi
+        ADDRESS=$2
+        curl -s -X GET https://block-explorer.constellationnetwork.io/address/$ADDRESS/transaction/sent | jq  -c 'sort_by(.timestamp) | .[] | { amount: .amount, timestamp: .timestamp, src: .sender, dst: .receiver }'
+fi
+
+if [[ $1 == "rx" ]]; then
+  if [[ -z $2 ]]; then
+        echo
+        echo -e "${red} ERROR - Missing address. ${yel} format: ${blu} dag rx DAGaddress ${clr}"
+        echo
+        exit 1
+  fi
+        ADDRESS=$2
+        curl -s -X GET https://block-explorer.constellationnetwork.io/address/$ADDRESS/transaction/received | jq  -c 'sort_by(.timestamp) | .[] | { amount: .amount, timestamp: .timestamp, src: .sender, dst: .receiver }'
 fi
 
 if [[ $1 == "stop" ]]; then
