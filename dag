@@ -13,7 +13,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="3.55"
+DAG_VERSION="3.56"
 export updver=$2
 
 function checkVersion()
@@ -825,7 +825,7 @@ if [[ $1 == "tx" ]]; then
         exit 1
   fi
         ADDRESS=$2
-        curl -s -X GET https://block-explorer.constellationnetwork.io/address/$ADDRESS/transaction/sent | jq  -c 'sort_by(.timestamp) | .[] | { amount: .amount, timestamp: .timestamp, src: .sender, dst: .receiver }'
+        curl -s -X GET https://block-explorer.constellationnetwork.io/address/$ADDRESS/transaction/sent | jq  -c 'sort_by(.timestamp) | .[] | { amount: (( .amount / 100000000 )), timestamp: .timestamp, src: .sender, dst: .receiver }'
 fi
 
 if [[ $1 == "rx" ]]; then
@@ -836,7 +836,7 @@ if [[ $1 == "rx" ]]; then
         exit 1
   fi
         ADDRESS=$2
-        curl -s -X GET https://block-explorer.constellationnetwork.io/address/$ADDRESS/transaction/received | jq  -c 'sort_by(.timestamp) | .[] | { amount: .amount, timestamp: .timestamp, src: .sender, dst: .receiver }'
+        curl -s -X GET https://block-explorer.constellationnetwork.io/address/$ADDRESS/transaction/received | jq  -c 'sort_by(.timestamp) | .[] | { amount: (( .amount / 100000000 )), timestamp: .timestamp, src: .sender, dst: .receiver }'
 fi
 
 if [[ $1 == "stop" ]]; then
