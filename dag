@@ -13,7 +13,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="3.57"
+DAG_VERSION="3.58"
 export updver=$2
 
 function checkVersion()
@@ -788,7 +788,7 @@ fi
 if [[ $1 == "explore" ]]; then
   if [[ ! -z $2 ]]; then
         echo -e "${grn}"
-        curl -s https://xju69fets2.execute-api.us-west-1.amazonaws.com/cl-block-explorer-mainnet/transactions?address=$2 | jq '.[] | {hash: .hash, amount: (( .amount / 100000000 )), receiver: .receiver, sender: .sender}' | tr -d '{}",'
+        curl -s https://block-explorer.constellationnetwork.io/address/$2/transaction | jq  -c 'sort_by(.timestamp) | .[] | { hash: .hash, amount: (( .amount / 100000000 )), timestamp: .timestamp, src: .sender, dst: .receiver }' | tr -d '{"' | tr ',}' '\n'
         echo -e "${clr}"
   else
         echo -e "${red} Address cannot be empty! ${yel}\n Usage: ${blu}dag explore valid_dag_address${clr}"
