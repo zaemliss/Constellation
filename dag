@@ -13,7 +13,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="3.59"
+DAG_VERSION="3.60"
 export updver=$2
 
 function checkVersion()
@@ -495,14 +495,14 @@ function start()
 
 function stop()
 {
-    if [[ ! -z $DAGNODEUUID ]]; then
-      NODEPID=$(pgrep -f $DAGNODEUUID)
-      kill $NODEPID >/dev/null 2>&1
-      echo -e "${grn}dag cl-node process ${red}terminated.${clr}"
-   else
+   //if [[ ! -z $DAGNODEUUID ]]; then
+    //  NODEPID=$(pgrep -f $DAGNODEUUID)
+    //  kill $NODEPID >/dev/null 2>&1
+    //  echo -e "${grn}dag cl-node process ${red}terminated.${clr}"
+   //else
       echo -e "${grn}all java processes ${red}terminated.${clr}"
       pgrep java | xargs kill -9 >/dev/null 2>&1
-    fi
+   // fi
     echo
 }
 
