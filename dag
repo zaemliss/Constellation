@@ -16,6 +16,13 @@ clr='\033[0m'
 DAG_VERSION="3.63"
 export updver=$2
 
+function checkDir()
+{
+        if [[ ! -d $HOME/constellation ]]; then
+                mkdir -p $HOME/constellation
+        fi
+}
+checkDir
 function checkVersion()
 {
         webVer=$(curl -s https://raw.githubusercontent.com/zaemliss/Constellation/master/dag | grep "DAG_VERSION=" | head -1 | tr -d '"' | tr '=' ' ' | awk '{print $2}')
@@ -499,13 +506,6 @@ function stop()
     echo -e "${grn}all java processes ${red}terminated.${clr}"
     pgrep java | xargs kill -9 >/dev/null 2>&1
     echo
-}
-
-function checkDir()
-{
-        if [[ ! -d $HOME/constellation ]]; then
-                mkdir -p $HOME/constellation
-        fi
 }
 
 function doInstall()
