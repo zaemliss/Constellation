@@ -13,7 +13,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="3.66"
+DAG_VERSION="3.67"
 export updver=$2
 
 function checkDir()
@@ -436,7 +436,6 @@ function update()
         if [[ $isTestnet = 1 && ! -z $updver && ! $updver = "--testnet" ]]; then
           JAR_VERSION=$updver
           WHITELIST="https://constellationlabs-dag.s3-us-west-1.amazonaws.com/testnet-whitelisting"
-          JARFILE="https://github.com/Constellation-Labs/constellation/releases/download/$JAR_VERSION/cl-node.jar"
           #JARFILE="https://constellationlabs-dag.s3-us-west-1.amazonaws.com/testnet-cl-node.jar"
         elif [[ $isTestnet = 1 && $updver = "--testnet" ]]; then
           WHITELIST="https://constellationlabs-dag.s3-us-west-1.amazonaws.com/testnet-whitelisting"
@@ -444,7 +443,6 @@ function update()
         elif [[ ! $updver = "--testnet" && ! -z $updver ]]; then
           JAR_VERSION=$updver
           WHITELIST="https://github.com/Constellation-Labs/constellation/releases/download/$JAR_VERSION/mainnet-whitelisting"
-          JARFILE="https://github.com/Constellation-Labs/constellation/releases/download/$JAR_VERSION/cl-node.jar"
         fi
 
         echo
@@ -452,7 +450,7 @@ function update()
         echo -e "${blu} Getting latest version and saving to $HOME/constellation ..."
         echo -e "${brn} (this can take a few minutes) ${clr}"
         wget https://github.com/Constellation-Labs/constellation/releases/download/$JAR_VERSION/cl-keytool.jar -O $dagDir/cl-keytool.jar >/dev/null 2>&1
-        wget $JARFILE -O $dagDir/cl-node.jar >/dev/null 2>&1
+        wget https://github.com/Constellation-Labs/constellation/releases/download/$JAR_VERSION/cl-node.jar -O $dagDir/cl-node.jar >/dev/null 2>&1
         wget https://github.com/Constellation-Labs/constellation/releases/download/$JAR_VERSION/cl-wallet.jar -O $dagDir/cl-wallet.jar >/dev/null 2>&1
         wget $WHITELIST -O $dagDir/whitelisting >/dev/null 2>&1
         wget https://raw.githubusercontent.com/Constellation-Labs/constellation/dev/src/main/resources/logback-prod.xml -O $dagDir/logback.xml >/dev/null 2>&1
