@@ -13,7 +13,7 @@ yel='\033[1;33m'
 blu='\033[1;36m'
 pnk='\033[1;35m'
 clr='\033[0m'
-DAG_VERSION="3.65"
+DAG_VERSION="3.66"
 export updver=$2
 
 function checkDir()
@@ -436,11 +436,11 @@ function update()
         if [[ $isTestnet = 1 && ! -z $updver && ! $updver = "--testnet" ]]; then
           JAR_VERSION=$updver
           WHITELIST="https://constellationlabs-dag.s3-us-west-1.amazonaws.com/testnet-whitelisting"
-          #JARFILE="https://github.com/Constellation-Labs/constellation/releases/download/$JAR_VERSION/cl-node.jar"
-          JARFILE="https://constellationlabs-dag.s3-us-west-1.amazonaws.com/testnet-cl-node.jar"
+          JARFILE="https://github.com/Constellation-Labs/constellation/releases/download/$JAR_VERSION/cl-node.jar"
+          #JARFILE="https://constellationlabs-dag.s3-us-west-1.amazonaws.com/testnet-cl-node.jar"
         elif [[ $isTestnet = 1 && $updver = "--testnet" ]]; then
           WHITELIST="https://constellationlabs-dag.s3-us-west-1.amazonaws.com/testnet-whitelisting"
-          JARFILE="https://constellationlabs-dag.s3-us-west-1.amazonaws.com/testnet-cl-node.jar"
+          #JARFILE="https://constellationlabs-dag.s3-us-west-1.amazonaws.com/testnet-cl-node.jar"
         elif [[ ! $updver = "--testnet" && ! -z $updver ]]; then
           JAR_VERSION=$updver
           WHITELIST="https://github.com/Constellation-Labs/constellation/releases/download/$JAR_VERSION/mainnet-whitelisting"
