@@ -1,7 +1,16 @@
+////////////////////////////////////////////
+// Telegram bot using BotFather
+// bot setup:
+// https://github.com/hosein2398/node-telegram-bot-api-tutorial
+//
+// Script setup:
+// install node.js environment and execute this code
+// replace the token below at line 13 ID with the new Botfather bot ID
+
 process.env["NTBA_FIX_319"] = 1; // fix for the deprecation of the promises cancellation error
-const botconfig = require('./botconfig.json');
+
 const TelegramBot = require('node-telegram-bot-api'),
-bot = new TelegramBot(botconfig.token, { polling: true });
+bot = new TelegramBot("YOUR_TOKEN_HERE", { polling: true });
 
 console.log("Starting bot...");
 
@@ -14,7 +23,7 @@ bot.on('message', (message) => {
 //console.log(Object.keys(message));
 //console.log(message.chat.id);
     if(message.chat.id != "-1001120853347") { // make sure it's from dojo Telegram
-        return;
+	return;
     }
 
 var messageKeys = Object.keys(message); // get all of the keys in the message object
@@ -35,7 +44,7 @@ var messageKeys = Object.keys(message); // get all of the keys in the message ob
             checkText = checkText.replace('?',' ');
     } else if(messageKeys.indexOf("photo") > -1) {
         detectedWords = detectedWords + " [photo]";
-        spamIndex = spamIndex + 1;
+	spamIndex = spamIndex + 1;
     }
     if(messageKeys.indexOf("caption") > -1) {
             checkText = message.caption.toString().toLowerCase()
@@ -53,15 +62,15 @@ var messageKeys = Object.keys(message); // get all of the keys in the message ob
 
 // CHECK FOR VIRUSES - EXECUTABLES ARE INSTABAN //
     if(messageKeys.indexOf("document") > -1) {
-        var extensions=['.exe', '.bat', '.scr', '.pif', '.bat', '.apk', '.inf', '.app', '.bin', '.cmd', '.vb', '.ws', '.msi', '.doc', '.pdf', '.xls', '.docx', '.xlsx']
-        extensions.forEach(function(extension) {
+	var extensions=['.exe', '.bat', '.scr', '.pif', '.bat', '.apk', '.inf', '.app', '.bin', '.cmd', '.vb', '.ws', '.msi', '.doc', '.pdf', '.xls', '.docx', '.xlsx']
+	extensions.forEach(function(extension) {
             if(message.document.file_name.indexOf(extension) > -1) {
-                  spamIndex = spamIndex +6;
-                  console.log(message.document.file_name);
-                  detectedWords = detectedWords + " [VIRUS]";
-                  reason =  " Retard posted a virus";
-            }
-        });
+ 		  spamIndex = spamIndex +6;
+        	  console.log(message.document.file_name);
+	          detectedWords = detectedWords + " [VIRUS]";
+        	  reason =  " Dummy posted a virus";
+	    }
+	});
     }
 
 // Read JSON Rules file and check message against it
@@ -69,40 +78,41 @@ var messageKeys = Object.keys(message); // get all of the keys in the message ob
     var rules = Object.keys(ruleset);
     rules.forEach(function(item) {
         if(checkText.indexOf(ruleset[item].name) > -1) {
-              spamIndex = spamIndex + ruleset[item].weight;
-              detectedWords = detectedWords + ruleset[item].name + " ";
+	      spamIndex = spamIndex + ruleset[item].weight;
+	      detectedWords = detectedWords + ruleset[item].name + " ";
         }
     });
 
 
 // APPLY CONSEQUENCES BASED ON SPAM LEVEL //
-    if(spamIndex > 2) {
-        try {
-          console.log('\x1b[91mUser: @' + message.from.username + ' ( ' + message.from.first_name + ' ) ' + ' kicked for spamming\x1b[0m');
-          //bot.sendMessage(message.chat.id, 'User: @' + message.from.username + ' ( ' + message.from.first_name + ' ) ' + reason + ' | Spam Index: ' + spamIndex);
-        }
-        catch(error) {
-          console.error(error);
-        }
+if(spamIndex > 2) {
+	try {
+	  console.log('\x1b[91mUser: @' + message.from.username + ' ( ' + message.from.first_name + ' ) ' + ' kicked for spamming\x1b[0m');
+	  //bot.sendMessage(message.chat.id, 'User: @' + message.from.username + ' ( ' + message.from.first_name + ' ) ' + reason + ' | Spam Index: ' + spamIndex);
+	}
+	catch(error) {
+	  console.error(error);
+	}
 
-        try {
-                bot.deleteMessage(message.chat.id, message.message_id);
-        }
-        catch(error) {
-          console.error(error);
-        }
+	try {
+		bot.deleteMessage(message.chat.id, message.message_id);
+	}
+	catch(error) {
+	  console.error(error);
+	}
 
-        try {
-                bot.kickChatMember(message.chat.id, message.from.id);
-        }
-        catch(error) {
-          console.error(error);
-        }
-     }
+	try {
+	        bot.kickChatMember(message.chat.id, message.from.id);
+	}
+	catch(error) {
+	  console.error(error);
+	}
+}
      console.log("==========================================================");
      console.log('\x1b[92m' + checkText + '\x1b[0m');
      console.log('\x1b[93mUser: \x1b[0m@' + message.from.username + ' ( ' + message.from.first_name + ' ) ' );
      console.log('\x1b[93mDetected Words: \x1b[91m' + detectedWords + '\x1b[0m');
      console.log('Spam Index: ' + spamIndex);
      console.log("==========================================================\n");
+
 });
