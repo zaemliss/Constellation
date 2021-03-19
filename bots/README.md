@@ -13,7 +13,7 @@ Also it will require a botconfig.json configured like this:
 
 ===================================================
 ** Telegram bot is an anti-spam bot I made but has all the functions required to search and act on input **
-To use as-is (as an anti-spam bot) it requires a rules.json file formatted as such
+To use as-is (as an anti-spam bot) it requires a rules.json file formatted as such - there is also a segment that deals with undesirable executables
 ```JSON
 {
     "rule01": { "name": "press this link", "weight": 3 },
